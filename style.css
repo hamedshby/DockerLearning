@@ -242,9 +242,13 @@ body,
 }
 
 html[dir="rtl"] .part-title::after {
-    left: auto;
-    right: 12px;
+    left: 12px;
+    right: auto;
     transform: rotate(180deg);
+}
+
+html[dir="rtl"] .part-title {
+    padding-left: 36px;
 }
 
 .toc-part.open .part-title::after {
