@@ -275,3 +275,121 @@ docker rm my-nginx</code></pre>
         </p>
     </div>
 </section>
+
+<!-- ===================== REVIEW QUESTIONS ===================== -->
+<section class="review-section">
+    <h2 data-fa="سؤالات مرور فصل با پاسخ" data-en="Chapter Review Questions with Answers">
+        سؤالات مرور فصل با پاسخ
+    </h2>
+
+    <ol class="review-questions">
+        <li>
+            <strong data-fa="داکر چیست و چه مشکلی را حل می‌کند؟"
+                data-en="What is Docker, and what problem does it solve?">
+                داکر چیست و چه مشکلی را حل می‌کند؟
+            </strong>
+            <p data-fa="داکر پلتفرمی برای بسته‌بندی و اجرای برنامه‌ها در Containerهای ایزوله است. برنامه و وابستگی‌هایش را در یک واحد قابل حمل قرار می‌دهد تا در محیط توسعه، تست و Production رفتاری یکسان داشته باشد."
+                data-en="Docker is a platform for packaging and running applications in isolated containers. It puts an application and its dependencies into a portable unit so it behaves consistently in development, testing, and production.">
+                داکر برنامه و وابستگی‌هایش را در یک واحد قابل حمل قرار می‌دهد تا در محیط‌های مختلف یکسان اجرا شود.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="منظور از مشکل «روی سیستم من کار می‌کند» چیست؟"
+                data-en="What does the 'It works on my machine' problem mean?">
+                منظور از مشکل «روی سیستم من کار می‌کند» چیست؟
+            </strong>
+            <p data-fa="یعنی برنامه به‌دلیل تفاوت نسخه Runtime، کتابخانه‌ها، سیستم‌عامل یا تنظیمات محیط، روی سیستم توسعه‌دهنده اجرا می‌شود اما در محیط دیگر خطا می‌دهد. داکر این تفاوت‌ها را با بسته‌بندی محیط اجرای برنامه کاهش می‌دهد."
+                data-en="It means an application works on the developer's machine but fails elsewhere because of different runtime versions, libraries, operating systems, or configuration. Docker reduces these differences by packaging the runtime environment.">
+                تفاوت Runtime، کتابخانه‌ها و تنظیمات محیط می‌تواند باعث شود برنامه فقط روی سیستم توسعه‌دهنده کار کند.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="تفاوت اصلی Container و Virtual Machine چیست؟"
+                data-en="What is the main difference between a Container and a Virtual Machine?">
+                تفاوت اصلی Container و Virtual Machine چیست؟
+            </strong>
+            <p data-fa="هر VM یک سیستم‌عامل کامل و Kernel مستقل دارد، اما Containerها Kernel سیستم‌عامل میزبان را به‌اشتراک می‌گذارند و فقط برنامه و وابستگی‌های سطح کاربر را حمل می‌کنند."
+                data-en="Each VM has a complete operating system and its own kernel, while containers share the host kernel and contain only the application and its user-level dependencies.">
+                VM سیستم‌عامل کامل دارد، ولی Container از Kernel میزبان استفاده می‌کند.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="چرا Containerها سریع‌تر و سبک‌تر از VMها هستند؟"
+                data-en="Why are containers faster and lighter than VMs?">
+                چرا Containerها سریع‌تر و سبک‌تر از VMها هستند؟
+            </strong>
+            <p data-fa="چون Container سیستم‌عامل کامل را Boot نمی‌کند و فقط Processها و وابستگی‌های لازم برنامه را اجرا می‌کند؛ بنابراین حجم کمتر و زمان راه‌اندازی کوتاه‌تری دارد."
+                data-en="Because a container does not boot a complete operating system and runs only the application's required processes and dependencies, it has a smaller size and shorter startup time.">
+                Container سیستم‌عامل کامل را Boot نمی‌کند و به همین دلیل سریع‌تر راه‌اندازی می‌شود.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="Docker Client و Docker Daemon چه نقشی دارند؟"
+                data-en="What are the roles of Docker Client and Docker Daemon?">
+                Docker Client و Docker Daemon چه نقشی دارند؟
+            </strong>
+            <p data-fa="Client دستورهایی مثل docker run و docker build را دریافت و از طریق API ارسال می‌کند. Daemon کار اصلی ساخت و مدیریت Imageها، Containerها، Networkها و Volumeها را انجام می‌دهد."
+                data-en="The Client receives commands such as docker run and docker build and sends them through the API. The Daemon performs the actual work of building and managing images, containers, networks, and volumes.">
+                Client دستور را ارسال می‌کند و Daemon عملیات واقعی داکر را انجام می‌دهد.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="Docker Image چه تفاوتی با Docker Container دارد؟"
+                data-en="How is a Docker Image different from a Docker Container?">
+                Docker Image چه تفاوتی با Docker Container دارد؟
+            </strong>
+            <p data-fa="Image یک Template فقط‌خواندنی شامل برنامه و وابستگی‌هاست. Container نمونه‌ای ساخته‌شده یا در حال اجرا از آن Image است و یک لایه قابل نوشتن نیز دارد."
+                data-en="An Image is a read-only template containing the application and its dependencies. A Container is a created or running instance of that Image and also has a writable layer.">
+                Image الگوی فقط‌خواندنی است و Container نمونه اجرایی آن با یک لایه قابل نوشتن است.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="Docker Registry چیست؟" data-en="What is a Docker Registry?">
+                Docker Registry چیست؟
+            </strong>
+            <p data-fa="Registry محلی برای ذخیره، نسخه‌بندی و توزیع Docker Imageهاست. Docker Hub یک Registry عمومی معروف است و سازمان‌ها می‌توانند Registry خصوصی نیز داشته باشند."
+                data-en="A Registry stores, versions, and distributes Docker Images. Docker Hub is a well-known public registry, and organizations can also operate private registries.">
+                Registry محل ذخیره و توزیع Imageهاست؛ Docker Hub نمونه عمومی معروف آن است.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="مراحل معمول Workflow داکر چیست؟"
+                data-en="What are the typical steps in a Docker workflow?">
+                مراحل معمول Workflow داکر چیست؟
+            </strong>
+            <p data-fa="ابتدا Dockerfile نوشته می‌شود، سپس Image با docker build ساخته و Container با docker run اجرا می‌شود. بعد از تست، Image به Registry فرستاده و در محیط Production دریافت و اجرا می‌شود."
+                data-en="First, a Dockerfile is written; then an Image is built with docker build and a Container is run with docker run. After testing, the Image is pushed to a Registry and pulled and run in production.">
+                Dockerfile، ساخت Image، اجرای Container، تست، Push به Registry و اجرای Production مراحل اصلی هستند.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="در دستور اجرای Nginx، گزینه‌های ‎-d و ‎-p 8080:80 چه می‌کنند؟"
+                data-en="In the Nginx command, what do -d and -p 8080:80 do?">
+                در دستور اجرای Nginx، گزینه‌های ‎-d و ‎-p 8080:80 چه می‌کنند؟
+            </strong>
+            <p data-fa="گزینه ‎-d کانتینر را در پس‌زمینه اجرا می‌کند. گزینه ‎-p 8080:80 پورت 8080 میزبان را به پورت 80 داخل Container متصل می‌کند."
+                data-en="The -d option runs the container in the background. The -p 8080:80 option maps host port 8080 to port 80 inside the container.">
+                ‎-d اجرای پس‌زمینه و ‎-p 8080:80 نگاشت پورت میزبان به پورت Container است.
+            </p>
+        </li>
+
+        <li>
+            <strong data-fa="برای مشاهده، توقف و حذف Container آزمایش Nginx از چه دستورهایی استفاده می‌کنیم؟"
+                data-en="Which commands are used to view, stop, and remove the Nginx lab container?">
+                برای مشاهده، توقف و حذف Container آزمایش Nginx از چه دستورهایی استفاده می‌کنیم؟
+            </strong>
+            <p data-fa="با docker ps کانتینرهای در حال اجرا را می‌بینیم، با docker stop my-nginx کانتینر را متوقف می‌کنیم و با docker rm my-nginx آن را حذف می‌کنیم."
+                data-en="Use docker ps to view running containers, docker stop my-nginx to stop the container, and docker rm my-nginx to remove it.">
+                دستورات docker ps، docker stop my-nginx و docker rm my-nginx به‌ترتیب برای مشاهده، توقف و حذف هستند.
+            </p>
+        </li>
+    </ol>
+</section>
