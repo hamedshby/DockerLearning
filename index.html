@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Mastery for .NET Developers</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ============ HEADER ============ -->
+    <header class="main-header">
+        <div class="header-content">
+            <h1 id="book-title">Docker Mastery for .NET Developers</h1>
+            <p id="book-subtitle" class="subtitle">یادگیری Docker از طریق ساخت یک پروژه واقعی E-Commerce Microservices
+            </p>
+        </div>
+        <!-- <div class="lang-switch">
+            <button id="btn-fa" class="lang-btn active" onclick="setLanguage('fa')">فارسی</button>
+            <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">English</button>
+        </div> -->
+    </header>
+
+    <div class="layout">
+
+        <!-- ============ SIDEBAR / TOC ============ -->
+        <nav class="sidebar" id="sidebar">
+            <input type="text" id="search-box" placeholder="جستجو در سرفصل‌ها..." oninput="filterTOC()">
+
+            <ul class="toc" id="toc-list">
+
+                <!-- بخش ۱ -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۱ - شروع کار" data-en="Part 1 - Getting Started"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch1" onclick="showChapter('ch1', event)"
+                                data-fa="فصل ۱ - مقدمه‌ای بر Docker" data-en="Chapter 1 - Introduction to Docker"></a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۲ -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۲ - مبانی Docker" data-en="Part 2 - Docker Fundamentals"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch2" onclick="showChapter('ch2', event)"
+                                data-fa="فصل ۲ - Docker Images" data-en="Chapter 2 - Docker Images"></a></li>
+                        <li><a href="#" data-target="ch3" onclick="showChapter('ch3', event)"
+                                data-fa="فصل ۳ - Docker Containers" data-en="Chapter 3 - Docker Containers"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۳ -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۳ - Dockerfile" data-en="Part 3 - Dockerfile"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch4" onclick="showChapter('ch4', event)" data-fa="معرفی Dockerfile"
+                                data-en=""></a></li>
+                        <li><a href="#" data-target="ch4-1" onclick="showChapter('ch4-1', event)"
+                                data-fa="FROM و WORKDIR" data-en=""></a></li>
+                        <li><a href="#" data-target="ch4-2" onclick="showChapter('ch4-2', event)" data-fa="COPY و ADD"
+                                data-en=""></a></li>
+                        <li><a href="#" data-target="ch4-3" onclick="showChapter('ch4-3', event)" data-fa="RUN"
+                                data-en=""></a></li>
+                        <li><a href="#" data-target="ch4-4" onclick="showChapter('ch4-4', event)" data-fa="CMD"
+                                data-en=""></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۴ -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۴ - Docker Compose" data-en="Part 4 - Docker Compose"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch5" onclick="showChapter('ch5', event)"
+                                data-fa="فصل ۵ - Docker Compose" data-en="Chapter 5 - Docker Compose"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۵ -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۵ - شبکه‌بندی" data-en="Part 5 - Networking"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch6" onclick="showChapter('ch6', event)"
+                                data-fa="فصل ۶ - Docker Networking" data-en="Chapter 6 - Docker Networking"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۶ -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۶ - ذخیره‌سازی" data-en="Part 6 - Storage"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch7" onclick="showChapter('ch7', event)"
+                                data-fa="فصل ۷ - ماندگاری داده‌ها" data-en="Chapter 7 - Data Persistence"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۷ - پروژه -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۷ - پروژه: E-Commerce Microservices"
+                        data-en="Part 7 - Project: E-Commerce Microservices" onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch8" onclick="showChapter('ch8', event)"
+                                data-fa="فصل ۸ - معرفی پروژه" data-en="Chapter 8 - Project Introduction"></a></li>
+                        <li><a href="#" data-target="ch9" onclick="showChapter('ch9', event)"
+                                data-fa="فصل ۹ - سرویس محصول" data-en="Chapter 9 - Product Service"></a></li>
+                        <li><a href="#" data-target="ch10" onclick="showChapter('ch10', event)"
+                                data-fa="فصل ۱۰ - سرویس سفارش" data-en="Chapter 10 - Order Service"></a></li>
+                        <li><a href="#" data-target="ch11" onclick="showChapter('ch11', event)"
+                                data-fa="فصل ۱۱ - سرویس هویت" data-en="Chapter 11 - Identity Service"></a></li>
+                        <li><a href="#" data-target="ch12" onclick="showChapter('ch12', event)"
+                                data-fa="فصل ۱۲ - سرویس پرداخت" data-en="Chapter 12 - Payment Service"></a></li>
+                        <li><a href="#" data-target="ch13" onclick="showChapter('ch13', event)"
+                                data-fa="فصل ۱۳ - سرویس اطلاع‌رسانی" data-en="Chapter 13 - Notification Service"></a>
+                        </li>
+                        <li><a href="#" data-target="ch14" onclick="showChapter('ch14', event)"
+                                data-fa="فصل ۱۴ - API Gateway" data-en="Chapter 14 - API Gateway"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۸ - زیرساخت -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۸ - زیرساخت" data-en="Part 8 - Infrastructure"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch15" onclick="showChapter('ch15', event)"
+                                data-fa="فصل ۱۵ - SQL Server" data-en="Chapter 15 - SQL Server"></a></li>
+                        <li><a href="#" data-target="ch16" onclick="showChapter('ch16', event)" data-fa="فصل ۱۶ - Redis"
+                                data-en="Chapter 16 - Redis"></a></li>
+                        <li><a href="#" data-target="ch17" onclick="showChapter('ch17', event)"
+                                data-fa="فصل ۱۷ - RabbitMQ" data-en="Chapter 17 - RabbitMQ"></a></li>
+                        <li><a href="#" data-target="ch18" onclick="showChapter('ch18', event)" data-fa="فصل ۱۸ - Nginx"
+                                data-en="Chapter 18 - Nginx"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۹ - تولید -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۹ - تولید" data-en="Part 9 - Production"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch19" onclick="showChapter('ch19', event)"
+                                data-fa="فصل ۱۹ - کانتینرهای آماده تولید"
+                                data-en="Chapter 19 - Production Ready Containers"></a></li>
+                        <li><a href="#" data-target="ch20" onclick="showChapter('ch20', event)"
+                                data-fa="فصل ۲۰ - مانیتورینگ" data-en="Chapter 20 - Monitoring"></a></li>
+                        <li><a href="#" data-target="ch21" onclick="showChapter('ch21', event)"
+                                data-fa="فصل ۲۱ - لاگینگ" data-en="Chapter 21 - Logging"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۱۰ - CI/CD -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۱۰ - CI/CD" data-en="Part 10 - CI/CD"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch22" onclick="showChapter('ch22', event)"
+                                data-fa="فصل ۲۲ - GitLab CI/CD" data-en="Chapter 22 - GitLab CI/CD"></a></li>
+                        <li><a href="#" data-target="ch23" onclick="showChapter('ch23', event)"
+                                data-fa="فصل ۲۳ - GitHub Actions" data-en="Chapter 23 - GitHub Actions"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۱۱ - استقرار -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۱۱ - استقرار" data-en="Part 11 - Deployment"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch24" onclick="showChapter('ch24', event)"
+                                data-fa="فصل ۲۴ - Docker Swarm" data-en="Chapter 24 - Docker Swarm"></a></li>
+                        <li><a href="#" data-target="ch25" onclick="showChapter('ch25', event)"
+                                data-fa="فصل ۲۵ - مقدمه‌ای بر Kubernetes"
+                                data-en="Chapter 25 - Introduction to Kubernetes"></a></li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۱۲ - عیب‌یابی -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۱۲ - عیب‌یابی" data-en="Part 12 - Troubleshooting"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="ch26" onclick="showChapter('ch26', event)"
+                                data-fa="فصل ۲۶ - Debugging Containers" data-en="Chapter 26 - Debugging Containers"></a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- بخش ۱۳ - پیوست -->
+                <li class="toc-part">
+                    <span class="part-title" data-fa="بخش ۱۳ - پیوست" data-en="Part 13 - Appendix"
+                        onclick="togglePart(this)"></span>
+                    <ul class="chapter-list">
+                        <li><a href="#" data-target="appendix" onclick="showChapter('appendix', event)"
+                                data-fa="پیوست‌ها" data-en="Appendices"></a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- ============ MAIN CONTENT ============ -->
+        <main class="content" id="content">
+            <div id="welcome-screen" class="chapter-content active">
+                <h2 data-fa="به کتاب خوش آمدید" data-en="Welcome to the Book"></h2>
+                <p data-fa="برای مطالعه هر فصل، از منوی سمت راست انتخاب کنید."
+                    data-en="Select a chapter from the sidebar to begin reading."></p>
+            </div>
+
+            <!-- محتوای فصل‌ها در بخش‌های بعدی پیام اضافه خواهد شد -->
+            <!-- CHAPTER_CONTENT_PLACEHOLDER -->
+
+        </main>
+
+    </div>
+
+    <footer class="main-footer">
+        <p data-fa="© Docker Mastery for .NET Developers" data-en="© Docker Mastery for .NET Developers"></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

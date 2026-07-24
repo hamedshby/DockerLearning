@@ -1,0 +1,365 @@
+<!-- ===================== CHAPTER: docker-container-introduction ===================== -->
+
+<h1 data-fa="فصل ۱: Docker Container چیست؟" data-en="Chapter 1: What is a Docker Container?">
+    فصل ۱: Docker Container چیست؟
+</h1>
+
+<p data-fa="Docker Container یک نمونه (Instance) در حال اجرا از یک Docker Image است. زمانی که یک Image را اجرا می‌کنید، Docker یک Container ایجاد می‌کند که شامل برنامه، کتابخانه‌ها، Runtime و یک لایه‌ی قابل نوشتن (Writable Layer) است."
+    data-en="A Docker Container is a running instance of a Docker Image. When an Image is started, Docker creates a Container that includes the application, runtime, libraries, and a writable layer.">
+    Docker Container نمونه‌ای در حال اجرا از یک Docker Image است.
+</p>
+
+<p data-fa="Containerها محیطی ایزوله برای اجرای برنامه فراهم می‌کنند. هر Container دارای فایل‌سیستم، شبکه، پردازش‌ها و تنظیمات مخصوص خود است اما Kernel سیستم‌عامل میزبان را با سایر Containerها به اشتراک می‌گذارد."
+    data-en="Containers provide an isolated environment for running applications. Each container has its own filesystem, network, processes, and configuration while sharing the host operating system kernel.">
+    هر Container محیطی ایزوله برای اجرای برنامه ایجاد می‌کند.
+</p>
+
+<div class="info-box">
+    <strong data-fa="نکته" data-en="Note">نکته</strong>
+
+    <p data-fa="یک Image می‌تواند بارها اجرا شود و از روی آن چندین Container مستقل ساخته شود."
+        data-en="A single Image can be used to create multiple independent Containers.">
+        از یک Docker Image می‌توان چندین Container ساخت.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: container-lifecycle ===================== -->
+
+<h1 data-fa="فصل ۲: چرخه زندگی Docker Container" data-en="Chapter 2: Docker Container Lifecycle">
+    فصل ۲: چرخه زندگی Docker Container
+</h1>
+
+<p data-fa="هر Container در طول عمر خود چندین وضعیت مختلف را تجربه می‌کند."
+    data-en="Every Docker Container goes through several states during its lifetime.">
+    هر Docker Container دارای چرخه زندگی مشخصی است.
+</p>
+
+<div class="diagram-box">
+    <pre>
+Docker Image
+      │
+docker run
+      │
+      ▼
+Created
+      │
+      ▼
+Running
+      │
+      ├────────► Paused
+      │
+      ▼
+Stopped
+      │
+docker rm
+      ▼
+Deleted
+</pre>
+</div>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th>State</th>
+            <th data-fa="توضیح" data-en="Description">توضیح</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Created</td>
+            <td data-fa="Container ساخته شده ولی هنوز اجرا نشده است."
+                data-en="Container has been created but not started.">
+                ساخته شده ولی اجرا نشده است.
+            </td>
+        </tr>
+
+        <tr>
+            <td>Running</td>
+            <td data-fa="برنامه در حال اجرا است." data-en="Application is running.">
+                برنامه در حال اجرا است.
+            </td>
+        </tr>
+
+        <tr>
+            <td>Paused</td>
+            <td data-fa="اجرای پردازش‌ها موقتاً متوقف شده است." data-en="Processes are temporarily suspended.">
+                اجرای برنامه متوقف شده است.
+            </td>
+        </tr>
+
+        <tr>
+            <td>Stopped</td>
+            <td data-fa="Container متوقف شده اما حذف نشده است." data-en="Container is stopped but still exists.">
+                متوقف شده است.
+            </td>
+        </tr>
+
+        <tr>
+            <td>Deleted</td>
+            <td data-fa="Container حذف شده است." data-en="Container has been removed.">
+                حذف شده است.
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<!-- ===================== CHAPTER: docker-run ===================== -->
+
+<h1 data-fa="فصل ۳: ایجاد اولین Container" data-en="Chapter 3: Creating Your First Container">
+    فصل ۳: ایجاد اولین Container
+</h1>
+
+<h3 data-fa="اجرای اولین Container" data-en="Run Your First Container">
+    اجرای اولین Container
+</h3>
+
+<pre><code>docker run hello-world</code></pre>
+
+<p data-fa="این دستور Image مربوط به hello-world را دانلود کرده و اولین Container شما را اجرا می‌کند."
+    data-en="This command downloads the hello-world image and runs your first container.">
+    این ساده‌ترین دستور برای اجرای اولین Container است.
+</p>
+
+<h3 data-fa="اجرای Nginx" data-en="Run Nginx">
+    اجرای Nginx
+</h3>
+
+<pre><code>docker run nginx</code></pre>
+
+<p data-fa="در این حالت Container اجرا می‌شود اما چون در Foreground اجرا شده است، ترمینال در اختیار Container قرار می‌گیرد."
+    data-en="The container runs in the foreground and occupies the terminal.">
+    این دستور Container را در حالت Foreground اجرا می‌کند.
+</p>
+
+<h3 data-fa="اجرای Container در پس‌زمینه" data-en="Detached Mode">
+    اجرای Container در پس‌زمینه
+</h3>
+
+<pre><code>docker run -d nginx</code></pre>
+
+<p data-fa="-d مخفف Detached Mode است." data-en="-d stands for Detached Mode.">
+    با گزینه <strong>-d</strong>، Container در پس‌زمینه اجرا می‌شود.
+</p>
+
+<!-- ===================== CHAPTER: docker-run-options ===================== -->
+
+<h1 data-fa="فصل ۴: گزینه‌های مهم docker run" data-en="Chapter 4: docker run Options">
+    فصل ۴: گزینه‌های مهم docker run
+</h1>
+
+<table class="comparison-table">
+
+    <thead>
+        <tr>
+            <th>Option</th>
+            <th data-fa="کاربرد" data-en="Description">کاربرد</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>-d</td>
+            <td data-fa="اجرای Container در پس‌زمینه" data-en="Run in detached mode">
+                اجرای در پس‌زمینه
+            </td>
+        </tr>
+
+        <tr>
+            <td>-it</td>
+            <td data-fa="اجرای Interactive Terminal" data-en="Interactive terminal">
+                ترمینال تعاملی
+            </td>
+        </tr>
+
+        <tr>
+            <td>--name</td>
+            <td data-fa="نام‌گذاری Container" data-en="Assign container name">
+                تعیین نام
+            </td>
+        </tr>
+
+        <tr>
+            <td>-p</td>
+            <td data-fa="نگاشت پورت" data-en="Port mapping">
+                نگاشت پورت
+            </td>
+        </tr>
+
+        <tr>
+            <td>-e</td>
+            <td data-fa="تعریف Environment Variable" data-en="Environment Variable">
+                متغیر محیطی
+            </td>
+        </tr>
+
+        <tr>
+            <td>-v</td>
+            <td data-fa="اتصال Volume" data-en="Mount Volume">
+                اتصال Volume
+            </td>
+        </tr>
+
+        <tr>
+            <td>--rm</td>
+            <td data-fa="حذف خودکار پس از پایان اجرا" data-en="Remove after exit">
+                حذف خودکار
+            </td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== CHAPTER: docker-ps ===================== -->
+
+<h1 data-fa="فصل ۵: مشاهده Containerها" data-en="Chapter 5: Listing Containers">
+    فصل ۵: مشاهده Containerها
+</h1>
+
+<h3 data-fa="Containerهای در حال اجرا" data-en="Running Containers">
+    Containerهای در حال اجرا
+</h3>
+
+<pre><code>docker ps</code></pre>
+
+نمونه خروجی
+
+<pre><code>CONTAINER ID   IMAGE     STATUS
+
+8c45a9f2       nginx     Up 5 minutes
+</code></pre>
+
+<h3 data-fa="نمایش تمام Containerها" data-en="All Containers">
+    نمایش تمام Containerها
+</h3>
+
+<pre><code>docker ps -a</code></pre>
+
+<p data-fa="این دستور Containerهای متوقف شده را نیز نمایش می‌دهد." data-en="Shows both running and stopped containers.">
+    این دستور تمام Containerها را نمایش می‌دهد.
+</p>
+
+<!-- ===================== CHAPTER: docker-start-stop ===================== -->
+
+<h1 data-fa="فصل ۶: مدیریت Containerها" data-en="Chapter 6: Managing Containers">
+    فصل ۶: مدیریت Containerها
+</h1>
+
+<h3>Stop</h3>
+
+<pre><code>docker stop my-nginx</code></pre>
+
+<h3>Start</h3>
+
+<pre><code>docker start my-nginx</code></pre>
+
+<h3>Restart</h3>
+
+<pre><code>docker restart my-nginx</code></pre>
+
+<h3>Pause</h3>
+
+<pre><code>docker pause my-nginx</code></pre>
+
+<h3>Unpause</h3>
+
+<pre><code>docker unpause my-nginx</code></pre>
+
+<h3>Kill</h3>
+
+<pre><code>docker kill my-nginx</code></pre>
+
+<div class="info-box">
+
+    <strong data-fa="نکته" data-en="Note">
+        نکته
+    </strong>
+
+    <p data-fa="دستور stop ابتدا سیگنال SIGTERM ارسال می‌کند و در صورت عدم پاسخ برنامه، SIGKILL ارسال می‌شود. اما دستور kill مستقیماً SIGKILL ارسال می‌کند."
+        data-en="docker stop sends SIGTERM first and SIGKILL if needed. docker kill sends SIGKILL immediately.">
+        دستور stop امن‌تر از kill است.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: docker-remove ===================== -->
+
+<h1 data-fa="فصل ۷: حذف Container" data-en="Chapter 7: Removing Containers">
+    فصل ۷: حذف Container
+</h1>
+
+<h3>Remove</h3>
+
+<pre><code>docker rm my-nginx</code></pre>
+
+<h3>Force Remove</h3>
+
+<pre><code>docker rm -f my-nginx</code></pre>
+
+<h3>حذف تمام Containerهای متوقف شده</h3>
+
+<pre><code>docker container prune</code></pre>
+
+<div class="info-box">
+
+    <strong data-fa="هشدار" data-en="Warning">
+        هشدار
+    </strong>
+
+    <p data-fa="دستور docker container prune تمام Containerهای متوقف شده را حذف می‌کند."
+        data-en="docker container prune removes all stopped containers.">
+        قبل از اجرای این دستور از عدم نیاز به Containerها مطمئن شوید.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: lab-container ===================== -->
+
+<h1 data-fa="Lab ۱: مدیریت Docker Container" data-en="Lab 1: Docker Container Management">
+    Lab ۱: مدیریت Docker Container
+</h1>
+
+<section class="lab-section">
+
+    <h3>گام ۱: دانلود Image</h3>
+
+    <pre><code>docker pull nginx</code></pre>
+
+    <h3>گام ۲: اجرای Container</h3>
+
+    <pre><code>docker run -d --name my-nginx -p 8080:80 nginx</code></pre>
+
+    <h3>گام ۳: مشاهده Container</h3>
+
+    <pre><code>docker ps</code></pre>
+
+    <h3>گام ۴: توقف Container</h3>
+
+    <pre><code>docker stop my-nginx</code></pre>
+
+    <h3>گام ۵: اجرای مجدد</h3>
+
+    <pre><code>docker start my-nginx</code></pre>
+
+    <h3>گام ۶: حذف Container</h3>
+
+    <pre><code>docker rm -f my-nginx</code></pre>
+
+    <div class="lab-result">
+
+        <strong data-fa="✅ نتیجه Lab" data-en="Lab Result">
+            ✅ نتیجه Lab
+        </strong>
+
+        <p data-fa="در این آزمایش با چرخه کامل مدیریت Containerها آشنا شدید؛ از ایجاد، اجرا و مشاهده Container تا توقف، راه‌اندازی مجدد و حذف آن. این دستورات پایه‌ای‌ترین ابزارهای مدیریت Container هستند و در تمام پروژه‌های Docker به‌طور روزمره استفاده می‌شوند."
+            data-en="In this lab, you learned the complete lifecycle of Docker Containers, including creating, running, listing, stopping, restarting, and removing them. These commands are the foundation of daily Docker usage.">
+            در این Lab مهم‌ترین دستورات مدیریت Docker Container را به‌صورت عملی یاد گرفتید.
+        </p>
+
+    </div>
+
+</section>

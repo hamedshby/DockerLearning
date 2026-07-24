@@ -1,0 +1,391 @@
+<!-- ===================== CHAPTER: dockerfile-introduction ===================== -->
+
+<h1 data-fa="فصل ۱: Dockerfile چیست؟" data-en="Chapter 1: What is Dockerfile?">
+    فصل ۱: Dockerfile چیست؟
+</h1>
+
+<p data-fa="Dockerfile یک فایل متنی ساده است که شامل مجموعه‌ای از دستورالعمل‌ها (Instructions) برای ساخت یک Docker Image می‌باشد. Docker این فایل را خط به خط اجرا کرده و در نهایت یک Image جدید ایجاد می‌کند."
+    data-en="A Dockerfile is a plain text file that contains a series of instructions used to build a Docker Image. Docker executes each instruction one by one and produces a new Image.">
+    Dockerfile یک فایل متنی ساده است که مراحل ساخت یک Docker Image را تعریف می‌کند.
+</p>
+
+<p data-fa="به جای اینکه هر بار به صورت دستی نرم‌افزارها را نصب کنید، فایل‌ها را کپی کنید و تنظیمات را انجام دهید، تمام این مراحل را یک بار داخل Dockerfile می‌نویسید و Docker هر بار دقیقاً همان مراحل را تکرار می‌کند."
+    data-en="Instead of manually installing software, copying files and configuring the environment every time, you define those steps once in a Dockerfile and Docker repeats them exactly the same way.">
+    Dockerfile فرآیند ساخت Image را کاملاً خودکار و قابل تکرار می‌کند.
+</p>
+
+<div class="info-box">
+
+    <strong data-fa="نکته" data-en="Note">
+        نکته
+    </strong>
+
+    <p data-fa="Dockerfile در حقیقت یک Recipe یا دستور پخت برای ساخت Docker Image است."
+        data-en="Think of a Dockerfile as a recipe for building a Docker Image.">
+        Dockerfile مانند دستور پخت غذا است و Docker Image نتیجه اجرای آن است.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: why-dockerfile ===================== -->
+
+<h1 data-fa="فصل ۲: چرا به Dockerfile نیاز داریم؟" data-en="Chapter 2: Why Dockerfile?">
+    فصل ۲: چرا به Dockerfile نیاز داریم؟
+</h1>
+
+<p data-fa="بدون Dockerfile مجبور هستیم تمام مراحل نصب و پیکربندی برنامه را به صورت دستی انجام دهیم. این کار علاوه بر زمان‌بر بودن، احتمال بروز خطا را نیز افزایش می‌دهد."
+    data-en="Without Dockerfile, every installation and configuration step must be performed manually. This process is slow and error-prone.">
+    بدون Dockerfile ساخت Image فرآیندی دستی خواهد بود.
+</p>
+
+<h3 data-fa="مشکلات ساخت دستی Image" data-en="Problems with Manual Image Creation">
+    مشکلات ساخت دستی Image
+</h3>
+
+<ul>
+
+    <li data-fa="زمان‌بر بودن نصب نرم‌افزارها" data-en="Installing software manually">
+        زمان‌بر بودن نصب نرم‌افزارها
+    </li>
+
+    <li data-fa="احتمال فراموش کردن مراحل نصب" data-en="Forgetting installation steps">
+        فراموش شدن مراحل نصب
+    </li>
+
+    <li data-fa="عدم یکسان بودن محیط توسعه و Production" data-en="Different development and production environments">
+        تفاوت محیط‌های اجرا
+    </li>
+
+    <li data-fa="غیرقابل تکرار بودن فرآیند Build" data-en="Build process is not repeatable">
+        غیرقابل تکرار بودن Build
+    </li>
+
+</ul>
+
+<h3 data-fa="مزایای Dockerfile" data-en="Advantages of Dockerfile">
+    مزایای Dockerfile
+</h3>
+
+<ul>
+
+    <li>Build کاملاً خودکار</li>
+
+    <li>قابل نگهداری در Git</li>
+
+    <li>قابل نسخه‌بندی</li>
+
+    <li>تکرارپذیر (Repeatable)</li>
+
+    <li>مناسب برای CI/CD</li>
+
+    <li>سازگار با همه سیستم‌ها</li>
+
+</ul>
+
+<div class="info-box">
+
+    <strong>Best Practice</strong>
+
+    <p>
+        هیچ‌گاه Imageهای Production را به صورت دستی ایجاد نکنید. همیشه از Dockerfile استفاده کنید.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: dockerfile-workflow ===================== -->
+
+<h1 data-fa="فصل ۳: Workflow ساخت Docker Image" data-en="Chapter 3: Docker Build Workflow">
+    فصل ۳: Workflow ساخت Docker Image
+</h1>
+
+<p>
+    فرآیند ساخت یک Docker Image معمولاً به شکل زیر است.
+</p>
+
+<div class="diagram-box">
+
+    <pre>
+Source Code
+      │
+      ▼
+Dockerfile
+      │
+docker build
+      │
+      ▼
+Docker Image
+      │
+docker run
+      ▼
+Docker Container
+</pre>
+
+</div>
+
+<p data-fa="Docker ابتدا Dockerfile را می‌خواند، سپس هر دستور را اجرا می‌کند و در پایان یک Docker Image تولید می‌شود."
+    data-en="Docker reads the Dockerfile, executes every instruction, and finally produces a Docker Image.">
+    Docker تمام دستورات Dockerfile را به ترتیب اجرا می‌کند.
+</p>
+
+<!-- ===================== CHAPTER: dockerfile-vs-image ===================== -->
+
+<h1 data-fa="فصل ۴: تفاوت Dockerfile، Image و Container" data-en="Chapter 4: Dockerfile vs Image vs Container">
+    فصل ۴: تفاوت Dockerfile، Image و Container
+</h1>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>مفهوم</th>
+
+            <th>توضیح</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>Dockerfile</td>
+
+            <td>فایل متنی شامل دستورهای ساخت Image</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Docker Image</td>
+
+            <td>خروجی اجرای Dockerfile</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Docker Container</td>
+
+            <td>نمونه در حال اجرای Image</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<div class="diagram-box">
+
+    <pre>
+Dockerfile
+
+      │
+
+docker build
+
+      ▼
+
+Docker Image
+
+      │
+
+docker run
+
+      ▼
+
+Docker Container
+</pre>
+
+</div>
+
+<!-- ===================== CHAPTER: dockerfile-location ===================== -->
+
+<h1 data-fa="فصل ۵: محل قرارگیری Dockerfile" data-en="Chapter 5: Dockerfile Location">
+    فصل ۵: محل قرارگیری Dockerfile
+</h1>
+
+<p>
+    معمولاً Dockerfile در ریشه پروژه قرار می‌گیرد.
+</p>
+
+<pre><code>
+Shop.API
+
+│
+
+├── Controllers
+
+├── Services
+
+├── Models
+
+├── Program.cs
+
+├── Shop.API.csproj
+
+└── Dockerfile
+</code></pre>
+
+<p>
+    نام فایل باید دقیقاً
+
+    <strong>Dockerfile</strong>
+
+    باشد و معمولاً هیچ پسوندی ندارد.
+</p>
+
+<div class="info-box">
+
+    <strong>نکته</strong>
+
+    <p>
+        Docker به صورت پیش‌فرض فایل Dockerfile را در پوشه جاری جستجو می‌کند.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: first-dockerfile ===================== -->
+
+<h1 data-fa="فصل ۶: اولین Dockerfile" data-en="Chapter 6: Your First Dockerfile">
+    فصل ۶: اولین Dockerfile
+</h1>
+
+<p>
+    یک Dockerfile بسیار ساده:
+</p>
+
+<pre><code>
+FROM nginx
+</code></pre>
+
+<p>
+    این Dockerfile تنها یک Image بر پایه nginx ایجاد می‌کند.
+</p>
+
+ساخت Image
+
+<pre><code>
+docker build -t my-nginx .
+</code></pre>
+
+اجرای Container
+
+<pre><code>
+docker run -d -p 8080:80 my-nginx
+</code></pre>
+
+مشاهده Image
+
+<pre><code>
+docker images
+</code></pre>
+
+مشاهده Container
+
+<pre><code>
+docker ps
+</code></pre>
+
+<!-- ===================== CHAPTER: dockerfile-anatomy ===================== -->
+
+<h1 data-fa="فصل ۷: ساختار کلی Dockerfile" data-en="Chapter 7: Dockerfile Anatomy">
+    فصل ۷: ساختار کلی Dockerfile
+</h1>
+
+<p>
+    تقریباً تمام Dockerfileها از تعدادی دستور (Instruction) تشکیل شده‌اند.
+</p>
+
+<pre><code>
+FROM
+
+WORKDIR
+
+COPY
+
+RUN
+
+EXPOSE
+
+ENV
+
+CMD
+
+ENTRYPOINT
+</code></pre>
+
+<p>
+    در فصل‌های بعد هر یک از این دستورات را به صورت کامل بررسی خواهیم کرد.
+</p>
+
+<!-- ===================== LAB ===================== -->
+
+<h1 data-fa="Lab ۱: ساخت اولین Docker Image" data-en="Lab 1: Build Your First Docker Image">
+    Lab ۱
+</h1>
+
+<section class="lab-section">
+
+    <h3>گام ۱</h3>
+
+    یک فایل با نام
+
+    <strong>Dockerfile</strong>
+
+    ایجاد کنید.
+
+    <h3>گام ۲</h3>
+
+    <pre><code>
+FROM nginx
+</code></pre>
+
+    <h3>گام ۳</h3>
+
+    Image را Build کنید.
+
+    <pre><code>
+docker build -t my-nginx:v1 .
+</code></pre>
+
+    <h3>گام ۴</h3>
+
+    Container را اجرا کنید.
+
+    <pre><code>
+docker run -d -p 8080:80 my-nginx:v1
+</code></pre>
+
+    <h3>گام ۵</h3>
+
+    Imageها را مشاهده کنید.
+
+    <pre><code>
+docker images
+</code></pre>
+
+    <h3>گام ۶</h3>
+
+    Containerهای در حال اجرا را مشاهده کنید.
+
+    <pre><code>
+docker ps
+</code></pre>
+
+    <div class="lab-result">
+
+        <strong data-fa="✅ نتیجه Lab" data-en="Lab Result">
+            ✅ نتیجه Lab
+        </strong>
+
+        <p data-fa="در این آزمایش با مفهوم Dockerfile، محل قرارگیری آن، فرآیند Build و ارتباط Dockerfile با Image و Container آشنا شدید. همچنین اولین Dockerfile خود را ایجاد کرده و یک Image و Container واقعی ساختید."
+            data-en="In this lab, you learned what a Dockerfile is, where it should be placed, how the build process works, and how Dockerfile relates to Images and Containers. You also created your first Docker Image and Container.">
+            در این Lab اولین Dockerfile خود را ساختید و آن را به یک Docker Image و سپس یک Docker Container تبدیل کردید.
+        </p>
+
+    </div>
+
+</section>

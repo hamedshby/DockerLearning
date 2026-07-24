@@ -1,0 +1,277 @@
+<!-- ===================== CHAPTER: intro-what-is-docker ===================== -->
+<h1 data-fa="فصل ۱: داکر چیست؟" data-en="Chapter 1: What is Docker?">فصل ۱: داکر چیست؟</h1>
+
+<p data-fa="داکر (Docker) یک پلتفرم متن‌باز برای توسعه، بسته‌بندی (Package) و اجرای برنامه‌ها درون Containerهای سبک و ایزوله است. به جای اینکه نگران باشیم برنامه روی سیستم کاربر دیگر اجرا می‌شود یا نه، داکر تضمین می‌کند که برنامه همراه تمام وابستگی‌هایش (Dependencies) در یک بسته‌ی قابل حمل اجرا شود."
+    data-en="Docker is an open-source platform for developing, packaging, and running applications inside lightweight, isolated containers. Instead of worrying whether an app will run on someone else's machine, Docker guarantees the application runs together with all its dependencies inside one portable package.">
+    داکر (Docker) یک پلتفرم متن‌باز برای توسعه، بسته‌بندی (Package) و اجرای برنامه‌ها درون Containerهای سبک و ایزوله
+    است.
+</p>
+
+<h2 data-fa="چرا داکر به وجود آمد؟" data-en="Why Was Docker Created?">چرا داکر به وجود آمد؟</h2>
+<p data-fa="پیش از داکر، توسعه‌دهندگان با مشکل معروف «روی سیستم من درست کار می‌کند!» (It works on my machine!) دست و پنجه نرم می‌کردند. تفاوت در نسخه‌ی .NET، تنظیمات سیستم‌عامل، وابستگی‌های نصب‌شده و پیکربندی محیط، باعث می‌شد یک برنامه در محیط توسعه درست کار کند اما در Production با خطا مواجه شود."
+    data-en="Before Docker, developers struggled with the infamous 'It works on my machine!' problem. Differences in .NET versions, OS settings, installed dependencies, and environment configuration meant an app that worked fine in development could break in production.">
+    پیش از داکر، توسعه‌دهندگان با مشکل معروف «روی سیستم من درست کار می‌کند!» دست و پنجه نرم می‌کردند.
+</p>
+
+<h3 data-fa="مشکلات پیش از داکر" data-en="Problems Before Docker">مشکلات پیش از داکر</h3>
+<ul>
+    <li data-fa="ناسازگاری محیط توسعه، تست و Production"
+        data-en="Inconsistency between Dev, Test, and Production environments">ناسازگاری محیط توسعه، تست و
+        Production</li>
+    <li data-fa="زمان‌بر بودن Setup محیط برای اعضای جدید تیم"
+        data-en="Time-consuming environment setup for new team members">زمان‌بر بودن Setup محیط برای اعضای جدید تیم
+    </li>
+    <li data-fa="مصرف بالای منابع توسط Virtual Machineها" data-en="High resource consumption by Virtual Machines">
+        مصرف بالای منابع توسط Virtual Machineها</li>
+    <li data-fa="پیچیدگی در استقرار (Deploy) چند سرویس با نسخه‌های مختلف از یک زبان یا فریمورک"
+        data-en="Complexity deploying multiple services with different language/framework versions">پیچیدگی در
+        استقرار چند سرویس با نسخه‌های مختلف از یک زبان یا فریمورک</li>
+    <li data-fa="دشواری Scale کردن برنامه‌ها به‌صورت مستقل از هم"
+        data-en="Difficulty scaling applications independently">دشواری Scale کردن برنامه‌ها به‌صورت مستقل از هم</li>
+</ul>
+
+<h3 data-fa="راه‌حل داکر" data-en="The Docker Solution">راه‌حل داکر</h3>
+<p data-fa="داکر با معرفی مفهوم Container، برنامه و تمام وابستگی‌های آن (Runtime، کتابخانه‌ها، تنظیمات) را در یک واحد بسته‌بندی می‌کند که روی هر ماشینی با موتور داکر (Docker Engine) دقیقاً به همان شکل اجرا می‌شود؛ چه روی لپ‌تاپ توسعه‌دهنده، چه روی سرور Production."
+    data-en="Docker introduces the concept of Containers — packaging the application and all its dependencies (runtime, libraries, configuration) into a single unit that runs identically on any machine with Docker Engine, whether on a developer's laptop or a production server.">
+    داکر با معرفی مفهوم Container، برنامه و تمام وابستگی‌های آن را در یک واحد بسته‌بندی می‌کند.
+</p>
+
+<div class="info-box">
+    <strong data-fa="نکته" data-en="Note">نکته</strong>
+    <p data-fa="داکر خودش تکنولوژی Container را اختراع نکرد؛ مفاهیمی مثل Linux Namespaces و cgroups از قبل وجود داشتند. کاری که داکر انجام داد، ساده و در دسترس کردن این تکنولوژی برای همه‌ی توسعه‌دهندگان بود."
+        data-en="Docker didn't invent container technology itself; concepts like Linux Namespaces and cgroups already existed. What Docker did was make this technology simple and accessible to every developer.">
+        داکر خودش تکنولوژی Container را اختراع نکرد؛ مفاهیمی مثل Linux Namespaces و cgroups از قبل وجود داشتند.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: intro-vm-vs-container ===================== -->
+<h1 data-fa="فصل ۲: Container در مقابل Virtual Machine" data-en="Chapter 2: Container vs Virtual Machine">فصل ۲:
+    Container در مقابل Virtual Machine</h1>
+
+<p data-fa="یکی از رایج‌ترین سوالاتی که برای تازه‌واردان به داکر پیش می‌آید این است: «Container با Virtual Machine چه فرقی دارد؟» برای پاسخ باید به معماری هر دو نگاه کنیم."
+    data-en="One of the most common questions newcomers to Docker ask is: 'What's the difference between a Container and a Virtual Machine?' To answer, we need to look at the architecture of each.">
+    یکی از رایج‌ترین سوالاتی که برای تازه‌واردان به داکر پیش می‌آید این است: «Container با Virtual Machine چه فرقی
+    دارد؟»
+</p>
+
+<h3 data-fa="معماری Virtual Machine" data-en="Virtual Machine Architecture">معماری Virtual Machine</h3>
+<p data-fa="یک VM از طریق Hypervisor روی سخت‌افزار فیزیکی اجرا می‌شود و هر VM شامل یک سیستم‌عامل کامل مجزا (Guest OS) است. این یعنی هر VM چند گیگابایت حجم دارد و راه‌اندازی آن دقیقه‌ها طول می‌کشد."
+    data-en="A VM runs on physical hardware through a Hypervisor, and each VM includes its own full, separate operating system (Guest OS). This means each VM is several gigabytes in size and takes minutes to boot.">
+    یک VM از طریق Hypervisor روی سخت‌افزار فیزیکی اجرا می‌شود و هر VM شامل یک سیستم‌عامل کامل مجزا است.
+</p>
+
+<h3 data-fa="معماری Container" data-en="Container Architecture">معماری Container</h3>
+<p data-fa="Containerها به جای مجازی‌سازی سخت‌افزار، از Kernel سیستم‌عامل میزبان (Host) به‌صورت مشترک استفاده می‌کنند. هر Container فقط شامل برنامه و وابستگی‌های سطح کاربر است، نه یک سیستم‌عامل کامل. همین موضوع باعث می‌شود Containerها سبک‌تر (چند مگابایت تا چند صد مگابایت) و بسیار سریع‌تر (چند میلی‌ثانیه تا چند ثانیه) راه‌اندازی شوند."
+    data-en="Containers, instead of virtualizing hardware, share the host operating system's Kernel. Each container only contains the application and its user-level dependencies, not a full OS. This makes containers much lighter (a few MB to a few hundred MB) and far faster to start (milliseconds to a few seconds).">
+    Containerها به جای مجازی‌سازی سخت‌افزار، از Kernel سیستم‌عامل میزبان به‌صورت مشترک استفاده می‌کنند.
+</p>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="ویژگی" data-en="Feature">ویژگی</th>
+            <th data-fa="Virtual Machine" data-en="Virtual Machine">Virtual Machine</th>
+            <th data-fa="Container" data-en="Container">Container</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="سیستم‌عامل" data-en="Operating System">سیستم‌عامل</td>
+            <td data-fa="هر VM یک Guest OS کامل دارد" data-en="Each VM has a full Guest OS">هر VM یک Guest OS کامل
+                دارد</td>
+            <td data-fa="Kernel مشترک با Host" data-en="Shares Kernel with Host">Kernel مشترک با Host</td>
+        </tr>
+        <tr>
+            <td data-fa="حجم" data-en="Size">حجم</td>
+            <td data-fa="چند گیگابایت" data-en="Several GBs">چند گیگابایت</td>
+            <td data-fa="چند مگابایت" data-en="A few MBs">چند مگابایت</td>
+        </tr>
+        <tr>
+            <td data-fa="زمان راه‌اندازی" data-en="Startup Time">زمان راه‌اندازی</td>
+            <td data-fa="دقیقه‌ها" data-en="Minutes">دقیقه‌ها</td>
+            <td data-fa="میلی‌ثانیه تا ثانیه" data-en="Milliseconds to seconds">میلی‌ثانیه تا ثانیه</td>
+        </tr>
+        <tr>
+            <td data-fa="ایزوله‌سازی" data-en="Isolation">ایزوله‌سازی</td>
+            <td data-fa="ایزوله‌سازی کامل در سطح سخت‌افزار" data-en="Full hardware-level isolation">ایزوله‌سازی کامل
+                در سطح سخت‌افزار</td>
+            <td data-fa="ایزوله‌سازی در سطح Process" data-en="Process-level isolation">ایزوله‌سازی در سطح Process
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="تراکم روی هر میزبان" data-en="Density per Host">تراکم روی هر میزبان</td>
+            <td data-fa="محدود (چند ده VM)" data-en="Limited (dozens)">محدود (چند ده VM)</td>
+            <td data-fa="بالا (چند صد تا چند هزار Container)" data-en="High (hundreds to thousands)">بالا (چند صد تا
+                چند هزار Container)</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="info-box">
+    <strong data-fa="جمع‌بندی" data-en="Summary">جمع‌بندی</strong>
+    <p data-fa="VM مناسب زمانی است که به ایزوله‌سازی کامل سیستم‌عامل نیاز دارید (مثلاً اجرای چند سیستم‌عامل مختلف روی یک سخت‌افزار). Container برای Deploy سریع، مقیاس‌پذیر و سبک برنامه‌ها، به‌خصوص در معماری Microservices، انتخاب بهتری است."
+        data-en="VMs are suitable when you need full OS-level isolation (e.g., running multiple different operating systems on one hardware). Containers are the better choice for fast, scalable, lightweight application deployment, especially in Microservices architecture.">
+        VM مناسب زمانی است که به ایزوله‌سازی کامل سیستم‌عامل نیاز دارید. Container برای Deploy سریع و سبک برنامه‌ها
+        بهتر است.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: intro-architecture ===================== -->
+<h1 data-fa="فصل ۳: معماری داکر" data-en="Chapter 3: Docker Architecture">فصل ۳: معماری داکر</h1>
+
+<p data-fa="داکر از معماری Client-Server استفاده می‌کند. اجزای اصلی این معماری عبارتند از:"
+    data-en="Docker uses a Client-Server architecture. The main components of this architecture are:">
+    داکر از معماری Client-Server استفاده می‌کند. اجزای اصلی این معماری عبارتند از:
+</p>
+
+<h3 data-fa="۱. Docker Client" data-en="1. Docker Client">۱. Docker Client</h3>
+<p data-fa="ابزار خط فرمان (CLI) که با آن دستوراتی مثل docker run یا docker build را اجرا می‌کنید. Client این دستورات را از طریق REST API به Docker Daemon ارسال می‌کند."
+    data-en="The command-line tool (CLI) used to run commands like docker run or docker build. The Client sends these commands to the Docker Daemon via a REST API.">
+    ابزار خط فرمان (CLI) که با آن دستوراتی مثل docker run یا docker build را اجرا می‌کنید.
+</p>
+
+<h3 data-fa="۲. Docker Daemon (dockerd)" data-en="2. Docker Daemon (dockerd)">۲. Docker Daemon (dockerd)</h3>
+<p data-fa="فرآیند پس‌زمینه‌ای که مسئولیت ساخت، اجرا و مدیریت Containerها، Imageها، Networkها و Volumeها را بر عهده دارد. تمام کارهای واقعی توسط Daemon انجام می‌شود."
+    data-en="The background process responsible for building, running, and managing Containers, Images, Networks, and Volumes. All the real work is done by the Daemon.">
+    فرآیند پس‌زمینه‌ای که مسئولیت ساخت، اجرا و مدیریت Containerها، Imageها، Networkها و Volumeها را بر عهده دارد.
+</p>
+
+<h3 data-fa="۳. Docker Image" data-en="3. Docker Image">۳. Docker Image</h3>
+<p data-fa="یک Template فقط‌خواندنی (Read-Only) که شامل کد برنامه، Runtime، کتابخانه‌ها و تنظیمات لازم برای اجرای آن است. Containerها از روی Imageها ساخته می‌شوند."
+    data-en="A read-only template that includes application code, runtime, libraries, and settings required to run it. Containers are created from Images.">
+    یک Template فقط‌خواندنی که شامل کد برنامه، Runtime، کتابخانه‌ها و تنظیمات لازم برای اجرای آن است.
+</p>
+
+<h3 data-fa="۴. Docker Container" data-en="4. Docker Container">۴. Docker Container</h3>
+<p data-fa="یک نمونه (Instance) در حال اجرا از یک Image. Container شامل یک لایه‌ی قابل نوشتن (Writable Layer) روی بالای لایه‌های Image است."
+    data-en="A running instance of an Image. A Container includes a writable layer on top of the Image's layers.">
+    یک نمونه (Instance) در حال اجرا از یک Image. Container شامل یک لایه‌ی قابل نوشتن است.
+</p>
+
+<h3 data-fa="۵. Docker Registry" data-en="5. Docker Registry">۵. Docker Registry</h3>
+<p data-fa="محلی برای ذخیره و توزیع Imageها. Docker Hub معروف‌ترین Registry عمومی است، اما می‌توانید Registry خصوصی هم داشته باشید (مثل GitLab Container Registry یا Azure Container Registry)."
+    data-en="A location for storing and distributing Images. Docker Hub is the most famous public Registry, but you can also have a private Registry (like GitLab Container Registry or Azure Container Registry).">
+    محلی برای ذخیره و توزیع Imageها. Docker Hub معروف‌ترین Registry عمومی است.
+</p>
+
+<div class="diagram-box">
+    <p data-fa="جریان کار ساده:" data-en="Simple Workflow:">جریان کار ساده:</p>
+    <pre>
+Docker Client  --(docker run nginx)-->  Docker Daemon
+                                             |
+                                             v
+                                  آیا Image نگین موجود است؟
+                                    /                \
+                                  بله                 خیر
+                                   |                   |
+                                   v                   v
+                        اجرای Container         Pull از Registry
+                                                        |
+                                                        v
+                                                 اجرای Container
+    </pre>
+</div>
+
+<!-- ===================== CHAPTER: intro-desktop-hub ===================== -->
+<h1 data-fa="فصل ۴: Docker Desktop، Docker Hub و Workflow"
+    data-en="Chapter 4: Docker Desktop, Docker Hub, and Workflow">فصل ۴: Docker Desktop، Docker Hub و Workflow</h1>
+
+<h3 data-fa="Docker Desktop" data-en="Docker Desktop">Docker Desktop</h3>
+<p data-fa="Docker Desktop یک اپلیکیشن گرافیکی برای Windows و macOS است که شامل Docker Engine، Docker CLI، Docker Compose و یک رابط کاربری برای مدیریت Containerها، Imageها و Volumeها می‌باشد. برای توسعه‌دهندگان .NET، این ساده‌ترین راه برای شروع کار با داکر روی سیستم لوکال است."
+    data-en="Docker Desktop is a graphical application for Windows and macOS that includes Docker Engine, Docker CLI, Docker Compose, and a UI for managing Containers, Images, and Volumes. For .NET developers, this is the simplest way to get started with Docker locally.">
+    Docker Desktop یک اپلیکیشن گرافیکی برای Windows و macOS است که شامل Docker Engine، CLI، Compose و رابط کاربری
+    می‌باشد.
+</p>
+
+<h3 data-fa="Docker Hub" data-en="Docker Hub">Docker Hub</h3>
+<p data-fa="Docker Hub بزرگ‌ترین Registry عمومی برای Imageهای داکر است. Imageهای رسمی مایکروسافت مثل mcr.microsoft.com/dotnet/sdk یا mcr.microsoft.com/mssql/server از همین طریق در دسترس هستند (البته روی Microsoft Container Registry میزبانی می‌شوند اما به همین شکل Pull می‌شوند)."
+    data-en="Docker Hub is the largest public Registry for Docker Images. Official Microsoft Images like mcr.microsoft.com/dotnet/sdk or mcr.microsoft.com/mssql/server are available this way (hosted on Microsoft Container Registry but pulled the same way).">
+    Docker Hub بزرگ‌ترین Registry عمومی برای Imageهای داکر است.
+</p>
+
+<h3 data-fa="Workflow معمول کار با داکر" data-en="Typical Docker Workflow">Workflow معمول کار با داکر</h3>
+<ol>
+    <li data-fa="نوشتن Dockerfile برای برنامه" data-en="Write a Dockerfile for your application">نوشتن Dockerfile
+        برای برنامه</li>
+    <li data-fa="ساخت Image با دستور docker build" data-en="Build an Image using docker build">ساخت Image با دستور
+        docker build</li>
+    <li data-fa="اجرای Container از روی Image با docker run" data-en="Run a Container from the Image with docker run">
+        اجرای Container از روی Image با docker run</li>
+    <li data-fa="تست و اشکال‌زدایی Container به‌صورت لوکال" data-en="Test and debug the container locally">تست و
+        اشکال‌زدایی Container به‌صورت لوکال</li>
+    <li data-fa="Push کردن Image به یک Registry (مثل GitLab Registry)"
+        data-en="Push the Image to a Registry (e.g., GitLab Registry)">Push کردن Image به یک Registry</li>
+    <li data-fa="Pull و اجرای Image روی سرور Production" data-en="Pull and run the Image on the Production server">
+        Pull و اجرای Image روی سرور Production</li>
+</ol>
+
+<div class="info-box">
+    <strong data-fa="مرتبط با پروژه" data-en="Project Note">مرتبط با پروژه</strong>
+    <p data-fa="در این کتاب، همین Workflow را برای هر یک از سرویس‌های پروژه E-Commerce Microservices (شامل Product، Order، Identity، Payment، Notification و API Gateway) طی خواهیم کرد؛ از نوشتن Dockerfile تا Push کردن Image به GitLab Container Registry در بخش CI/CD."
+        data-en="In this book, we will follow this exact workflow for each service of the E-Commerce Microservices project (Product, Order, Identity, Payment, Notification, and API Gateway); from writing the Dockerfile to pushing the Image to GitLab Container Registry in the CI/CD section.">
+        در این کتاب، همین Workflow را برای هر یک از سرویس‌های پروژه E-Commerce Microservices طی خواهیم کرد.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: lab-1 ===================== -->
+<h1 data-fa="Lab ۱: نصب داکر و اجرای اولین Container"
+    data-en="Lab 1: Installing Docker and Running Your First Container">Lab ۱: نصب داکر و اجرای اولین Container</h1>
+
+<section class="lab-section">
+    <h3 data-fa="گام ۱: نصب Docker Desktop" data-en="Step 1: Install Docker Desktop">گام ۱: نصب Docker Desktop</h3>
+    <p data-fa="از سایت رسمی داکر (docker.com) نسخه‌ی مناسب سیستم‌عامل خود را دانلود و نصب کنید. پس از نصب، سیستم را ری‌استارت کنید و مطمئن شوید Docker Desktop در حال اجراست."
+        data-en="Download and install the appropriate version for your operating system from the official Docker website (docker.com). After installation, restart your system and make sure Docker Desktop is running.">
+        از سایت رسمی داکر نسخه‌ی مناسب سیستم‌عامل خود را دانلود و نصب کنید.
+    </p>
+
+    <h3 data-fa="گام ۲: بررسی نصب" data-en="Step 2: Verify Installation">گام ۲: بررسی نصب</h3>
+    <p data-fa="در ترمینال یا PowerShell دستور زیر را اجرا کنید:"
+        data-en="Run the following command in your terminal or PowerShell:">
+        در ترمینال یا PowerShell دستور زیر را اجرا کنید:
+    </p>
+    <pre><code>docker --version
+docker info</code></pre>
+
+    <h3 data-fa="گام ۳: اجرای Hello World" data-en="Step 3: Run Hello World">گام ۳: اجرای Hello World</h3>
+    <pre><code>docker run hello-world</code></pre>
+    <p data-fa="اگر پیام موفقیت‌آمیز مشاهده کردید، یعنی داکر شما به درستی نصب شده و می‌تواند Image دانلود کرده و یک Container از آن اجرا کند."
+        data-en="If you see a success message, it means Docker is correctly installed and can download an Image and run a Container from it.">
+        اگر پیام موفقیت‌آمیز مشاهده کردید، یعنی داکر شما به درستی نصب شده است.
+    </p>
+
+    <h3 data-fa="گام ۴: اجرای یک Web Server ساده (Nginx)" data-en="Step 4: Run a Simple Web Server (Nginx)">گام ۴:
+        اجرای یک Web Server ساده (Nginx)</h3>
+    <pre><code>docker run -d -p 8080:80 --name my-nginx nginx</code></pre>
+    <ul>
+        <li data-fa="-d : اجرا در پس‌زمینه (Detached Mode)" data-en="-d: Run in background (Detached Mode)">-d :
+            اجرا در پس‌زمینه (Detached Mode)</li>
+        <li data-fa="-p 8080:80 : نگاشت پورت ۸۰ داخل Container به پورت ۸۰۸۰ سیستم شما"
+            data-en="-p 8080:80: Maps port 80 inside the container to port 8080 on your machine">-p 8080:80 : نگاشت
+            پورت ۸۰ داخل Container به پورت ۸۰۸۰ سیستم شما</li>
+        <li data-fa="--name my-nginx : نام‌گذاری Container برای دسترسی آسان‌تر"
+            data-en="--name my-nginx: Naming the container for easier access">--name my-nginx : نام‌گذاری Container
+            برای دسترسی آسان‌تر</li>
+    </ul>
+    <p data-fa="حالا آدرس http://localhost:8080 را در مرورگر باز کنید تا صفحه‌ی خوش‌آمدگویی Nginx را ببینید."
+        data-en="Now open http://localhost:8080 in your browser to see the Nginx welcome page.">
+        حالا آدرس http://localhost:8080 را در مرورگر باز کنید تا صفحه‌ی خوش‌آمدگویی Nginx را ببینید.
+    </p>
+
+    <h3 data-fa="گام ۵: مشاهده Containerهای در حال اجرا" data-en="Step 5: View Running Containers">گام ۵: مشاهده
+        Containerهای در حال اجرا</h3>
+    <pre><code>docker ps</code></pre>
+
+    <h3 data-fa="گام ۶: توقف و حذف Container" data-en="Step 6: Stop and Remove the Container">گام ۶: توقف و حذف
+        Container</h3>
+    <pre><code>docker stop my-nginx
+docker rm my-nginx</code></pre>
+
+    <div class="lab-result">
+        <strong data-fa="✅ نتیجه Lab" data-en="✅ Lab Outcome">✅ نتیجه Lab</strong>
+        <p data-fa="در این Lab یاد گرفتید چطور داکر را نصب کنید، اولین Container را اجرا کنید، یک Web Server واقعی (Nginx) را راه‌اندازی کنید و Containerها را مدیریت کنید. این پایه‌ای‌ترین مهارت‌هایی است که در ادامه‌ی کتاب، هنگام Dockerize کردن سرویس‌های پروژه E-Commerce به کار خواهد آمد."
+            data-en="In this lab, you learned how to install Docker, run your first container, launch a real web server (Nginx), and manage containers. These are the foundational skills you'll use later in the book when Dockerizing the services of the E-Commerce project.">
+            در این Lab یاد گرفتید چطور داکر را نصب کنید، اولین Container را اجرا کنید و یک Web Server واقعی
+            راه‌اندازی کنید.
+        </p>
+    </div>
+</section>

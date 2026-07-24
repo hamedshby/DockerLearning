@@ -1,0 +1,544 @@
+<!-- ===================== CHAPTER: dockerfile-copy ===================== -->
+
+<h1 data-fa="فصل ۳: دستور COPY" data-en="Chapter 3: COPY Instruction">
+    فصل ۳: دستور COPY
+</h1>
+
+<p data-fa="دستور COPY فایل‌ها و پوشه‌ها را از سیستم میزبان (Build Context) به داخل Docker Image کپی می‌کند. این دستور یکی از پرکاربردترین دستورات Dockerfile است و تقریباً در تمام پروژه‌ها استفاده می‌شود."
+    data-en="The COPY instruction copies files and directories from the build context into the Docker Image. It is one of the most commonly used Dockerfile instructions.">
+    دستور <strong>COPY</strong> فایل‌ها و پوشه‌ها را از سیستم میزبان به داخل Docker Image منتقل می‌کند.
+</p>
+
+<div class="info-box">
+
+    <strong>نکته</strong>
+
+    <p>
+        COPY فقط فایل‌هایی را می‌تواند کپی کند که داخل Build Context قرار داشته باشند.
+    </p>
+
+</div>
+
+<!-- ===================== Syntax ===================== -->
+
+<h2>Syntax</h2>
+
+<pre><code>
+COPY &lt;source&gt; &lt;destination&gt;
+</code></pre>
+
+نمونه
+
+<pre><code>
+COPY . .
+
+COPY appsettings.json .
+
+COPY publish/ /app/
+
+COPY *.csproj .
+</code></pre>
+
+<!-- ===================== Example ===================== -->
+
+<h2>مثال</h2>
+
+<pre><code>
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /app
+
+COPY . .
+</code></pre>
+
+در این مثال
+
+تمام فایل‌های پروژه داخل مسیر
+
+<strong>/app</strong>
+
+کپی می‌شوند.
+
+<!-- ===================== Copy Directory ===================== -->
+
+<h2>
+    کپی پوشه
+</h2>
+
+<pre><code>
+COPY publish/ /app/
+</code></pre>
+
+نتیجه
+
+<pre>
+Host
+
+publish/
+
+│
+
+├── Shop.dll
+
+├── appsettings.json
+
+└── web.config
+
+        │
+
+        ▼
+
+Container
+
+/app
+
+│
+
+├── Shop.dll
+
+├── appsettings.json
+
+└── web.config
+</pre>
+
+<!-- ===================== Copy File ===================== -->
+
+<h2>
+    کپی فایل
+</h2>
+
+<pre><code>
+COPY appsettings.json .
+</code></pre>
+
+یا
+
+<pre><code>
+COPY Program.cs /src/
+</code></pre>
+
+<!-- ===================== Copy Multiple Files ===================== -->
+
+<h2>
+    کپی چند فایل
+</h2>
+
+<pre><code>
+COPY *.csproj .
+</code></pre>
+
+یا
+
+<pre><code>
+COPY ["Shop.API.csproj", "./"]
+</code></pre>
+
+این روش معمولاً در پروژه‌های ASP.NET Core استفاده می‌شود.
+
+<!-- ===================== Build Cache ===================== -->
+
+<h2>
+    COPY و Build Cache
+</h2>
+
+<p>
+    دستور COPY روی Docker Cache تأثیر زیادی دارد.
+</p>
+
+نمونه نامناسب
+
+<pre><code>
+COPY . .
+
+RUN dotnet restore
+</code></pre>
+
+با هر تغییر کوچک، Cache از بین می‌رود.
+
+نمونه مناسب
+
+<pre><code>
+COPY *.csproj .
+
+RUN dotnet restore
+
+COPY . .
+</code></pre>
+
+در این حالت اگر فقط فایل‌های C# تغییر کنند، مرحله Restore دوباره اجرا نمی‌شود.
+
+<div class="info-box">
+
+    <strong>Best Practice</strong>
+
+    <p>
+        ابتدا فایل‌های پروژه (.csproj) را Copy کنید و سپس دستور Restore را اجرا کنید.
+    </p>
+
+</div>
+
+<!-- ===================== COPY Best Practices ===================== -->
+
+<h2>
+    Best Practices
+</h2>
+
+<ul>
+
+    <li>از COPY به جای ADD استفاده کنید.</li>
+
+    <li>از فایل <strong>.dockerignore</strong> استفاده کنید.</li>
+
+    <li>ابتدا فایل‌های پروژه را Copy کنید.</li>
+
+    <li>فقط فایل‌های موردنیاز را منتقل کنید.</li>
+
+</ul>
+
+<!-- ===================== Common Mistakes ===================== -->
+
+<div class="info-box">
+
+    <strong>
+        اشتباهات رایج
+    </strong>
+
+    <ul>
+
+        <li>COPY کردن کل پروژه بدون .dockerignore</li>
+
+        <li>قرار دادن COPY قبل از Restore</li>
+
+        <li>کپی فایل‌های غیرضروری</li>
+
+    </ul>
+
+</div>
+
+<!-- ===================== CHAPTER: dockerfile-add ===================== -->
+
+<h1 data-fa="فصل ۴: دستور ADD" data-en="Chapter 4: ADD Instruction">
+    فصل ۴: دستور ADD
+</h1>
+
+<p>
+    دستور ADD عملکردی مشابه COPY دارد اما قابلیت‌های بیشتری نیز ارائه می‌دهد.
+</p>
+
+<p>
+    به طور کلی Docker پیشنهاد می‌کند در اکثر مواقع از
+
+    <strong>COPY</strong>
+
+    استفاده کنید و تنها در شرایط خاص از
+
+    <strong>ADD</strong>
+
+    بهره ببرید.
+</p>
+
+<!-- ===================== ADD Syntax ===================== -->
+
+<h2>
+    Syntax
+</h2>
+
+<pre><code>
+ADD &lt;source&gt; &lt;destination&gt;
+</code></pre>
+
+نمونه
+
+<pre><code>
+ADD website.zip /app
+
+ADD https://example.com/file.txt /app
+</code></pre>
+
+<!-- ===================== ADD Features ===================== -->
+
+<h2>
+    ویژگی‌های ADD
+</h2>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>قابلیت</th>
+
+            <th>توضیح</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>کپی فایل</td>
+
+            <td>مانند COPY</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Extract فایل فشرده</td>
+
+            <td>بله</td>
+
+        </tr>
+
+        <tr>
+
+            <td>دانلود از URL</td>
+
+            <td>بله</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== Archive ===================== -->
+
+<h2>
+    استخراج فایل فشرده
+</h2>
+
+<pre><code>
+ADD website.tar.gz /app
+</code></pre>
+
+Docker فایل را به صورت خودکار Extract می‌کند.
+
+نتیجه
+
+<pre>
+website.tar.gz
+
+        │
+
+        ▼
+
+/app
+
+│
+
+├── index.html
+
+├── css
+
+└── js
+</pre>
+
+<!-- ===================== URL ===================== -->
+
+<h2>
+    دانلود فایل از اینترنت
+</h2>
+
+<pre><code>
+ADD https://example.com/config.json /app/
+</code></pre>
+
+Docker فایل را دانلود می‌کند.
+
+<div class="info-box">
+
+    <strong>هشدار</strong>
+
+    <p>
+        استفاده از URL داخل Dockerfile باعث کاهش قابلیت تکرار Build می‌شود و معمولاً پیشنهاد نمی‌شود.
+    </p>
+
+</div>
+
+<!-- ===================== COPY vs ADD ===================== -->
+
+<h2>
+    مقایسه COPY و ADD
+</h2>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>ویژگی</th>
+
+            <th>COPY</th>
+
+            <th>ADD</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>کپی فایل</td>
+
+            <td>✔</td>
+
+            <td>✔</td>
+
+        </tr>
+
+        <tr>
+
+            <td>کپی پوشه</td>
+
+            <td>✔</td>
+
+            <td>✔</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Extract فایل فشرده</td>
+
+            <td>✖</td>
+
+            <td>✔</td>
+
+        </tr>
+
+        <tr>
+
+            <td>دانلود URL</td>
+
+            <td>✖</td>
+
+            <td>✔</td>
+
+        </tr>
+
+        <tr>
+
+            <td>پیشنهاد Docker</td>
+
+            <td>✔</td>
+
+            <td>فقط در شرایط خاص</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== Recommendation ===================== -->
+
+<div class="info-box">
+
+    <strong>
+        توصیه Docker
+    </strong>
+
+    <p>
+        اگر فقط قصد کپی کردن فایل‌ها را دارید، همیشه از دستور
+
+        <strong>COPY</strong>
+
+        استفاده کنید.
+
+        از
+
+        <strong>ADD</strong>
+
+        تنها زمانی استفاده کنید که به قابلیت Extract فایل‌های فشرده یا دانلود فایل از URL نیاز داشته باشید.
+    </p>
+
+</div>
+
+<!-- ===================== Diagram ===================== -->
+
+<div class="diagram-box">
+
+    <pre>
+                 Dockerfile
+
+                     │
+
+          ┌──────────┴──────────┐
+
+          ▼                     ▼
+
+       COPY                  ADD
+
+          │                     │
+
+   Copy Files          Copy + Extract + URL
+</pre>
+
+</div>
+
+<!-- ===================== LAB ===================== -->
+
+<h1 data-fa="Lab ۲: COPY و ADD" data-en="Lab 2: COPY and ADD">
+    Lab ۲
+</h1>
+
+<section class="lab-section">
+
+    <h3>گام ۱</h3>
+
+    ایجاد Dockerfile
+
+    <pre><code>
+FROM nginx
+
+WORKDIR /usr/share/nginx/html
+
+COPY index.html .
+</code></pre>
+
+    <h3>گام ۲</h3>
+
+    Build
+
+    <pre><code>
+docker build -t website:v1 .
+</code></pre>
+
+    <h3>گام ۳</h3>
+
+    Run
+
+    <pre><code>
+docker run -d -p 8080:80 website:v1
+</code></pre>
+
+    <h3>گام ۴</h3>
+
+    مرورگر
+
+    <pre><code>
+http://localhost:8080
+</code></pre>
+
+    <div class="lab-result">
+
+        <strong>
+            ✅ نتیجه Lab
+        </strong>
+
+        <p>
+            در این آزمایش یاد گرفتید چگونه فایل‌ها و پوشه‌ها را با دستور COPY داخل Docker Image کپی کنید، تفاوت COPY و
+            ADD را درک کنید و بهترین روش استفاده از هر کدام را بیاموزید. در اکثر پروژه‌های واقعی، دستور COPY انتخاب اصلی
+            توسعه‌دهندگان است.
+        </p>
+
+    </div>
+
+</section>

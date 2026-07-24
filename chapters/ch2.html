@@ -1,0 +1,1269 @@
+<!-- ===================== CHAPTER: docker-image-introduction ===================== -->
+
+<h1 data-fa="فصل ۱: Docker Image چیست؟" data-en="Chapter 1: What is a Docker Image?">
+    Docker Image چیست؟
+</h1>
+
+<p data-fa="Docker Image یک قالب (Template) فقط‌خواندنی (Read-Only) است که شامل تمام فایل‌ها، کتابخانه‌ها، Runtime، تنظیمات و دستور شروع برنامه می‌باشد. این Image مانند یک Blueprint عمل می‌کند و هر Container از روی آن ساخته می‌شود."
+    data-en="A Docker Image is a read-only template that contains everything required to run an application, including the runtime, libraries, dependencies, configuration files, and startup command. Containers are created from Images.">
+    Docker Image یک قالب فقط‌خواندنی (Read-Only) است که تمام اجزای موردنیاز برای اجرای یک برنامه را در خود نگهداری
+    می‌کند.
+</p>
+
+<p data-fa="به بیان ساده، اگر Container را یک برنامه در حال اجرا بدانیم، Docker Image همان فایل نصب یا الگوی ساخت آن برنامه است."
+    data-en="Simply put, if a Container is a running application, a Docker Image is the installation package or blueprint used to create it.">
+    اگر Container را یک برنامه در حال اجرا بدانیم، Docker Image همان الگوی ساخت آن برنامه است.
+</p>
+
+<div class="info-box">
+    <strong data-fa="نکته" data-en="Note">نکته</strong>
+    <p data-fa="Docker Image پس از ساخته شدن تغییر نمی‌کند. هرگونه تغییر در فایل‌های داخل Container در یک لایه‌ی جدید (Writable Layer) ذخیره می‌شود و خود Image اصلی بدون تغییر باقی می‌ماند."
+        data-en="A Docker Image never changes after it is built. Any modifications inside a running Container are stored in a writable layer while the original Image remains unchanged.">
+        Docker Image همیشه Read-Only است و تغییرات در زمان اجرای Container داخل یک لایه‌ی قابل نوشتن ذخیره می‌شوند.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: image-vs-container ===================== -->
+
+<h1 data-fa="فصل ۲: تفاوت Docker Image و Docker Container" data-en="Chapter 2: Docker Image vs Docker Container">
+    تفاوت Docker Image و Docker Container
+</h1>
+
+<p data-fa="یکی از رایج‌ترین اشتباهات افراد تازه‌کار، یکسان دانستن Image و Container است. در حالی که این دو مفهوم کاملاً متفاوت هستند."
+    data-en="One of the most common mistakes beginners make is treating Docker Images and Containers as the same thing. They are actually two different concepts.">
+    یکی از رایج‌ترین اشتباهات افراد تازه‌کار، یکسان دانستن Image و Container است.
+</p>
+
+<h3 data-fa="Docker Image" data-en="Docker Image">
+    Docker Image
+</h3>
+
+<p data-fa="Image یک قالب ثابت، فقط‌خواندنی و قابل حمل است که برای ساخت Container استفاده می‌شود."
+    data-en="An Image is a portable, immutable, read-only template used to create Containers.">
+    Image یک قالب ثابت و فقط‌خواندنی برای ساخت Container است.
+</p>
+
+<h3 data-fa="Docker Container" data-en="Docker Container">
+    Docker Container
+</h3>
+
+<p data-fa="Container نمونه‌ای (Instance) از یک Docker Image است که در حال اجرا می‌باشد. هر Container دارای یک Writable Layer اختصاصی است."
+    data-en="A Container is a running instance of a Docker Image. Every Container has its own writable layer.">
+    Container نمونه‌ای در حال اجرا از یک Docker Image است.
+</p>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="ویژگی" data-en="Feature">ویژگی</th>
+            <th data-fa="Docker Image" data-en="Docker Image">Docker Image</th>
+            <th data-fa="Docker Container" data-en="Docker Container">Docker Container</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td data-fa="نوع" data-en="Type">نوع</td>
+            <td data-fa="Template" data-en="Template">Template</td>
+            <td data-fa="Running Instance" data-en="Running Instance">Running Instance</td>
+        </tr>
+
+        <tr>
+            <td data-fa="قابلیت نوشتن" data-en="Writable">قابلیت نوشتن</td>
+            <td data-fa="خیر (Read-Only)" data-en="No (Read-Only)">خیر</td>
+            <td data-fa="بله" data-en="Yes">بله</td>
+        </tr>
+
+        <tr>
+            <td data-fa="قابل اجرا" data-en="Executable">قابل اجرا</td>
+            <td data-fa="خیر" data-en="No">خیر</td>
+            <td data-fa="بله" data-en="Yes">بله</td>
+        </tr>
+
+        <tr>
+            <td data-fa="قابل حذف" data-en="Can be deleted">قابل حذف</td>
+            <td data-fa="در صورت عدم استفاده" data-en="If unused">در صورت عدم استفاده</td>
+            <td data-fa="هر زمان" data-en="Any time">هر زمان</td>
+        </tr>
+
+        <tr>
+            <td data-fa="تعداد" data-en="Quantity">تعداد</td>
+            <td data-fa="یک Image می‌تواند چندین Container داشته باشد" data-en="One Image can create many Containers">
+                یک Image → چندین Container
+            </td>
+            <td data-fa="هر Container از یک Image ساخته می‌شود" data-en="Each Container comes from one Image">
+                از یک Image ساخته می‌شود
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="diagram-box">
+    <pre>
+          Docker Image
+      (Read-Only Template)
+               │
+     docker run nginx
+               │
+      ┌────────┼────────┐
+      │        │        │
+      ▼        ▼        ▼
+ Container1 Container2 Container3
+</pre>
+</div>
+
+<div class="info-box">
+    <strong data-fa="مثال در دات‌نت" data-en="C# Example">
+        مثال در دات‌نت
+    </strong>
+
+    <p data-fa="اگر با زبان C# آشنا باشید، می‌توان Docker Image را مانند یک Class و Docker Container را مانند یک Object در نظر گرفت. از یک کلاس می‌توان چندین شیء ساخت و از یک Image نیز می‌توان چندین Container ایجاد کرد."
+        data-en="If you are familiar with C#, think of a Docker Image as a Class and a Docker Container as an Object. One class can create many objects, just as one Image can create many Containers.">
+        Docker Image شبیه Class و Docker Container شبیه Object در زبان C# است.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: image-features ===================== -->
+
+<h1 data-fa="فصل ۳: ویژگی‌های Docker Image" data-en="Chapter 3: Docker Image Features">
+    ویژگی‌های Docker Image
+</h1>
+
+<p data-fa="Docker Image چند ویژگی مهم دارد که باعث شده به یکی از مهم‌ترین مفاهیم Docker تبدیل شود."
+    data-en="Docker Images provide several powerful features that make Docker fast, portable, and reliable.">
+    Docker Image ویژگی‌های مهمی دارد که باعث محبوبیت Docker شده‌اند.
+</p>
+
+<h3 data-fa="۱. Read-Only" data-en="1. Read-Only">
+    ۱. Read-Only
+</h3>
+
+<p data-fa="Image پس از ساخته شدن تغییر نمی‌کند و همیشه ثابت باقی می‌ماند."
+    data-en="Once built, an Image never changes.">
+    Image همیشه ثابت و فقط‌خواندنی است.
+</p>
+
+<h3 data-fa="۲. Portable" data-en="2. Portable">
+    ۲. Portable
+</h3>
+
+<p data-fa="یک Image روی هر سیستمی که Docker Engine داشته باشد بدون نیاز به نصب مجدد نرم‌افزار اجرا می‌شود."
+    data-en="An Image can run on any machine that has Docker Engine installed.">
+    Image روی هر سیستم دارای Docker Engine قابل اجرا است.
+</p>
+
+<h3 data-fa="۳. Versioned" data-en="3. Versioned">
+    ۳. Versioned
+</h3>
+
+<p data-fa="هر Image می‌تواند دارای نسخه (Tag) باشد؛ مانند nginx:1.27 یا redis:7."
+    data-en="Every Image can have one or more version tags such as nginx:1.27 or redis:7.">
+    هر Image دارای Version یا Tag مشخصی است.
+</p>
+
+<h3 data-fa="۴. Layered" data-en="4. Layered">
+    ۴. Layered
+</h3>
+
+<p data-fa="هر Docker Image از چندین Layer تشکیل شده است که باعث افزایش سرعت Build و کاهش حجم دانلود می‌شود."
+    data-en="Docker Images are built from multiple layers, improving build performance and reducing download size.">
+    Docker Image از چندین Layer تشکیل شده است.
+</p>
+
+<h3 data-fa="۵. Reusable" data-en="5. Reusable">
+    ۵. Reusable
+</h3>
+
+<p data-fa="از یک Image می‌توان بارها و بارها Containerهای مختلف ایجاد کرد."
+    data-en="The same Image can be reused to create multiple Containers.">
+    یک Image بارها قابل استفاده است.
+</p>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="ویژگی" data-en="Feature">ویژگی</th>
+            <th data-fa="توضیح" data-en="Description">توضیح</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Read-Only</td>
+            <td data-fa="غیرقابل تغییر پس از Build" data-en="Immutable after build">
+                غیرقابل تغییر
+            </td>
+        </tr>
+
+        <tr>
+            <td>Portable</td>
+            <td data-fa="قابل اجرا روی هر Docker Host" data-en="Runs on any Docker Host">
+                قابل حمل
+            </td>
+        </tr>
+
+        <tr>
+            <td>Versioned</td>
+            <td data-fa="دارای Tag و Version" data-en="Supports version tags">
+                دارای نسخه
+            </td>
+        </tr>
+
+        <tr>
+            <td>Layered</td>
+            <td data-fa="تشکیل شده از چند Layer" data-en="Built from multiple layers">
+                چندلایه
+            </td>
+        </tr>
+
+        <tr>
+            <td>Reusable</td>
+            <td data-fa="ساخت چندین Container از یک Image" data-en="Can create multiple Containers">
+                قابل استفاده مجدد
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="info-box">
+    <strong data-fa="جمع‌بندی" data-en="Summary">
+        جمع‌بندی
+    </strong>
+
+    <p data-fa="Docker Image قلب Docker محسوب می‌شود. تمام Containerها از روی Image ساخته می‌شوند و به همین دلیل شناخت کامل Image، پیش‌نیاز یادگیری Dockerfile، Multi-Stage Build، Registry و Docker Compose است."
+        data-en="Docker Images are the heart of Docker. Every Container is created from an Image, making Image concepts the foundation for learning Dockerfile, Multi-stage Builds, Registries, and Docker Compose.">
+        Docker Image مهم‌ترین مفهوم Docker است و تقریباً تمام بخش‌های بعدی Docker بر پایه آن ساخته شده‌اند.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: docker-image-layers ===================== -->
+
+<h1 data-fa="فصل ۴: ساختار داخلی Docker Image (Layers)" data-en="Chapter 4: Docker Image Layers">
+    ساختار داخلی Docker Image (Layers)
+</h1>
+
+<p data-fa="یکی از مهم‌ترین ویژگی‌های Docker Image، ساختار چندلایه (Layered Architecture) آن است. هر Image از چندین Layer فقط‌خواندنی تشکیل شده که روی یکدیگر قرار می‌گیرند."
+    data-en="One of the most important features of Docker Images is their layered architecture. Every Image consists of multiple read-only layers stacked on top of each other.">
+    یکی از مهم‌ترین ویژگی‌های Docker Image، ساختار چندلایه (Layered Architecture) آن است.
+</p>
+
+<p data-fa="هر دستور موجود در Dockerfile معمولاً یک Layer جدید ایجاد می‌کند. Docker فقط Layerهایی را که تغییر کرده‌اند دوباره می‌سازد و سایر Layerها را از Cache استفاده می‌کند."
+    data-en="Each instruction in a Dockerfile usually creates a new layer. Docker rebuilds only the changed layers while reusing the cached ones.">
+    هر دستور در Dockerfile معمولاً یک Layer جدید ایجاد می‌کند.
+</p>
+
+<div class="diagram-box">
+    <pre>
+Docker Image
+
+┌─────────────────────────────┐
+│ Layer 5 : Application Files │
+├─────────────────────────────┤
+│ Layer 4 : Published Output  │
+├─────────────────────────────┤
+│ Layer 3 : NuGet Packages    │
+├─────────────────────────────┤
+│ Layer 2 : .NET Runtime      │
+├─────────────────────────────┤
+│ Layer 1 : Ubuntu / Alpine   │
+└─────────────────────────────┘
+</pre>
+</div>
+
+<div class="info-box">
+    <strong data-fa="نکته" data-en="Note">نکته</strong>
+
+    <p data-fa="تمام Layerهای Image فقط‌خواندنی هستند و هنگام اجرای Container یک Writable Layer روی آن‌ها قرار می‌گیرد."
+        data-en="All Image layers are read-only. Docker adds a writable layer when creating a container.">
+        Layerهای Image همیشه Read-Only هستند.
+    </p>
+</div>
+
+<!-- ===================== CHAPTER: docker-image-cache ===================== -->
+
+<h1 data-fa="فصل ۵: Docker Build Cache" data-en="Chapter 5: Docker Build Cache">
+    Docker Build Cache
+</h1>
+
+<p data-fa="Docker برای افزایش سرعت Build از Cache استفاده می‌کند. اگر یک Layer تغییر نکند، Docker آن Layer را دوباره نمی‌سازد و از نسخه‌ی قبلی استفاده می‌کند."
+    data-en="Docker uses build cache to improve build performance. If a layer has not changed, Docker reuses the cached version instead of rebuilding it.">
+    Docker از مکانیزمی به نام Build Cache استفاده می‌کند.
+</p>
+
+<h3 data-fa="مثال" data-en="Example">
+    مثال
+</h3>
+
+<pre><code>FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /app
+
+COPY *.csproj .
+
+RUN dotnet restore
+
+COPY . .
+
+RUN dotnet publish -c Release
+</code></pre>
+
+<p data-fa="اگر فقط فایل Program.cs تغییر کند، Docker مراحل FROM، WORKDIR و Restore را از Cache استفاده می‌کند و تنها مراحل آخر را دوباره اجرا می‌کند."
+    data-en="If only Program.cs changes, Docker reuses the FROM, WORKDIR and Restore layers from cache and rebuilds only the remaining layers.">
+    در صورت تغییر فایل‌های پروژه، Docker فقط Layerهای انتهایی را بازسازی می‌کند.
+</p>
+
+<div class="diagram-box">
+    <pre>
+Layer 1 ✔ Cached
+
+Layer 2 ✔ Cached
+
+Layer 3 ✔ Cached
+
+Layer 4 ❌ Rebuild
+
+Layer 5 ❌ Rebuild
+</pre>
+</div>
+
+<!-- ===================== CHAPTER: docker-image-id ===================== -->
+
+<h1 data-fa="فصل ۶: Image ID" data-en="Chapter 6: Image ID">
+    فصل ۶: Image ID
+</h1>
+
+<p data-fa="هر Docker Image دارای یک شناسه یکتا (Image ID) است که توسط Docker تولید می‌شود."
+    data-en="Every Docker Image has a unique Image ID generated by Docker.">
+    هر Image دارای یک شناسه یکتا است.
+</p>
+
+<h3 data-fa="مشاهده Imageها" data-en="List Images">
+    مشاهده Imageها
+</h3>
+
+<pre><code>docker images</code></pre>
+
+نمونه خروجی
+
+<pre><code>REPOSITORY          TAG      IMAGE ID       SIZE
+
+nginx               latest   a8758716dbca   192MB
+
+redis               7        e9b0b9c23456   145MB
+</code></pre>
+
+<p data-fa="Image ID نسخه واقعی Image را مشخص می‌کند و حتی اگر Tag تغییر کند، Image ID ثابت باقی می‌ماند."
+    data-en="The Image ID uniquely identifies an image, regardless of its tag.">
+    Image ID شناسه واقعی Image است.
+</p>
+
+<!-- ===================== CHAPTER: repository-tag ===================== -->
+
+<h1 data-fa="فصل ۷: Repository و Tag" data-en="Chapter 7: Repository and Tag">
+    فصل ۷: Repository و Tag
+</h1>
+
+<p data-fa="هر Docker Image معمولاً از دو بخش Repository و Tag تشکیل شده است."
+    data-en="A Docker Image name usually consists of Repository and Tag.">
+    هر Image دارای Repository و Tag است.
+</p>
+
+<div class="diagram-box">
+    <pre>
+repository:tag
+
+nginx:latest
+
+redis:7
+
+postgres:17
+
+shop-api:v1
+</pre>
+</div>
+
+<table class="comparison-table">
+
+    <thead>
+        <tr>
+            <th>قسمت</th>
+            <th>توضیح</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Repository</td>
+            <td>نام Image</td>
+        </tr>
+
+        <tr>
+            <td>Tag</td>
+            <td>نسخه Image</td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+<div class="info-box">
+
+    <strong>مثال</strong>
+
+    <p>
+        در Image زیر:
+    </p>
+
+    <pre><code>mcr.microsoft.com/dotnet/sdk:9.0</code></pre>
+
+    <ul>
+
+        <li><strong>Repository</strong> → mcr.microsoft.com/dotnet/sdk</li>
+
+        <li><strong>Tag</strong> → 9.0</li>
+
+    </ul>
+
+</div>
+
+<!-- ===================== CHAPTER: latest-tag ===================== -->
+
+<h1 data-fa="فصل ۸: Tag با نام latest" data-en="Chapter 8: latest Tag">
+    فصل ۸: Tag با نام latest
+</h1>
+
+<p data-fa="بسیاری تصور می‌کنند latest یعنی جدیدترین نسخه Image؛ اما latest فقط یک Tag معمولی است."
+    data-en="Many developers think latest always means the newest version. In reality, latest is just another tag.">
+    latest فقط یک Tag است.
+</p>
+
+<pre><code>nginx:latest
+
+nginx:1.27
+
+nginx:stable
+</code></pre>
+
+<div class="info-box">
+
+    <strong data-fa="Best Practice" data-en="Best Practice">
+        Best Practice
+    </strong>
+
+    <p data-fa="در محیط Production بهتر است همیشه از Version مشخص استفاده کنید و از latest استفاده نکنید."
+        data-en="Always use explicit versions in production instead of latest.">
+        در Production از Version مشخص استفاده کنید.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: docker-pull-build ===================== -->
+
+<h1 data-fa="فصل ۹: دانلود و ساخت Image" data-en="Chapter 9: Pulling and Building Images">
+    فصل ۹: دانلود و ساخت Image
+</h1>
+
+<h3 data-fa="دانلود Image" data-en="Pull Image">
+    دانلود Image
+</h3>
+
+<pre><code>docker pull nginx</code></pre>
+
+دانلود نسخه مشخص
+
+<pre><code>docker pull redis:7</code></pre>
+
+دانلود Image دات‌نت
+
+<pre><code>docker pull mcr.microsoft.com/dotnet/sdk:9.0</code></pre>
+
+<hr>
+
+<h3 data-fa="ساخت Image" data-en="Build Image">
+    ساخت Image
+</h3>
+
+<pre><code>docker build -t shop-api:v1 .</code></pre>
+
+<p data-fa="-t برای تعیین نام و Tag استفاده می‌شود." data-en="-t specifies the image name and tag.">
+    گزینه <strong>-t</strong> نام Image را مشخص می‌کند.
+</p>
+
+نمونه خروجی
+
+<pre><code>Successfully built
+
+Successfully tagged shop-api:v1
+</code></pre>
+
+<div class="info-box">
+
+    <strong data-fa="جمع‌بندی" data-en="Summary">
+        جمع‌بندی
+    </strong>
+
+    <p data-fa="در این فصل با ساختار داخلی Image، مفهوم Layer، مکانیزم Build Cache، Image ID، Repository، Tag، latest و دستورات Pull و Build آشنا شدید. این مفاهیم پایه‌ای‌ترین دانش موردنیاز برای یادگیری Dockerfile و Multi-Stage Build هستند."
+        data-en="In this chapter, you learned about image layers, build cache, image IDs, repositories, tags, latest, and the pull/build commands. These concepts are essential before learning Dockerfile and Multi-stage builds.">
+        در این فصل مهم‌ترین مفاهیم مربوط به Docker Image را یاد گرفتید.
+    </p>
+
+</div>
+<!-- ===================== CHAPTER: docker-image-tag ===================== -->
+
+<h1 data-fa="فصل ۱۰: مدیریت Tagهای Docker Image" data-en="Chapter 10: Managing Docker Image Tags">
+    فصل ۱۰: مدیریت Tagهای Docker Image
+</h1>
+
+<p data-fa="یک Docker Image می‌تواند چندین Tag مختلف داشته باشد. Tagها معمولاً برای نسخه‌بندی (Versioning)، محیط‌های مختلف (Development، Staging، Production) و انتشار نسخه‌های جدید استفاده می‌شوند."
+    data-en="A Docker Image can have multiple tags. Tags are commonly used for versioning, environments, and releases.">
+    یک Docker Image می‌تواند چندین Tag داشته باشد.
+</p>
+
+<h3 data-fa="ایجاد Tag جدید" data-en="Create a New Tag">
+    ایجاد Tag جدید
+</h3>
+
+<pre><code>docker tag shop-api:v1 shop-api:latest</code></pre>
+
+<p data-fa="این دستور Image جدیدی ایجاد نمی‌کند؛ فقط یک Tag جدید به همان Image اضافه می‌کند."
+    data-en="This command does not create a new image. It simply adds another tag pointing to the same image.">
+    این دستور فقط یک Tag جدید ایجاد می‌کند.
+</p>
+
+<h3 data-fa="مشاهده نتیجه" data-en="View Result">
+    مشاهده نتیجه
+</h3>
+
+<pre><code>docker images</code></pre>
+
+<pre><code>REPOSITORY     TAG
+
+shop-api       latest
+
+shop-api       v1
+</code></pre>
+
+<div class="info-box">
+    <strong>نکته</strong>
+
+    <p>
+        هر دو Tag به یک Image ID اشاره می‌کنند.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: docker-push ===================== -->
+
+<h1 data-fa="فصل ۱۱: Push کردن Image به Registry" data-en="Chapter 11: Push Image to Registry">
+    فصل ۱۱: Push کردن Image به Registry
+</h1>
+
+<p data-fa="پس از ساخت Image معمولاً آن را داخل یک Registry قرار می‌دهیم تا سایر توسعه‌دهندگان یا سرورهای Production بتوانند آن را دانلود کنند."
+    data-en="After building an image, it is usually pushed to a registry so that other developers or production servers can download it.">
+    پس از ساخت Image معمولاً آن را داخل Registry قرار می‌دهیم.
+</p>
+
+<div class="diagram-box">
+
+    <pre>
+docker build
+      │
+      ▼
+Docker Image
+      │
+docker push
+      ▼
+Docker Registry
+      │
+docker pull
+      ▼
+Production Server
+</pre>
+
+</div>
+
+<h3>Login</h3>
+
+<pre><code>docker login</code></pre>
+
+<h3>Push</h3>
+
+<pre><code>docker push username/shop-api:v1</code></pre>
+
+<p data-fa="قبل از Push باید Repository را با نام Registry خود Tag کنید."
+    data-en="Before pushing, the image must be tagged using the registry name.">
+    قبل از Push باید Image را Tag کنید.
+</p>
+
+<pre><code>docker tag shop-api:v1 username/shop-api:v1
+
+docker push username/shop-api:v1</code></pre>
+
+<!-- ===================== CHAPTER: docker-save-load ===================== -->
+
+<h1 data-fa="فصل ۱۲: ذخیره و بازیابی Docker Image" data-en="Chapter 12: Save and Load Images">
+    فصل ۱۲: ذخیره و بازیابی Docker Image
+</h1>
+
+<p data-fa="گاهی نیاز داریم Image را بدون Registry جابه‌جا کنیم. در این حالت از دستورات save و load استفاده می‌کنیم."
+    data-en="Sometimes images need to be transferred without a registry. Docker provides save and load commands for this purpose.">
+    برای انتقال Image بدون Registry از save و load استفاده می‌شود.
+</p>
+
+<h3>Save</h3>
+
+<pre><code>docker save -o shop-api.tar shop-api:v1</code></pre>
+
+<p>
+    خروجی
+
+</p>
+
+<pre><code>shop-api.tar</code></pre>
+
+<h3>Load</h3>
+
+<pre><code>docker load -i shop-api.tar</code></pre>
+
+<div class="info-box">
+
+    <strong>کاربرد</strong>
+
+    <p>
+        انتقال Image به سروری که به اینترنت دسترسی ندارد.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: docker-history ===================== -->
+
+<h1 data-fa="فصل ۱۳: مشاهده تاریخچه Image" data-en="Chapter 13: Docker Image History">
+    فصل ۱۳: مشاهده تاریخچه Image
+</h1>
+
+<p>
+    برای مشاهده Layerهای یک Image از دستور زیر استفاده می‌شود.
+</p>
+
+<pre><code>docker history nginx</code></pre>
+
+نمونه خروجی
+
+<pre><code>IMAGE          CREATED BY
+
+Layer 1        FROM ubuntu
+
+Layer 2        RUN apt-get
+
+Layer 3        COPY .
+
+Layer 4        CMD nginx
+</code></pre>
+
+<p>
+    این دستور برای تحلیل حجم Image بسیار کاربردی است.
+</p>
+
+<!-- ===================== CHAPTER: docker-inspect ===================== -->
+
+<h1 data-fa="فصل ۱۴: بررسی جزئیات Image" data-en="Chapter 14: Inspect Image">
+    فصل ۱۴: بررسی جزئیات Image
+</h1>
+
+<pre><code>docker inspect nginx</code></pre>
+
+<p>
+    این دستور اطلاعات کاملی درباره Image نمایش می‌دهد.
+</p>
+
+<ul>
+
+    <li>Image ID</li>
+
+    <li>Architecture</li>
+
+    <li>Operating System</li>
+
+    <li>Layers</li>
+
+    <li>Environment Variables</li>
+
+    <li>Working Directory</li>
+
+    <li>Entrypoint</li>
+
+    <li>Labels</li>
+
+</ul>
+
+<!-- ===================== CHAPTER: docker-remove-image ===================== -->
+
+<h1 data-fa="فصل ۱۵: حذف Docker Image" data-en="Chapter 15: Remove Docker Images">
+    فصل ۱۵: حذف Docker Image
+</h1>
+
+<h3>حذف یک Image</h3>
+
+<pre><code>docker rmi nginx</code></pre>
+
+یا
+
+<pre><code>docker image rm nginx</code></pre>
+
+<h3>حذف با استفاده از Image ID</h3>
+
+<pre><code>docker rmi a8758716dbca</code></pre>
+
+<h3>حذف اجباری</h3>
+
+<pre><code>docker rmi -f nginx</code></pre>
+
+<div class="info-box">
+
+    <strong>هشدار</strong>
+
+    <p>
+        اگر Container در حال استفاده از Image باشد، Docker اجازه حذف Image را نمی‌دهد مگر اینکه از گزینه
+        <strong>-f</strong> استفاده کنید.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: docker-image-prune ===================== -->
+
+<h1 data-fa="فصل ۱۶: پاکسازی Imageهای بدون استفاده" data-en="Chapter 16: Prune Images">
+    فصل ۱۶: پاکسازی Imageهای بدون استفاده
+</h1>
+
+<p>
+    برای حذف Imageهایی که دیگر استفاده نمی‌شوند از دستور زیر استفاده کنید.
+</p>
+
+<pre><code>docker image prune</code></pre>
+
+حذف همه Imageهای بدون استفاده
+
+<pre><code>docker image prune -a</code></pre>
+
+<div class="info-box">
+
+    <strong>نکته</strong>
+
+    <p>
+        اجرای این دستور باعث آزاد شدن فضای دیسک می‌شود.
+    </p>
+
+</div>
+
+<!-- ===================== CHAPTER: docker-image-best-practice ===================== -->
+
+<h1 data-fa="فصل ۱۷: Best Practices برای Docker Image" data-en="Chapter 17: Docker Image Best Practices">
+    فصل ۱۷: Best Practices
+</h1>
+
+<ul>
+
+    <li>از Tagهای مشخص مانند 1.0.0 یا v1 استفاده کنید.</li>
+
+    <li>از latest در Production استفاده نکنید.</li>
+
+    <li>Imageها را تا حد امکان کوچک نگه دارید.</li>
+
+    <li>از Multi-stage Build استفاده کنید.</li>
+
+    <li>فقط فایل‌های موردنیاز را Copy کنید.</li>
+
+    <li>از Imageهای رسمی استفاده کنید.</li>
+
+    <li>به‌طور منظم Imageهای بلااستفاده را حذف کنید.</li>
+
+</ul>
+
+<!-- ===================== CHAPTER: docker-image-lab ===================== -->
+
+<h1 data-fa="Lab ۱: مدیریت Docker Image" data-en="Lab 1: Docker Image Management">
+    Lab ۱: مدیریت Docker Image
+</h1>
+
+<section class="lab-section">
+
+    <h3>گام ۱: دانلود Image</h3>
+
+    <pre><code>docker pull nginx</code></pre>
+
+    <h3>گام ۲: مشاهده Imageها</h3>
+
+    <pre><code>docker images</code></pre>
+
+    <h3>گام ۳: ایجاد Tag جدید</h3>
+
+    <pre><code>docker tag nginx nginx:v1</code></pre>
+
+    <h3>گام ۴: مشاهده Tagها</h3>
+
+    <pre><code>docker images</code></pre>
+
+    <h3>گام ۵: بررسی تاریخچه Image</h3>
+
+    <pre><code>docker history nginx</code></pre>
+
+    <h3>گام ۶: مشاهده جزئیات Image</h3>
+
+    <pre><code>docker inspect nginx</code></pre>
+
+    <h3>گام ۷: ذخیره Image</h3>
+
+    <pre><code>docker save -o nginx.tar nginx</code></pre>
+
+    <h3>گام ۸: حذف Image</h3>
+
+    <pre><code>docker rmi nginx:v1</code></pre>
+
+    <div class="lab-result">
+
+        <strong data-fa="✅ نتیجه Lab" data-en="Lab Result">
+            ✅ نتیجه Lab
+        </strong>
+
+        <p data-fa="در این Lab با مدیریت کامل Docker Image آشنا شدید؛ از ایجاد Tag و مشاهده اطلاعات Image تا ذخیره، انتقال، حذف و پاکسازی Imageها. این دستورات در پروژه‌های واقعی و Pipelineهای CI/CD به‌صورت روزمره مورد استفاده قرار می‌گیرند."
+            data-en="In this lab, you learned how to manage Docker Images, including tagging, inspecting, saving, loading, removing, and cleaning up images. These commands are commonly used in real-world projects and CI/CD pipelines.">
+            در این آزمایش مهم‌ترین دستورات مدیریت Docker Image را به‌صورت عملی یاد گرفتید.
+        </p>
+
+    </div>
+
+</section>
+<!-- ===================== CHAPTER: docker-image-advanced ===================== -->
+
+<h1 data-fa="فصل ۱۸: دستورات کاربردی Docker Image" data-en="Chapter 18: Advanced Docker Image Commands">
+    فصل ۱۸: دستورات کاربردی Docker Image
+</h1>
+
+<p data-fa="Docker علاوه بر دستورات اصلی، ابزارهای متعددی برای بررسی، جستجو، بهینه‌سازی و مدیریت Imageها در اختیار توسعه‌دهندگان قرار می‌دهد. در این فصل با پرکاربردترین این دستورات آشنا می‌شویم."
+    data-en="Docker provides many useful commands for inspecting, searching, optimizing and managing images. In this chapter you'll learn the most commonly used ones.">
+    علاوه بر دستورات Build و Pull، Docker ابزارهای بسیار مفیدی برای مدیریت Imageها ارائه می‌کند.
+</p>
+
+<!-- ===================== docker-search ===================== -->
+
+<h2 data-fa="جستجوی Image در Docker Hub" data-en="Search Images">
+    جستجوی Image
+</h2>
+
+<pre><code>docker search nginx</code></pre>
+
+نمونه خروجی
+
+<pre><code>NAME              DESCRIPTION
+
+nginx             Official build of Nginx
+
+bitnami/nginx     Bitnami Nginx Image
+
+linuxserver/nginx Community Image
+</code></pre>
+
+<div class="info-box">
+
+    <strong>نکته</strong>
+
+    <p>
+        Imageهای دارای برچسب <strong>Official</strong> توسط تیم Docker یا شرکت سازنده نگهداری می‌شوند و معمولاً انتخاب
+        مناسب‌تری هستند.
+    </p>
+
+</div>
+
+<!-- ===================== docker-image-ls ===================== -->
+
+<h2 data-fa="نمایش Imageها" data-en="List Images">
+    نمایش Imageها
+</h2>
+
+<pre><code>docker image ls</code></pre>
+
+یا
+
+<pre><code>docker images</code></pre>
+
+نمایش فقط Imageهای یک Repository
+
+<pre><code>docker images nginx</code></pre>
+
+نمایش Imageهای بدون Tag
+
+<pre><code>docker images --filter dangling=true</code></pre>
+
+<!-- ===================== docker-image-size ===================== -->
+
+<h2 data-fa="بررسی حجم Imageها" data-en="Image Size">
+    بررسی حجم Imageها
+</h2>
+
+<pre><code>docker images</code></pre>
+
+نمونه خروجی
+
+<pre><code>REPOSITORY      TAG       SIZE
+
+ubuntu          latest    78MB
+
+nginx           latest    192MB
+
+aspnet          9.0       217MB
+</code></pre>
+
+<p>
+    ستون <strong>SIZE</strong> حجم تقریبی Image را نمایش می‌دهد.
+</p>
+
+<!-- ===================== docker-image-inspect ===================== -->
+
+<h2 data-fa="نمایش اطلاعات کامل Image" data-en="Inspect Image">
+    نمایش اطلاعات کامل Image
+</h2>
+
+<pre><code>docker image inspect nginx</code></pre>
+
+این دستور اطلاعات زیر را نمایش می‌دهد.
+
+<ul>
+
+    <li>Image ID</li>
+
+    <li>Digest</li>
+
+    <li>Created Time</li>
+
+    <li>Architecture</li>
+
+    <li>Operating System</li>
+
+    <li>Working Directory</li>
+
+    <li>Environment Variables</li>
+
+    <li>Entrypoint</li>
+
+    <li>Labels</li>
+
+    <li>Layers</li>
+
+</ul>
+
+<!-- ===================== docker-history ===================== -->
+
+<h2 data-fa="بررسی Layerها" data-en="Image History">
+    بررسی Layerها
+</h2>
+
+<pre><code>docker history nginx</code></pre>
+
+نمونه خروجی
+
+<pre><code>IMAGE      CREATED BY
+
+Layer 5    CMD nginx
+
+Layer 4    COPY
+
+Layer 3    RUN apt-get
+
+Layer 2    ADD
+
+Layer 1    FROM debian
+</code></pre>
+
+<div class="info-box">
+
+    <strong>کاربرد</strong>
+
+    <p>
+        این دستور برای پیدا کردن Layerهای حجیم و بهینه‌سازی Dockerfile بسیار مفید است.
+    </p>
+
+</div>
+
+<!-- ===================== dangling-images ===================== -->
+
+<h2 data-fa="Dangling Image چیست؟" data-en="Dangling Images">
+    Dangling Image چیست؟
+</h2>
+
+<p>
+    گاهی هنگام Build مجدد پروژه، Docker Imageهایی ایجاد می‌کند که دیگر هیچ Tagای ندارند.
+</p>
+
+<pre><code>&lt;none&gt;:&lt;none&gt;</code></pre>
+
+به این Imageها
+
+<strong>Dangling Images</strong>
+
+گفته می‌شود.
+
+مشاهده آن‌ها
+
+<pre><code>docker images -f dangling=true</code></pre>
+
+حذف آن‌ها
+
+<pre><code>docker image prune</code></pre>
+
+<!-- ===================== image-cleanup ===================== -->
+
+<h2 data-fa="پاکسازی کامل Imageها" data-en="Cleanup Images">
+    پاکسازی Imageها
+</h2>
+
+حذف تمام Imageهای بلااستفاده
+
+<pre><code>docker image prune -a</code></pre>
+
+حذف همه Cacheهای Build
+
+<pre><code>docker builder prune</code></pre>
+
+حذف کامل Cache
+
+<pre><code>docker builder prune -a</code></pre>
+
+<div class="info-box">
+
+    <strong>هشدار</strong>
+
+    <p>
+        اجرای این دستورات ممکن است باعث شود Build بعدی زمان بیشتری طول بکشد زیرا Cache حذف خواهد شد.
+    </p>
+
+</div>
+
+<!-- ===================== image-best-practice ===================== -->
+
+<h1 data-fa="فصل ۱۹: Best Practices" data-en="Chapter 19: Best Practices">
+    فصل ۱۹: Best Practices
+</h1>
+
+<ul>
+
+    <li>از Imageهای رسمی (Official Images) استفاده کنید.</li>
+
+    <li>همیشه Version مشخص بنویسید.</li>
+
+    <li>از Tag latest در Production استفاده نکنید.</li>
+
+    <li>Imageها را کوچک نگه دارید.</li>
+
+    <li>از Multi-stage Build استفاده کنید.</li>
+
+    <li>فایل‌های غیرضروری را Copy نکنید.</li>
+
+    <li>به صورت دوره‌ای Imageهای بلااستفاده را حذف کنید.</li>
+
+    <li>Dockerfile را به گونه‌ای بنویسید که Build Cache بیشترین استفاده را داشته باشد.</li>
+
+</ul>
+
+<!-- ===================== common-mistakes ===================== -->
+
+<h1 data-fa="فصل ۲۰: اشتباهات رایج" data-en="Chapter 20: Common Mistakes">
+    فصل ۲۰: اشتباهات رایج
+</h1>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>اشتباه</th>
+
+            <th>راه‌حل</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>استفاده از latest</td>
+
+            <td>استفاده از Version مشخص</td>
+
+        </tr>
+
+        <tr>
+
+            <td>استفاده از Imageهای غیررسمی</td>
+
+            <td>استفاده از Official Image</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Copy کردن کل پروژه</td>
+
+            <td>استفاده از فایل .dockerignore</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Imageهای بسیار بزرگ</td>
+
+            <td>استفاده از Alpine و Multi-stage Build</td>
+
+        </tr>
+
+        <tr>
+
+            <td>حذف نکردن Cache</td>
+
+            <td>docker image prune</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== summary ===================== -->
+
+<h1 data-fa="فصل ۲۱: جمع‌بندی" data-en="Chapter 21: Summary">
+    فصل ۲۱: جمع‌بندی
+</h1>
+
+<div class="diagram-box">
+
+    <pre>
+Dockerfile
+      │
+      ▼
+docker build
+      │
+      ▼
+Docker Image
+      │
+ ┌────┼──────────────┐
+ │    │              │
+ ▼    ▼              ▼
+Tag  Push         Save
+ │    │              │
+ ▼    ▼              ▼
+Registry        Backup
+ │
+ ▼
+docker pull
+ │
+ ▼
+Container
+</pre>
+
+</div>
+
+<div class="info-box">
+
+    <strong data-fa="آنچه یاد گرفتید" data-en="What You Learned">
+        آنچه یاد گرفتید
+    </strong>
+
+    <ul>
+
+        <li>Docker Image چیست.</li>
+
+        <li>تفاوت Image و Container.</li>
+
+        <li>Layer Architecture.</li>
+
+        <li>Build Cache.</li>
+
+        <li>Image ID.</li>
+
+        <li>Repository و Tag.</li>
+
+        <li>latest.</li>
+
+        <li>Pull و Build.</li>
+
+        <li>Tag.</li>
+
+        <li>Push.</li>
+
+        <li>Save و Load.</li>
+
+        <li>Inspect.</li>
+
+        <li>History.</li>
+
+        <li>Search.</li>
+
+        <li>Dangling Images.</li>
+
+        <li>Prune.</li>
+
+        <li>Best Practices.</li>
+
+        <li>اشتباهات رایج.</li>
+
+    </ul>
+
+</div>
+
+<!-- ===================== FINAL LAB ===================== -->
+
+<h1 data-fa="Lab نهایی: مدیریت کامل Docker Image" data-en="Final Lab: Docker Image Management">
+    Lab نهایی
+</h1>
+
+<section class="lab-section">
+
+    <h3>مرحله ۱</h3>
+
+    <pre><code>docker pull nginx</code></pre>
+
+    <h3>مرحله ۲</h3>
+
+    <pre><code>docker images</code></pre>
+
+    <h3>مرحله ۳</h3>
+
+    <pre><code>docker tag nginx my-nginx:v1</code></pre>
+
+    <h3>مرحله ۴</h3>
+
+    <pre><code>docker image inspect my-nginx:v1</code></pre>
+
+    <h3>مرحله ۵</h3>
+
+    <pre><code>docker history my-nginx:v1</code></pre>
+
+    <h3>مرحله ۶</h3>
+
+    <pre><code>docker save -o my-nginx.tar my-nginx:v1</code></pre>
+
+    <h3>مرحله ۷</h3>
+
+    <pre><code>docker image rm my-nginx:v1</code></pre>
+
+    <h3>مرحله ۸</h3>
+
+    <pre><code>docker load -i my-nginx.tar</code></pre>
+
+    <div class="lab-result">
+
+        <strong data-fa="✅ نتیجه Lab" data-en="Lab Result">
+            ✅ نتیجه Lab
+        </strong>
+
+        <p data-fa="در این آزمایش، چرخه کامل مدیریت Docker Image را از دانلود، بررسی، نسخه‌بندی، ذخیره، حذف و بازیابی تجربه کردید. اکنون آماده یادگیری Dockerfile و ساخت Imageهای اختصاصی برای پروژه‌های واقعی هستید."
+            data-en="In this lab, you completed the full Docker Image lifecycle including pulling, inspecting, tagging, saving, removing, and restoring images. You are now ready to learn Dockerfile and build custom images for real-world applications.">
+            اکنون تمام مفاهیم اصلی Docker Image را فرا گرفته‌اید و آماده ورود به فصل Dockerfile هستید.
+        </p>
+
+    </div>
+
+</section>

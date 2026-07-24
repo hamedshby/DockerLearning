@@ -1,0 +1,502 @@
+<!-- ===================== CHAPTER: dockerfile-cmd ===================== -->
+
+<h1 data-fa="فصل ۶: دستور CMD" data-en="Chapter 6: CMD Instruction">
+    فصل ۶: دستور CMD
+</h1>
+
+<p data-fa="دستور CMD مشخص می‌کند هنگام اجرای Docker Container چه دستوری اجرا شود. برخلاف دستور RUN، دستور CMD در زمان Build اجرا نمی‌شود؛ بلکه زمانی اجرا می‌شود که Container با دستور docker run شروع به کار کند."
+    data-en="The CMD instruction defines the default command that will be executed when a Docker Container starts. Unlike RUN, CMD is not executed during the build process; it runs only when the container starts.">
+    دستور <strong>CMD</strong> فرمان پیش‌فرضی را مشخص می‌کند که هنگام اجرای Container اجرا خواهد شد.
+</p>
+
+<div class="info-box">
+
+    <strong>نکته</strong>
+
+    <p>
+        CMD هنگام اجرای <strong>docker build</strong> اجرا نمی‌شود؛ بلکه در زمان <strong>docker run</strong> اجرا خواهد
+        شد.
+    </p>
+
+</div>
+
+<!-- ===================== Build vs Run ===================== -->
+
+<h2>
+    زمان اجرای CMD
+</h2>
+
+<div class="diagram-box">
+
+    <pre>
+Dockerfile
+
+     │
+
+docker build
+
+     │
+
+Docker Image
+
+     │
+
+docker run
+
+     │
+
+CMD
+
+     ▼
+
+Application Starts
+</pre>
+
+</div>
+
+<p>
+    CMD نقطه شروع اجرای برنامه داخل Container است.
+</p>
+
+<!-- ===================== Syntax ===================== -->
+
+<h2>
+    Syntax
+</h2>
+
+<h3>Exec Form (پیشنهاد Docker)</h3>
+
+<pre><code>
+CMD ["dotnet","Shop.Api.dll"]
+</code></pre>
+
+<h3>Shell Form</h3>
+
+<pre><code>
+CMD dotnet Shop.Api.dll
+</code></pre>
+
+<div class="info-box">
+
+    <strong>Best Practice</strong>
+
+    <p>
+        Docker پیشنهاد می‌کند همیشه از <strong>Exec Form</strong> استفاده کنید.
+    </p>
+
+</div>
+
+<!-- ===================== Why Exec Form ===================== -->
+
+<h2>
+    چرا Exec Form؟
+</h2>
+
+<p>
+    Exec Form پردازش برنامه را مستقیماً اجرا می‌کند و سیگنال‌های سیستم‌عامل (مانند SIGTERM) را به درستی دریافت می‌کند.
+</p>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>Exec Form</th>
+
+            <th>Shell Form</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>✔ Performance بهتر</td>
+
+            <td>پردازش از طریق Shell اجرا می‌شود.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>✔ دریافت صحیح Signalها</td>
+
+            <td>ممکن است Signalها را دریافت نکند.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>✔ پیشنهاد Docker</td>
+
+            <td>فقط در شرایط خاص</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== Examples ===================== -->
+
+<h2>
+    مثال‌ها
+</h2>
+
+<h3>اجرای برنامه دات‌نت</h3>
+
+<pre><code>
+CMD ["dotnet","Shop.Api.dll"]
+</code></pre>
+
+<hr>
+
+<h3>اجرای Nginx</h3>
+
+<pre><code>
+CMD ["nginx","-g","daemon off;"]
+</code></pre>
+
+<hr>
+
+<h3>اجرای Bash</h3>
+
+<pre><code>
+CMD ["/bin/bash"]
+</code></pre>
+
+<hr>
+
+<h3>نمایش پیام</h3>
+
+<pre><code>
+CMD ["echo","Hello Docker"]
+</code></pre>
+
+<!-- ===================== One CMD ===================== -->
+
+<h2>
+    فقط یک CMD
+</h2>
+
+<p>
+    در هر Dockerfile فقط آخرین دستور CMD معتبر خواهد بود.
+</p>
+
+نمونه
+
+<pre><code>
+CMD ["echo","First"]
+
+CMD ["echo","Second"]
+</code></pre>
+
+نتیجه
+
+<pre><code>
+Second
+</code></pre>
+
+<p>
+    دستور اول نادیده گرفته می‌شود.
+</p>
+
+<!-- ===================== Override CMD ===================== -->
+
+<h2>
+    Override کردن CMD
+</h2>
+
+<p>
+    دستور CMD را می‌توان هنگام اجرای Container تغییر داد.
+</p>
+
+Dockerfile
+
+<pre><code>
+CMD ["dotnet","Shop.Api.dll"]
+</code></pre>
+
+اجرای معمولی
+
+<pre><code>
+docker run shop-api
+</code></pre>
+
+Override
+
+<pre><code>
+docker run shop-api bash
+</code></pre>
+
+یا
+
+<pre><code>
+docker run ubuntu ls
+</code></pre>
+
+در این حالت
+
+<strong>CMD اجرا نمی‌شود.</strong>
+
+بلکه دستور جدید اجرا خواهد شد.
+
+<!-- ===================== CMD Workflow ===================== -->
+
+<h2>
+    Workflow
+</h2>
+
+<div class="diagram-box">
+
+    <pre>
+Dockerfile
+
+      │
+
+CMD
+
+      │
+
+docker build
+
+      │
+
+Image
+
+      │
+
+docker run
+
+      │
+
+Program Starts
+</pre>
+
+</div>
+
+<!-- ===================== ASP.NET Example ===================== -->
+
+<h2>
+    نمونه ASP.NET Core
+</h2>
+
+<pre><code>
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
+WORKDIR /app
+
+COPY publish .
+
+CMD ["dotnet","Shop.Api.dll"]
+</code></pre>
+
+در این مثال
+
+<ul>
+
+    <li>Image ساخته می‌شود.</li>
+
+    <li>هیچ برنامه‌ای هنگام Build اجرا نمی‌شود.</li>
+
+    <li>پس از docker run برنامه ASP.NET Core اجرا می‌شود.</li>
+
+</ul>
+
+<!-- ===================== CMD vs RUN ===================== -->
+
+<h2>
+    تفاوت RUN و CMD
+</h2>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>RUN</th>
+
+            <th>CMD</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>هنگام Build اجرا می‌شود.</td>
+
+            <td>هنگام اجرای Container اجرا می‌شود.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Layer جدید ایجاد می‌کند.</td>
+
+            <td>Layer ایجاد نمی‌کند.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>نتیجه داخل Image ذخیره می‌شود.</td>
+
+            <td>فقط برنامه را اجرا می‌کند.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>قابل Override نیست.</td>
+
+            <td>قابل Override است.</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== Best Practices ===================== -->
+
+<h2>
+    Best Practices
+</h2>
+
+<ul>
+
+    <li>از Exec Form استفاده کنید.</li>
+
+    <li>فقط یک CMD در Dockerfile قرار دهید.</li>
+
+    <li>CMD را کوتاه و ساده نگه دارید.</li>
+
+    <li>اجرای برنامه اصلی را به CMD بسپارید.</li>
+
+</ul>
+
+<!-- ===================== Common Mistakes ===================== -->
+
+<div class="info-box">
+
+    <strong>
+        اشتباهات رایج
+    </strong>
+
+    <ul>
+
+        <li>استفاده از چند CMD در یک Dockerfile</li>
+
+        <li>استفاده از Shell Form بدون نیاز</li>
+
+        <li>قرار دادن دستورات نصب نرم‌افزار داخل CMD</li>
+
+        <li>اشتباه گرفتن CMD با RUN</li>
+
+    </ul>
+
+</div>
+
+<!-- ===================== Real Dockerfile ===================== -->
+
+<h2>
+    نمونه واقعی
+</h2>
+
+<pre><code>
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+WORKDIR /src
+
+COPY *.csproj .
+
+RUN dotnet restore
+
+COPY . .
+
+RUN dotnet publish -c Release -o /publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
+WORKDIR /app
+
+COPY --from=build /publish .
+
+CMD ["dotnet","Shop.Api.dll"]
+</code></pre>
+
+<p>
+    در این Dockerfile، تمام مراحل Build توسط RUN انجام می‌شود و اجرای برنامه به CMD سپرده شده است.
+</p>
+
+<!-- ===================== LAB ===================== -->
+
+<h1 data-fa="Lab ۴: دستور CMD" data-en="Lab 4: CMD Instruction">
+    Lab ۴
+</h1>
+
+<section class="lab-section">
+
+    <h3>گام ۱</h3>
+
+    ایجاد Dockerfile
+
+    <pre><code>
+FROM ubuntu
+
+CMD ["echo","Hello Docker"]
+</code></pre>
+
+    <h3>گام ۲</h3>
+
+    Build
+
+    <pre><code>
+docker build -t hello-cmd .
+</code></pre>
+
+    <h3>گام ۳</h3>
+
+    Run
+
+    <pre><code>
+docker run hello-cmd
+</code></pre>
+
+    خروجی
+
+    <pre><code>
+Hello Docker
+</code></pre>
+
+    <h3>گام ۴</h3>
+
+    Override
+
+    <pre><code>
+docker run hello-cmd ls
+</code></pre>
+
+    مشاهده خواهید کرد که به جای دستور CMD، دستور <strong>ls</strong> اجرا می‌شود.
+
+    <div class="lab-result">
+
+        <strong>
+            ✅ نتیجه Lab
+        </strong>
+
+        <p>
+            در این آزمایش یاد گرفتید که دستور CMD برنامه پیش‌فرض Container را مشخص می‌کند، تنها هنگام اجرای Container
+            اجرا می‌شود، قابل Override است و بهتر است همیشه به صورت Exec Form نوشته شود.
+        </p>
+
+    </div>
+
+</section>

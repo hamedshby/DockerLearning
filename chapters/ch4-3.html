@@ -1,0 +1,518 @@
+<!-- ===================== CHAPTER: dockerfile-run ===================== -->
+
+<h1 data-fa="فصل ۵: دستور RUN" data-en="Chapter 5: RUN Instruction">
+    فصل ۵: دستور RUN
+</h1>
+
+<p data-fa="دستور RUN برای اجرای دستورات در زمان Build شدن Docker Image استفاده می‌شود. هر دستور RUN در هنگام اجرای docker build اجرا شده و نتیجه آن به عنوان یک Layer جدید داخل Docker Image ذخیره می‌شود."
+    data-en="The RUN instruction executes commands while building a Docker Image. Every RUN instruction is executed during docker build and its result is stored as a new image layer.">
+    دستور <strong>RUN</strong> برای اجرای دستورات هنگام ساخت Docker Image استفاده می‌شود.
+</p>
+
+<div class="info-box">
+
+    <strong>نکته</strong>
+
+    <p>
+        RUN فقط در زمان Build اجرا می‌شود، نه هنگام اجرای Container.
+    </p>
+
+</div>
+
+<!-- ===================== Build Process ===================== -->
+
+<h2>
+    زمان اجرای RUN
+</h2>
+
+<div class="diagram-box">
+
+    <pre>
+Dockerfile
+
+     │
+
+docker build
+
+     │
+
+RUN apt-get update
+
+RUN apt-get install nginx
+
+     │
+
+Docker Image
+
+     │
+
+docker run
+
+     ▼
+
+Container
+</pre>
+
+</div>
+
+<p>
+    تمام دستورات RUN قبل از ساخته شدن Image اجرا می‌شوند.
+</p>
+
+<!-- ===================== Syntax ===================== -->
+
+<h2>
+    Syntax
+</h2>
+
+<h3>Shell Form</h3>
+
+<pre><code>
+RUN apt-get update
+</code></pre>
+
+<h3>Exec Form</h3>
+
+<pre><code>
+RUN ["apt-get","update"]
+</code></pre>
+
+<div class="info-box">
+
+    <strong>نکته</strong>
+
+    <p>
+        در اکثر Dockerfileها از Shell Form استفاده می‌شود.
+    </p>
+
+</div>
+
+<!-- ===================== Examples ===================== -->
+
+<h2>
+    مثال‌های متداول
+</h2>
+
+<h3>بروزرسانی Packageها</h3>
+
+<pre><code>
+RUN apt-get update
+</code></pre>
+
+<hr>
+
+<h3>نصب نرم‌افزار</h3>
+
+<pre><code>
+RUN apt-get install -y curl
+</code></pre>
+
+<hr>
+
+<h3>ساخت پوشه</h3>
+
+<pre><code>
+RUN mkdir /app
+</code></pre>
+
+<hr>
+
+<h3>ایجاد فایل</h3>
+
+<pre><code>
+RUN touch version.txt
+</code></pre>
+
+<hr>
+
+<h3>تغییر Permission</h3>
+
+<pre><code>
+RUN chmod +x start.sh
+</code></pre>
+
+<hr>
+
+<h3>Restore پروژه دات‌نت</h3>
+
+<pre><code>
+RUN dotnet restore
+</code></pre>
+
+<hr>
+
+<h3>Publish پروژه</h3>
+
+<pre><code>
+RUN dotnet publish -c Release -o /publish
+</code></pre>
+
+<!-- ===================== Multiple RUN ===================== -->
+
+<h2>
+    چند دستور RUN
+</h2>
+
+نمونه
+
+<pre><code>
+RUN apt-get update
+
+RUN apt-get install -y curl
+
+RUN apt-get install -y git
+</code></pre>
+
+هر RUN
+
+یک Layer جدید ایجاد می‌کند.
+
+<div class="diagram-box">
+
+    <pre>
+Docker Image
+
+Layer 4
+
+RUN apt-get install git
+
+──────────────
+
+Layer 3
+
+RUN apt-get install curl
+
+──────────────
+
+Layer 2
+
+RUN apt-get update
+
+──────────────
+
+Layer 1
+
+FROM ubuntu
+</pre>
+
+</div>
+
+<!-- ===================== Combine RUN ===================== -->
+
+<h2>
+    ترکیب دستورات RUN
+</h2>
+
+نمونه بهتر
+
+<pre><code>
+RUN apt-get update && \
+    apt-get install -y \
+    curl \
+    git \
+    wget
+</code></pre>
+
+<p>
+    در این حالت فقط
+
+    <strong>یک Layer</strong>
+
+    ساخته می‌شود.
+</p>
+
+<!-- ===================== Cache ===================== -->
+
+<h2>
+    RUN و Build Cache
+</h2>
+
+<p>
+    هر RUN یک Layer ایجاد می‌کند.
+
+    اگر دستور تغییر نکند، Docker از Cache استفاده می‌کند.
+</p>
+
+<div class="diagram-box">
+
+    <pre>
+RUN apt-get update
+
+        │
+
+Layer Cached
+
+        │
+
+RUN apt-get install curl
+
+        │
+
+Layer Cached
+
+        │
+
+RUN dotnet publish
+
+        │
+
+Rebuild
+</pre>
+
+</div>
+
+<!-- ===================== Best Practice ===================== -->
+
+<h2>
+    Best Practices
+</h2>
+
+<ul>
+
+    <li>چند دستور را در یک RUN ترکیب کنید.</li>
+
+    <li>پس از نصب Packageها Cache را حذف کنید.</li>
+
+    <li>از && استفاده کنید.</li>
+
+    <li>تعداد Layerها را کاهش دهید.</li>
+
+</ul>
+
+نمونه حرفه‌ای
+
+<pre><code>
+RUN apt-get update && \
+    apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/*
+</code></pre>
+
+این روش باعث کاهش حجم Image می‌شود.
+
+<!-- ===================== Common Mistakes ===================== -->
+
+<h2>
+    اشتباهات رایج
+</h2>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>اشتباه</th>
+
+            <th>روش صحیح</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>
+
+                <pre><code>
+RUN apt-get update
+
+RUN apt-get install curl
+</code></pre>
+
+            </td>
+
+            <td>
+
+                <pre><code>
+RUN apt-get update && \
+    apt-get install -y curl
+</code></pre>
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>
+
+                پاک نکردن Cache
+
+            </td>
+
+            <td>
+
+                حذف
+
+                /var/lib/apt/lists
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td>
+
+                استفاده از RUN زیاد
+
+            </td>
+
+            <td>
+
+                ترکیب دستورات
+
+            </td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== RUN vs CMD ===================== -->
+
+<h2>
+    RUN و CMD
+</h2>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>RUN</th>
+
+            <th>CMD</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>هنگام Build اجرا می‌شود.</td>
+
+            <td>هنگام اجرای Container اجرا می‌شود.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>Layer جدید ایجاد می‌کند.</td>
+
+            <td>Layer ایجاد نمی‌کند.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>نتیجه داخل Image ذخیره می‌شود.</td>
+
+            <td>فقط برنامه را اجرا می‌کند.</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== ASP.NET Example ===================== -->
+
+<h2>
+    نمونه واقعی ASP.NET Core
+</h2>
+
+<pre><code>
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /src
+
+COPY *.csproj .
+
+RUN dotnet restore
+
+COPY . .
+
+RUN dotnet publish -c Release -o /publish
+</code></pre>
+
+در این Dockerfile
+
+<ul>
+
+    <li>Restore هنگام Build انجام می‌شود.</li>
+
+    <li>Publish هنگام Build انجام می‌شود.</li>
+
+    <li>نتیجه داخل Image ذخیره می‌شود.</li>
+
+</ul>
+
+<!-- ===================== LAB ===================== -->
+
+<h1 data-fa="Lab ۳: دستور RUN" data-en="Lab 3: RUN Instruction">
+    Lab ۳
+</h1>
+
+<section class="lab-section">
+
+    <h3>گام ۱</h3>
+
+    Dockerfile
+
+    <pre><code>
+FROM ubuntu:24.04
+</code></pre>
+
+    <h3>گام ۲</h3>
+
+    افزودن RUN
+
+    <pre><code>
+RUN apt-get update
+</code></pre>
+
+    <h3>گام ۳</h3>
+
+    نصب Curl
+
+    <pre><code>
+RUN apt-get install -y curl
+</code></pre>
+
+    <h3>گام ۴</h3>
+
+    Build
+
+    <pre><code>
+docker build -t ubuntu-demo:v1 .
+</code></pre>
+
+    <h3>گام ۵</h3>
+
+    مشاهده Layerها
+
+    <pre><code>
+docker history ubuntu-demo:v1
+</code></pre>
+
+    <div class="lab-result">
+
+        <strong>
+            ✅ نتیجه Lab
+        </strong>
+
+        <p>
+            در این آزمایش یاد گرفتید که دستور RUN در زمان Build اجرا می‌شود، هر RUN یک Layer جدید ایجاد می‌کند و با
+            ترکیب چند دستور در یک RUN می‌توان حجم Image را کاهش داد و سرعت Build را افزایش داد.
+        </p>
+
+    </div>
+
+</section>

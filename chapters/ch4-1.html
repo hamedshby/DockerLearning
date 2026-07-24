@@ -1,0 +1,498 @@
+<!-- ===================== CHAPTER: dockerfile-from ===================== -->
+
+<h1 data-fa="فصل ۱: دستور FROM" data-en="Chapter 1: FROM Instruction">
+    فصل ۱: دستور FROM
+</h1>
+
+<p data-fa="دستور FROM اولین و مهم‌ترین دستور در هر Dockerfile است. این دستور مشخص می‌کند Image جدید بر پایه کدام Image ساخته شود. به عبارت دیگر، FROM نقطه شروع ساخت Docker Image است."
+    data-en="The FROM instruction is the first and most important instruction in a Dockerfile. It specifies the base image used to build a new Docker Image.">
+    دستور <strong>FROM</strong> نقطه شروع هر Dockerfile است و Image پایه (Base Image) را مشخص می‌کند.
+</p>
+
+<div class="info-box">
+
+    <strong data-fa="نکته" data-en="Note">
+        نکته
+    </strong>
+
+    <p data-fa="تقریباً تمام Dockerfileها با دستور FROM آغاز می‌شوند."
+        data-en="Almost every Dockerfile starts with the FROM instruction.">
+        Docker بدون وجود FROM نمی‌تواند Image را Build کند.
+    </p>
+
+</div>
+
+<!-- ===================== FROM Syntax ===================== -->
+
+<h2 data-fa="Syntax" data-en="Syntax">
+    Syntax
+</h2>
+
+<pre><code>
+FROM &lt;image&gt;
+
+FROM &lt;image&gt;:&lt;tag&gt;
+
+FROM &lt;registry&gt;/&lt;repository&gt;:&lt;tag&gt;
+</code></pre>
+
+نمونه‌ها
+
+<pre><code>
+FROM nginx
+
+FROM ubuntu:24.04
+
+FROM redis:7
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+</code></pre>
+
+<!-- ===================== Base Image ===================== -->
+
+<h2 data-fa="Base Image چیست؟" data-en="What is a Base Image?">
+    Base Image چیست؟
+</h2>
+
+<p>
+    Base Image اولین Layer از Docker Image شماست.
+</p>
+
+<div class="diagram-box">
+
+    <pre>
+Docker Image
+
+┌─────────────────────┐
+│ Application         │
+├─────────────────────┤
+│ .NET Runtime        │
+├─────────────────────┤
+│ Base Image (Ubuntu) │
+└─────────────────────┘
+</pre>
+
+</div>
+
+<p>
+    تمام Layerهای بعدی روی Base Image ساخته می‌شوند.
+</p>
+
+<!-- ===================== Common Base Images ===================== -->
+
+<h2 data-fa="Imageهای پایه پرکاربرد" data-en="Popular Base Images">
+    Imageهای پایه پرکاربرد
+</h2>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>Image</th>
+
+            <th>کاربرد</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>ubuntu</td>
+
+            <td>سیستم‌عامل عمومی لینوکس</td>
+
+        </tr>
+
+        <tr>
+
+            <td>alpine</td>
+
+            <td>Image بسیار سبک</td>
+
+        </tr>
+
+        <tr>
+
+            <td>nginx</td>
+
+            <td>وب سرور</td>
+
+        </tr>
+
+        <tr>
+
+            <td>redis</td>
+
+            <td>Redis Server</td>
+
+        </tr>
+
+        <tr>
+
+            <td>postgres</td>
+
+            <td>PostgreSQL</td>
+
+        </tr>
+
+        <tr>
+
+            <td>mcr.microsoft.com/dotnet/sdk</td>
+
+            <td>Build پروژه‌های .NET</td>
+
+        </tr>
+
+        <tr>
+
+            <td>mcr.microsoft.com/dotnet/aspnet</td>
+
+            <td>اجرای برنامه‌های ASP.NET Core</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+<!-- ===================== Example ===================== -->
+
+<h2 data-fa="مثال" data-en="Example">
+    مثال
+</h2>
+
+<pre><code>
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+</code></pre>
+
+توضیح
+
+<ul>
+
+    <li>Image رسمی مایکروسافت</li>
+
+    <li>دارای .NET SDK</li>
+
+    <li>مناسب Build پروژه</li>
+
+</ul>
+
+<!-- ===================== Best Practice ===================== -->
+
+<div class="info-box">
+
+    <strong>
+        Best Practice
+    </strong>
+
+    <ul>
+
+        <li>همیشه Version مشخص بنویسید.</li>
+
+        <li>از Imageهای رسمی استفاده کنید.</li>
+
+        <li>در Production از latest استفاده نکنید.</li>
+
+    </ul>
+
+</div>
+
+<!-- ===================== Common Mistakes ===================== -->
+
+<div class="info-box">
+
+    <strong>
+        اشتباهات رایج
+    </strong>
+
+    <ul>
+
+        <li>استفاده از latest</li>
+
+        <li>استفاده از Imageهای ناشناس</li>
+
+        <li>انتخاب Imageهای بسیار بزرگ</li>
+
+    </ul>
+
+</div>
+
+<!-- ===================== WORKDIR ===================== -->
+
+<h1 data-fa="فصل ۲: دستور WORKDIR" data-en="Chapter 2: WORKDIR Instruction">
+    فصل ۲: دستور WORKDIR
+</h1>
+
+<p data-fa="دستور WORKDIR پوشه کاری (Working Directory) را برای تمام دستورات بعدی Dockerfile مشخص می‌کند."
+    data-en="The WORKDIR instruction sets the working directory for all subsequent instructions in the Dockerfile.">
+    WORKDIR مسیر کاری Docker را مشخص می‌کند.
+</p>
+
+<p>
+    بعد از اجرای WORKDIR تمام دستورات
+
+    <strong>COPY</strong>
+
+    ،
+
+    <strong>RUN</strong>
+
+    ،
+
+    <strong>CMD</strong>
+
+    و سایر دستورات در همان مسیر اجرا خواهند شد.
+</p>
+
+<!-- ===================== WORKDIR Syntax ===================== -->
+
+<h2>
+    Syntax
+</h2>
+
+<pre><code>
+WORKDIR /app
+</code></pre>
+
+یا
+
+<pre><code>
+WORKDIR /src
+</code></pre>
+
+<!-- ===================== Example ===================== -->
+
+<h2>
+    مثال
+</h2>
+
+<pre><code>
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /app
+
+COPY . .
+
+RUN dotnet restore
+</code></pre>
+
+در این مثال
+
+تمام فایل‌ها داخل پوشه
+
+<strong>/app</strong>
+
+کپی خواهند شد.
+
+<!-- ===================== Directory Diagram ===================== -->
+
+<div class="diagram-box">
+
+    <pre>
+Container
+
+/
+
+├── app  ◄── Current Working Directory
+
+│
+
+├── bin
+
+├── usr
+
+├── etc
+
+└── var
+</pre>
+
+</div>
+
+<!-- ===================== Relative Path ===================== -->
+
+<h2>
+    مسیرهای نسبی
+</h2>
+
+<pre><code>
+WORKDIR /app
+
+WORKDIR src
+</code></pre>
+
+نتیجه
+
+<pre><code>
+/app/src
+</code></pre>
+
+Docker مسیر دوم را به مسیر اول اضافه می‌کند.
+
+<!-- ===================== Multiple WORKDIR ===================== -->
+
+<h2>
+    چند WORKDIR
+</h2>
+
+<pre><code>
+WORKDIR /app
+
+WORKDIR api
+
+WORKDIR publish
+</code></pre>
+
+نتیجه
+
+<pre><code>
+/app/api/publish
+</code></pre>
+
+<!-- ===================== Difference ===================== -->
+
+<h2>
+    تفاوت WORKDIR و RUN cd
+</h2>
+
+<table class="comparison-table">
+
+    <thead>
+
+        <tr>
+
+            <th>WORKDIR</th>
+
+            <th>RUN cd</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>برای تمام دستورات بعدی اعمال می‌شود.</td>
+
+            <td>فقط همان RUN را تغییر می‌دهد.</td>
+
+        </tr>
+
+        <tr>
+
+            <td>پیشنهاد Docker</td>
+
+            <td>استفاده نشود.</td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+نمونه اشتباه
+
+<pre><code>
+RUN cd /app
+
+RUN dotnet restore
+</code></pre>
+
+در دستور دوم دوباره مسیر به حالت قبل برمی‌گردد.
+
+نمونه صحیح
+
+<pre><code>
+WORKDIR /app
+
+RUN dotnet restore
+</code></pre>
+
+<!-- ===================== Best Practice ===================== -->
+
+<div class="info-box">
+
+    <strong>
+        Best Practice
+    </strong>
+
+    <ul>
+
+        <li>همیشه از WORKDIR استفاده کنید.</li>
+
+        <li>از RUN cd استفاده نکنید.</li>
+
+        <li>مسیرهای کوتاه و خوانا انتخاب کنید.</li>
+
+        <li>معمولاً از مسیر /app استفاده می‌شود.</li>
+
+    </ul>
+
+</div>
+
+<!-- ===================== Lab ===================== -->
+
+<h1 data-fa="Lab ۱: FROM و WORKDIR" data-en="Lab 1: FROM and WORKDIR">
+    Lab ۱
+</h1>
+
+<section class="lab-section">
+
+    <h3>گام ۱</h3>
+
+    ایجاد فایل
+
+    <pre><code>
+Dockerfile
+</code></pre>
+
+    <h3>گام ۲</h3>
+
+    نوشتن Dockerfile
+
+    <pre><code>
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /app
+
+COPY . .
+
+RUN dotnet restore
+</code></pre>
+
+    <h3>گام ۳</h3>
+
+    Build
+
+    <pre><code>
+docker build -t sample-api:v1 .
+</code></pre>
+
+    <h3>گام ۴</h3>
+
+    بررسی Image
+
+    <pre><code>
+docker images
+</code></pre>
+
+    <div class="lab-result">
+
+        <strong>
+            ✅ نتیجه Lab
+        </strong>
+
+        <p>
+            در این آزمایش یاد گرفتید چگونه با استفاده از دستور FROM یک Base Image انتخاب کنید و با دستور WORKDIR مسیر
+            کاری پروژه را مشخص نمایید. تقریباً تمام Dockerfileهای حرفه‌ای با این دو دستور آغاز می‌شوند و پایه‌ی سایر
+            دستورات Dockerfile را تشکیل می‌دهند.
+        </p>
+
+    </div>
+
+</section>
