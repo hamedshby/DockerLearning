@@ -2,19 +2,49 @@
 
 // ============ Constants ============
 const STORAGE_KEY_LANG = 'docker-book-lang';
+const STORAGE_KEY_THEME = 'docker-book-theme';
 const DEFAULT_LANG = 'fa';
 
 // ============ State ============
 let currentLang = localStorage.getItem(STORAGE_KEY_LANG) || DEFAULT_LANG;
+let currentTheme = localStorage.getItem(STORAGE_KEY_THEME)
+    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
 // ============ Init ============
 document.addEventListener('DOMContentLoaded', () => {
+    setTheme(currentTheme);
+    initThemeToggle();
     setLanguage(currentLang);
     initTOC();
     initSearch();
     initLangButtons();
     initChapterLinks();
 });
+
+// ============ Theme Switch ============
+function setTheme(theme) {
+    currentTheme = theme === 'dark' ? 'dark' : 'light';
+    localStorage.setItem(STORAGE_KEY_THEME, currentTheme);
+    document.documentElement.dataset.theme = currentTheme;
+
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    const isDark = currentTheme === 'dark';
+    toggle.setAttribute('aria-pressed', String(isDark));
+    toggle.setAttribute('aria-label', isDark ? 'فعال‌کردن تم روشن' : 'فعال‌کردن تم تاریک');
+    toggle.querySelector('.theme-icon').textContent = isDark ? '☀️' : '🌙';
+    // toggle.querySelector('.theme-label').textContent = isDark ? 'تم روشن' : 'تم تاریک';
+}
+
+function initThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    toggle.addEventListener('click', () => {
+        setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+}
 
 // ============ Language Switch ============
 function setLanguage(lang) {
