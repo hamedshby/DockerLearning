@@ -3,6 +3,7 @@
 // ============ Constants ============
 const STORAGE_KEY_LANG = 'docker-book-lang';
 const STORAGE_KEY_THEME = 'docker-book-theme';
+const STORAGE_KEY_LAST_CHAPTER = 'docker-book-last-chapter';
 const DEFAULT_LANG = 'fa';
 
 // ============ State ============
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initLangButtons();
     initChapterLinks();
+    restoreLastChapter();
 });
 
 // ============ Theme Switch ============
@@ -111,6 +113,9 @@ function togglePart(partItem, forceOpen = null) {
 // ============ Chapter Navigation ============
 function initChapterLinks() {
     document.querySelectorAll('.chapter-list a[data-target]').forEach(link => {
+        // لینک‌های فعلی در HTML دارای onclick هستند؛ از ثبت رویداد تکراری جلوگیری می‌کنیم.
+        if (link.hasAttribute('onclick')) return;
+
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = link.dataset.target;
@@ -120,7 +125,13 @@ function initChapterLinks() {
 }
 
 async function showChapter(targetId, event) {
-    if (event) event.preventDefault();
+    if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+    }
+
+    const activeLink = event?.target?.closest?.('a')
+        || event?.closest?.('a')
+        || document.querySelector(`.chapter-list a[data-target="${targetId}"]`);
 
     let target = document.getElementById(targetId);
 
@@ -160,12 +171,11 @@ async function showChapter(targetId, event) {
     target.scrollIntoView({ behavior: 'instant', block: 'start' });
 
     // آپدیت لینک فعال در سایدبار
-    document.querySelectorAll('.toc-link').forEach(link => link.classList.remove('active'));
-    if (event && event.target) {
-        event.target.closest('a')?.classList.add('active');
-    }
+    document.querySelectorAll('.chapter-list a').forEach(link => link.classList.remove('active-link'));
+    activeLink?.classList.add('active-link');
+    activeLink?.closest('.toc-part')?.classList.add('open');
 
-    localStorage.setItem('lastChapter', targetId);
+    localStorage.setItem(STORAGE_KEY_LAST_CHAPTER, targetId);
 
     // بستن سایدبار در موبایل
     if (window.innerWidth <= 768) {
@@ -216,11 +226,11 @@ function filterTOC(query) {
     });
 }
 
-// ============ Utility: Restore last chapter on reload (optional) ============
-function restoreLastChapter() {
-    const lastId = localStorage.getItem('docker-book-last-chapter');
-    if (lastId && document.getElementById(lastId)) {
-        const link = document.querySelector(`.chapter-list a[data-target="${lastId}"]`);
-        showChapter(lastId, link);
-    }
+// ============ Utility: Restore last chapter on reload ============
+async function restoreLastChapter() {
+    const lastId = localStorage.getItem(STORAGE_KEY_LAST_CHAPTER);
+    if (!lastId) return;
+
+    const link = document.querySelector(`.chapter-list a[data-target="${lastId}"]`);
+    await showChapter(lastId, link);
 }
