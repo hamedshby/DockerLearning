@@ -1,0 +1,209 @@
+<h1 data-fa="سؤالات مصاحبه Docker" data-en="Docker Interview Questions">
+    سؤالات مصاحبه Docker
+</h1>
+
+<p data-fa="در این فصل، سؤالات فایل آزمون Docker همراه با پاسخ صحیح و توضیح مفهومی هر پاسخ مرور می‌شوند."
+    data-en="This chapter reviews the questions from the Docker test file, together with the correct answer and a conceptual explanation.">
+    در این فصل، سؤالات فایل آزمون Docker همراه با پاسخ صحیح و توضیح مفهومی هر پاسخ مرور می‌شوند.
+</p>
+
+<ol class="review-questions interview-questions">
+    <li>
+        <h3 data-fa="Docker Container چیست؟" data-en="What is a Docker Container?">
+            Docker Container چیست؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="یک نسخه اجرایی از Docker Image است."
+                data-en="It is a running instance of a Docker Image.">
+                یک نسخه اجرایی از Docker Image است.
+            </span>
+        </p>
+        <p data-fa="Image یک الگوی فقط‌خواندنی است. هنگامی که این الگو ایجاد یا اجرا می‌شود، یک Container با لایه قابل‌نوشتن مخصوص خودش شکل می‌گیرد."
+            data-en="An Image is a read-only template. When it is created or run, a Container is formed with its own writable layer.">
+            Image یک الگوی فقط‌خواندنی است و Container نمونه‌ای از آن با یک لایه قابل‌نوشتن است.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="Dockerfile چیست؟" data-en="What is a Dockerfile?">Dockerfile چیست؟</h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="یک فایل متنی است که دستورهای ساخت Docker Image را تعریف می‌کند."
+                data-en="It is a text file that defines the instructions for building a Docker Image.">
+                یک فایل متنی است که دستورهای ساخت Docker Image را تعریف می‌کند.
+            </span>
+        </p>
+        <p data-fa="Docker Engine دستورهای Dockerfile مانند FROM، COPY، RUN و CMD را به‌ترتیب پردازش می‌کند و از نتیجه آن‌ها لایه‌های Image را می‌سازد."
+            data-en="Docker Engine processes Dockerfile instructions such as FROM, COPY, RUN, and CMD in order and builds Image layers from their results.">
+            Docker Engine دستورهای Dockerfile را به‌ترتیب اجرا می‌کند و لایه‌های Image را می‌سازد.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="دستور FROM در Dockerfile چه کاری انجام می‌دهد؟"
+            data-en="What does the FROM instruction do in a Dockerfile?">
+            دستور FROM در Dockerfile چه کاری انجام می‌دهد؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="Docker Image پایه را تعیین می‌کند."
+                data-en="It specifies the base Docker Image.">
+                Docker Image پایه را تعیین می‌کند.
+            </span>
+        </p>
+        <p data-fa="ساخت Image معمولاً از یک Image پایه مانند ubuntu، nginx یا mcr.microsoft.com/dotnet/aspnet آغاز می‌شود. دستور FROM این نقطه شروع را مشخص می‌کند."
+            data-en="An Image build normally starts from a base Image such as ubuntu, nginx, or mcr.microsoft.com/dotnet/aspnet. FROM specifies this starting point.">
+            ساخت Image از یک Image پایه آغاز می‌شود و FROM همان نقطه شروع را مشخص می‌کند.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="Docker Log Driver چیست؟" data-en="What is a Docker Log Driver?">
+            Docker Log Driver چیست؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="مکانیزمی برای جمع‌آوری، مدیریت و ارسال Logهای Containerها است."
+                data-en="It is a mechanism for collecting, managing, and forwarding Container logs.">
+                مکانیزمی برای جمع‌آوری، مدیریت و ارسال Logهای Containerها است.
+            </span>
+        </p>
+        <p data-fa="Log Driver تعیین می‌کند خروجی stdout و stderr کانتینر کجا نگه‌داری یا ارسال شود؛ برای مثال json-file، local، syslog یا fluentd."
+            data-en="A Log Driver determines where a Container's stdout and stderr output is stored or forwarded, for example json-file, local, syslog, or fluentd.">
+            Log Driver مقصد خروجی‌های stdout و stderr کانتینر را تعیین می‌کند.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="Tagگذاری در Docker به چه معناست؟"
+            data-en="What does tagging mean in Docker?">
+            Tagگذاری در Docker به چه معناست؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="اختصاص یک نام یا نسخه قابل‌شناسایی به Docker Image است."
+                data-en="It assigns an identifiable name or version to a Docker Image.">
+                اختصاص یک نام یا نسخه قابل‌شناسایی به Docker Image است.
+            </span>
+        </p>
+        <p data-fa="Tag بخشی از مرجع Image با ساختار repository:tag است؛ مانند my-api:1.0. اگر Tag مشخص نشود، Docker معمولاً از latest استفاده می‌کند."
+            data-en="A Tag is part of an Image reference in repository:tag form, such as my-api:1.0. If no Tag is specified, Docker commonly uses latest.">
+            Tag در ساختاری مانند <code>my-api:1.0</code> نسخه یا نوع Image را مشخص می‌کند.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="دستور docker save چه کاری انجام می‌دهد؟"
+            data-en="What does docker save do?">
+            دستور docker save چه کاری انجام می‌دهد؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="یک یا چند Docker Image را در یک آرشیو tar ذخیره می‌کند."
+                data-en="It saves one or more Docker Images into a tar archive.">
+                یک یا چند Docker Image را در یک آرشیو tar ذخیره می‌کند.
+            </span>
+        </p>
+        <p data-fa="این دستور برای انتقال آفلاین Imageها مناسب است. فایل ساخته‌شده بعداً با docker load دوباره وارد Docker می‌شود. برای فایل‌سیستم Container از docker export استفاده می‌شود."
+            data-en="This command is useful for transferring Images offline. The resulting file can later be imported with docker load. docker export is used for a Container filesystem.">
+            خروجی <code>docker save</code> با <code>docker load</code> بازیابی می‌شود؛ این دستور مخصوص Image است، نه Container.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="Docker Image چگونه ساخته می‌شود؟"
+            data-en="How is a Docker Image built?">
+            Docker Image چگونه ساخته می‌شود؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="با دستور docker build ساخته می‌شود."
+                data-en="It is built with the docker build command.">
+                با دستور <code>docker build</code> ساخته می‌شود.
+            </span>
+        </p>
+        <p data-fa="docker build یک Build Context و معمولاً یک Dockerfile را دریافت می‌کند و با اجرای دستورهای آن، لایه‌های Image را می‌سازد."
+            data-en="docker build receives a build context and normally a Dockerfile, then creates Image layers by executing its instructions.">
+            این دستور Dockerfile و Build Context را پردازش و Image نهایی را تولید می‌کند.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="Docker Container چگونه ایجاد می‌شود؟"
+            data-en="How is a Docker Container created?">
+            Docker Container چگونه ایجاد می‌شود؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="در میان گزینه‌های سؤال، با دستور docker run ایجاد می‌شود."
+                data-en="Among the listed choices, it is created with docker run.">
+                در میان گزینه‌های سؤال، با دستور <code>docker run</code> ایجاد می‌شود.
+            </span>
+        </p>
+        <p data-fa="docker run در عمل ترکیبی از docker create و docker start است؛ یعنی Container را از روی Image ایجاد و سپس اجرا می‌کند."
+            data-en="docker run effectively combines docker create and docker start: it creates a Container from an Image and then starts it.">
+            <code>docker run</code> کانتینر را از Image ایجاد و بلافاصله اجرا می‌کند.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="دستور CMD در Dockerfile چه کاری انجام می‌دهد؟"
+            data-en="What does CMD do in a Dockerfile?">
+            دستور CMD در Dockerfile چه کاری انجام می‌دهد؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="دستور یا آرگومان پیش‌فرض زمان اجرای Container را تعیین می‌کند."
+                data-en="It defines the default command or arguments used when the Container starts.">
+                دستور یا آرگومان پیش‌فرض زمان اجرای Container را تعیین می‌کند.
+            </span>
+        </p>
+        <p data-fa="CMD هنگام docker build اجرا نمی‌شود؛ مقدار آن در Image ثبت می‌شود و هنگام شروع Container به کار می‌رود. کاربر می‌تواند آن را در docker run بازنویسی کند."
+            data-en="CMD does not run during docker build. Its value is stored in the Image and used when the Container starts. The user can override it in docker run.">
+            CMD در زمان اجرای Container استفاده می‌شود و با آرگومان انتهای <code>docker run</code> قابل بازنویسی است.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="برای حذف Docker Image از چه دستوری استفاده می‌شود؟"
+            data-en="Which command removes a Docker Image?">
+            برای حذف Docker Image از چه دستوری استفاده می‌شود؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="دستور docker rmi."
+                data-en="The docker rmi command.">
+                دستور <code>docker rmi</code>.
+            </span>
+        </p>
+        <p data-fa="rmi مخفف remove image است. دستور docker rm برای حذف Container استفاده می‌شود. گزینه علامت‌خورده «Docker images rmi» در PDF یک دستور معتبر برای حذف Image نیست."
+            data-en="rmi means remove image. docker rm removes a Container. The marked choice 'Docker images rmi' in the PDF is not a valid Image-removal command.">
+            <code>docker rmi image-name</code> Image را حذف می‌کند؛ <code>docker rm</code> مخصوص Container است.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="برای کپی و Extract خودکار فایل در Dockerfile از کدام دستور استفاده می‌شود؟"
+            data-en="Which Dockerfile instruction copies and automatically extracts a file?">
+            برای کپی و Extract خودکار فایل در Dockerfile از کدام دستور استفاده می‌شود؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="دستور ADD." data-en="The ADD instruction.">
+                دستور <code>ADD</code>.
+            </span>
+        </p>
+        <p data-fa="ADD می‌تواند آرشیو tar محلی را هنگام کپی به‌صورت خودکار Extract کند. COPY فقط فایل‌ها و پوشه‌ها را کپی می‌کند و به‌دلیل رفتار شفاف‌تر، در حالت عادی انتخاب پیشنهادی است."
+            data-en="ADD can automatically extract a local tar archive while copying it. COPY only copies files and directories and is normally preferred because its behavior is clearer.">
+            <code>ADD</code> آرشیو tar محلی را Extract می‌کند؛ برای کپی ساده بهتر است از <code>COPY</code> استفاده شود.
+        </p>
+    </li>
+
+    <li>
+        <h3 data-fa="اگر Image فاقد CMD و ENTRYPOINT باشد، آیا می‌توان Container آن را فعال نگه داشت؟"
+            data-en="If an Image has no CMD or ENTRYPOINT, can its Container be kept running?">
+            اگر Image فاقد CMD و ENTRYPOINT باشد، آیا می‌توان Container آن را فعال نگه داشت؟
+        </h3>
+        <p><strong data-fa="پاسخ صحیح:" data-en="Correct answer:">پاسخ صحیح:</strong>
+            <span data-fa="بله؛ می‌توان هنگام docker run فرمانی طولانی‌مدت مانند sleep ارائه کرد."
+                data-en="Yes. A long-running command such as sleep can be supplied to docker run.">
+                بله؛ می‌توان هنگام <code>docker run</code> فرمانی طولانی‌مدت مانند <code>sleep</code> ارائه کرد.
+            </span>
+        </p>
+        <p data-fa="Container فقط تا زمانی فعال می‌ماند که Process اصلی آن در حال اجرا باشد. اگر Image فرمان پیش‌فرض نداشته باشد باید فرمان را هنگام اجرا بدهیم؛ برای مثال docker run image-name sleep infinity."
+            data-en="A Container remains running only while its main process is alive. If the Image has no default command, one must be supplied at runtime, for example docker run image-name sleep infinity.">
+            عمر Container به Process اصلی آن وابسته است؛ <code>sleep infinity</code> یک Process طولانی‌مدت ایجاد می‌کند.
+        </p>
+        <pre><code>docker run image-name sleep infinity</code></pre>
+    </li>
+</ol>
