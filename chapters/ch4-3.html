@@ -516,3 +516,116 @@ docker history ubuntu-demo:v1
     </div>
 
 </section>
+
+<!-- ===================== RUN QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی دستور RUN" data-en="RUN Instruction Quiz">
+        سؤالات تستی دستور RUN
+    </h2>
+    <p data-fa="با این سؤالات، کاربرد دستور RUN و روش‌های بهینه‌سازی آن را مرور کنید."
+        data-en="Review the RUN instruction and its optimization techniques.">
+        با این سؤالات، کاربرد دستور <code>RUN</code> و روش‌های بهینه‌سازی آن را مرور کنید.
+    </p>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="دستور RUN چه زمانی اجرا می‌شود؟" data-en="When is the RUN instruction executed?">
+                دستور <code>RUN</code> چه زمانی اجرا می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="هنگام Build شدن Image" data-en="While building the Image">هنگام Build شدن Image</li>
+                <li data-fa="فقط هنگام توقف Container" data-en="Only when stopping the Container">فقط هنگام توقف Container</li>
+                <li data-fa="هنگام Push به Registry" data-en="When pushing to a Registry">هنگام Push به Registry</li>
+                <li data-fa="بعد از حذف Image" data-en="After removing the Image">بعد از حذف Image</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — RUN در زمان docker build اجرا می‌شود و نتیجهٔ آن در Image ذخیره می‌شود."
+                data-en="Correct answer: Option 1 — RUN executes during docker build and stores its result in the Image.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>RUN</code> در زمان <code>docker build</code> اجرا می‌شود و نتیجهٔ آن در Image ذخیره می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="هر دستور RUN معمولاً چه اثری روی Docker Image دارد؟"
+                data-en="What effect does each RUN instruction normally have on a Docker Image?">
+                هر دستور <code>RUN</code> معمولاً چه اثری روی Docker Image دارد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="یک Container دائمی ایجاد می‌کند" data-en="Creates a permanent Container">یک Container دائمی ایجاد می‌کند</li>
+                <li data-fa="یک Layer جدید ایجاد می‌کند" data-en="Creates a new layer">یک Layer جدید ایجاد می‌کند</li>
+                <li data-fa="تمام Layerهای قبلی را حذف می‌کند" data-en="Removes all previous layers">تمام Layerهای قبلی را حذف می‌کند</li>
+                <li data-fa="Tag ایمیج را تغییر می‌دهد" data-en="Changes the Image tag">Tag ایمیج را تغییر می‌دهد</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — نتیجهٔ هر RUN معمولاً به‌صورت یک Layer جدید در Image ثبت می‌شود."
+                data-en="Correct answer: Option 2 — The result of each RUN instruction is normally stored as a new Image layer.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — نتیجهٔ هر <code>RUN</code> معمولاً به‌صورت یک Layer جدید در Image ثبت می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام نمونه Shell Form دستور RUN است؟"
+                data-en="Which example uses the shell form of RUN?">
+                کدام نمونه Shell Form دستور <code>RUN</code> است؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>RUN apt-get update</code></li>
+                <li><code>RUN ["apt-get", "update"]</code></li>
+                <li><code>CMD ["apt-get", "update"]</code></li>
+                <li><code>FROM apt-get:update</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — نوشتن فرمان به‌صورت متن بعد از RUN، Shell Form است."
+                data-en="Correct answer: Option 1 — Writing the command as plain text after RUN uses shell form.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — نوشتن فرمان به‌صورت متن بعد از <code>RUN</code>، Shell Form است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="چرا دستورهای مرتبط apt-get بهتر است در یک RUN ترکیب شوند؟"
+                data-en="Why should related apt-get commands be combined into one RUN instruction?">
+                چرا دستورهای مرتبط <code>apt-get</code> بهتر است در یک <code>RUN</code> ترکیب شوند؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="برای کاهش Layerهای اضافی و جلوگیری از Cache نامعتبر" data-en="To reduce extra layers and avoid stale cache">برای کاهش Layerهای اضافی و جلوگیری از Cache نامعتبر</li>
+                <li data-fa="برای اجرای دستورها هنگام شروع Container" data-en="To run commands when the Container starts">برای اجرای دستورها هنگام شروع Container</li>
+                <li data-fa="برای تغییر Base Image" data-en="To change the Base Image">برای تغییر Base Image</li>
+                <li data-fa="برای ساخت Volume" data-en="To create a Volume">برای ساخت Volume</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — ترکیب update، install و پاک‌سازی در یک RUN، Layer و دادهٔ اضافی را کاهش می‌دهد."
+                data-en="Correct answer: Option 1 — Combining update, install, and cleanup reduces extra layers and cached data.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — ترکیب update، install و پاک‌سازی در یک <code>RUN</code>، Layer و دادهٔ اضافی را کاهش می‌دهد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای مشاهدهٔ Layerهای ایجادشده توسط RUN از کدام دستور استفاده می‌شود؟"
+                data-en="Which command shows the layers created by RUN instructions?">
+                برای مشاهدهٔ Layerهای ایجادشده توسط <code>RUN</code> از کدام دستور استفاده می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker ps</code></li>
+                <li><code>docker logs</code></li>
+                <li><code>docker history image-name</code></li>
+                <li><code>docker volume ls</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — docker history تاریخچه و Layerهای Image را نمایش می‌دهد."
+                data-en="Correct answer: Option 3 — docker history displays the Image history and layers.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — <code>docker history</code> تاریخچه و Layerهای Image را نمایش می‌دهد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="تفاوت اصلی RUN و CMD چیست؟" data-en="What is the main difference between RUN and CMD?">
+                تفاوت اصلی <code>RUN</code> و <code>CMD</code> چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="RUN هنگام Build اجرا می‌شود؛ CMD فرمان پیش‌فرض زمان اجرای Container را تعیین می‌کند" data-en="RUN executes during build; CMD defines the default command for Container runtime">RUN هنگام Build اجرا می‌شود؛ CMD فرمان پیش‌فرض زمان اجرای Container را تعیین می‌کند</li>
+                <li data-fa="RUN فقط برای Windows و CMD فقط برای Linux است" data-en="RUN is only for Windows and CMD only for Linux">RUN فقط برای Windows و CMD فقط برای Linux است</li>
+                <li data-fa="هر دو دقیقاً یک کار انجام می‌دهند" data-en="They do exactly the same thing">هر دو دقیقاً یک کار انجام می‌دهند</li>
+                <li data-fa="CMD هنگام Build اجرا می‌شود و RUN هنگام Push" data-en="CMD executes during build and RUN during push">CMD هنگام Build اجرا می‌شود و RUN هنگام Push</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — RUN بخشی از فرایند ساخت Image است، اما CMD هنگام اجرای Container استفاده می‌شود."
+                data-en="Correct answer: Option 1 — RUN is part of the Image build process, while CMD is used when the Container starts.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>RUN</code> بخشی از فرایند ساخت Image است، اما <code>CMD</code> هنگام اجرای Container استفاده می‌شود.
+            </p>
+        </li>
+    </ol>
+</section>

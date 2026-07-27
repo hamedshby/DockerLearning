@@ -500,3 +500,117 @@ docker run hello-cmd ls
     </div>
 
 </section>
+
+<!-- ===================== CMD QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی دستور CMD" data-en="CMD Instruction Quiz">
+        سؤالات تستی دستور CMD
+    </h2>
+    <p data-fa="با این سؤالات، کاربرد و رفتار دستور CMD را مرور کنید."
+        data-en="Review the usage and behavior of the CMD instruction.">
+        با این سؤالات، کاربرد و رفتار دستور <code>CMD</code> را مرور کنید.
+    </p>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="دستور CMD در Dockerfile چه کاری انجام می‌دهد؟"
+                data-en="What does CMD do in a Dockerfile?">
+                دستور <code>CMD</code> در Dockerfile چه کاری انجام می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="فرمان پیش‌فرض زمان اجرای Container را تعیین می‌کند" data-en="Defines the default command when the Container starts">فرمان پیش‌فرض زمان اجرای Container را تعیین می‌کند</li>
+                <li data-fa="Base Image را انتخاب می‌کند" data-en="Selects the Base Image">Base Image را انتخاب می‌کند</li>
+                <li data-fa="فایل‌ها را به Image کپی می‌کند" data-en="Copies files into the Image">فایل‌ها را به Image کپی می‌کند</li>
+                <li data-fa="Image را در Registry ذخیره می‌کند" data-en="Stores the Image in a Registry">Image را در Registry ذخیره می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — CMD فرمان یا آرگومان پیش‌فرضی را مشخص می‌کند که هنگام شروع Container استفاده می‌شود."
+                data-en="Correct answer: Option 1 — CMD defines the default command or arguments used when the Container starts.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>CMD</code> فرمان یا آرگومان پیش‌فرضی را مشخص می‌کند که هنگام شروع Container استفاده می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="دستور CMD چه زمانی اجرا می‌شود؟" data-en="When is CMD executed?">
+                دستور <code>CMD</code> چه زمانی اجرا می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="هنگام docker build" data-en="During docker build">هنگام docker build</li>
+                <li data-fa="هنگام شروع Container" data-en="When the Container starts">هنگام شروع Container</li>
+                <li data-fa="هنگام docker pull" data-en="During docker pull">هنگام docker pull</li>
+                <li data-fa="هنگام حذف Image" data-en="When the Image is removed">هنگام حذف Image</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — CMD در زمان Build اجرا نمی‌شود و مقدار آن برای زمان اجرای Container در Image ثبت می‌شود."
+                data-en="Correct answer: Option 2 — CMD does not run during build; its value is stored for Container runtime.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — <code>CMD</code> در زمان Build اجرا نمی‌شود و مقدار آن برای زمان اجرای Container در Image ثبت می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام نمونه Exec Form صحیح دستور CMD است؟"
+                data-en="Which example is the correct exec form of CMD?">
+                کدام نمونه Exec Form صحیح دستور <code>CMD</code> است؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>CMD dotnet Shop.Api.dll</code></li>
+                <li><code>CMD ["dotnet", "Shop.Api.dll"]</code></li>
+                <li><code>RUN ["dotnet", "Shop.Api.dll"]</code></li>
+                <li><code>CMD = dotnet Shop.Api.dll</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Exec Form به‌صورت آرایهٔ JSON نوشته می‌شود و برنامه و آرگومان‌ها عناصر جداگانه دارند."
+                data-en="Correct answer: Option 2 — Exec form uses a JSON array with the executable and arguments as separate elements.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — Exec Form به‌صورت آرایهٔ JSON نوشته می‌شود و برنامه و آرگومان‌ها عناصر جداگانه دارند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="اگر پس از نام Image در docker run یک فرمان بنویسیم چه اتفاقی می‌افتد؟"
+                data-en="What happens when a command is supplied after the Image name in docker run?">
+                اگر پس از نام Image در <code>docker run</code> یک فرمان بنویسیم چه اتفاقی می‌افتد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="فرمان CMD بازنویسی می‌شود" data-en="The CMD command is overridden">فرمان CMD بازنویسی می‌شود</li>
+                <li data-fa="Dockerfile حذف می‌شود" data-en="The Dockerfile is deleted">Dockerfile حذف می‌شود</li>
+                <li data-fa="یک Base Image جدید ساخته می‌شود" data-en="A new Base Image is created">یک Base Image جدید ساخته می‌شود</li>
+                <li data-fa="Build دوباره اجرا می‌شود" data-en="The build runs again">Build دوباره اجرا می‌شود</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — فرمان انتهای docker run جایگزین CMD پیش‌فرض Image می‌شود."
+                data-en="Correct answer: Option 1 — The command at the end of docker run replaces the Image's default CMD.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — فرمان انتهای <code>docker run</code> جایگزین <code>CMD</code> پیش‌فرض Image می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="اگر چند دستور CMD در یک Build Stage نوشته شود کدام‌یک استفاده می‌شود؟"
+                data-en="If multiple CMD instructions exist in one build stage, which one is used?">
+                اگر چند دستور <code>CMD</code> در یک Build Stage نوشته شود کدام‌یک استفاده می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="همهٔ آن‌ها به‌ترتیب اجرا می‌شوند" data-en="All of them execute in order">همهٔ آن‌ها به‌ترتیب اجرا می‌شوند</li>
+                <li data-fa="اولین CMD" data-en="The first CMD">اولین CMD</li>
+                <li data-fa="آخرین CMD" data-en="The last CMD">آخرین CMD</li>
+                <li data-fa="هیچ‌کدام" data-en="None of them">هیچ‌کدام</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — در هر Build Stage فقط آخرین CMD مؤثر است."
+                data-en="Correct answer: Option 3 — Only the last CMD in a build stage takes effect.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — در هر Build Stage فقط آخرین <code>CMD</code> مؤثر است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="تفاوت اصلی CMD و ENTRYPOINT چیست؟"
+                data-en="What is the main difference between CMD and ENTRYPOINT?">
+                تفاوت اصلی <code>CMD</code> و <code>ENTRYPOINT</code> چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="CMD معمولاً مقدار پیش‌فرض قابل بازنویسی است؛ ENTRYPOINT برنامهٔ اصلی Container را تثبیت می‌کند" data-en="CMD usually provides overridable defaults; ENTRYPOINT fixes the Container's main executable">CMD معمولاً مقدار پیش‌فرض قابل بازنویسی است؛ ENTRYPOINT برنامهٔ اصلی Container را تثبیت می‌کند</li>
+                <li data-fa="CMD فقط در Windows کار می‌کند" data-en="CMD only works on Windows">CMD فقط در Windows کار می‌کند</li>
+                <li data-fa="ENTRYPOINT هنگام Build اجرا می‌شود" data-en="ENTRYPOINT executes during build">ENTRYPOINT هنگام Build اجرا می‌شود</li>
+                <li data-fa="هیچ تفاوتی ندارند" data-en="There is no difference">هیچ تفاوتی ندارند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — ENTRYPOINT معمولاً برنامهٔ اصلی را تعیین می‌کند و CMD می‌تواند آرگومان‌های پیش‌فرض آن باشد."
+                data-en="Correct answer: Option 1 — ENTRYPOINT normally defines the main executable, while CMD can provide its default arguments.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>ENTRYPOINT</code> معمولاً برنامهٔ اصلی را تعیین می‌کند و <code>CMD</code> می‌تواند آرگومان‌های پیش‌فرض آن باشد.
+            </p>
+        </li>
+    </ol>
+</section>
