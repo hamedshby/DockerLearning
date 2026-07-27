@@ -1,0 +1,436 @@
+<!-- ===================== DOCKER VOLUME ===================== -->
+<h1 data-fa="Docker Volume چیست؟" data-en="What is a Docker Volume?">
+    Docker Volume چیست؟
+</h1>
+
+<p data-fa="فایل‌هایی که یک Container داخل لایهٔ قابل‌نوشتن خود ایجاد می‌کند، به عمر همان Container وابسته‌اند. با حذف Container ممکن است این داده‌ها نیز از دست بروند. Docker Volume فضای ذخیره‌سازی مستقلی است که Docker آن را مدیریت می‌کند و داده‌ها را خارج از لایهٔ قابل‌نوشتن Container نگه می‌دارد."
+    data-en="Files created in a Container's writable layer are tied to that Container. Removing the Container may also remove those files. A Docker Volume is Docker-managed storage that keeps data outside the Container's writable layer.">
+    فایل‌هایی که یک Container داخل لایهٔ قابل‌نوشتن خود ایجاد می‌کند، به عمر همان Container وابسته‌اند.
+    Docker Volume فضای ذخیره‌سازی مستقلی است که Docker آن را مدیریت می‌کند و داده‌ها را خارج از Container نگه می‌دارد.
+</p>
+
+<div class="info-box">
+    <strong data-fa="اصل مهم" data-en="Key Principle">اصل مهم</strong>
+    <p data-fa="Container باید قابل حذف و جایگزینی باشد، اما داده‌های مهم آن باید مستقل و ماندگار باقی بمانند."
+        data-en="A Container should be disposable and replaceable, while its important data remains independent and persistent.">
+        Container باید قابل حذف و جایگزینی باشد، اما داده‌های مهم آن باید مستقل و ماندگار باقی بمانند.
+    </p>
+</div>
+
+<div class="diagram-box">
+    <pre>
+Container
+    │
+    │  Mount
+    ▼
+Docker Volume
+    │
+    └── Data survives Container removal
+    </pre>
+</div>
+
+<!-- ===================== WHY VOLUMES ===================== -->
+<h1 data-fa="چرا به Docker Volume نیاز داریم؟" data-en="Why Do We Need Docker Volumes?">
+    چرا به Docker Volume نیاز داریم؟
+</h1>
+
+<ul>
+    <li data-fa="ماندگاری اطلاعات پس از حذف یا ساخت مجدد Container"
+        data-en="Persisting data after a Container is removed or recreated">
+        ماندگاری اطلاعات پس از حذف یا ساخت مجدد Container
+    </li>
+    <li data-fa="جداکردن چرخهٔ عمر داده از چرخهٔ عمر Container"
+        data-en="Separating the data lifecycle from the Container lifecycle">
+        جداکردن چرخهٔ عمر داده از چرخهٔ عمر Container
+    </li>
+    <li data-fa="اشتراک‌گذاری کنترل‌شدهٔ داده بین چند Container"
+        data-en="Controlled data sharing between multiple Containers">
+        اشتراک‌گذاری کنترل‌شدهٔ داده بین چند Container
+    </li>
+    <li data-fa="مدیریت ساده‌تر Backup و Restore" data-en="Simpler backup and restore management">
+        مدیریت ساده‌تر Backup و Restore
+    </li>
+    <li data-fa="عملکرد بهتر نسبت به نوشتن داده در لایهٔ داخلی Container"
+        data-en="Better performance than writing data into the Container layer">
+        عملکرد بهتر نسبت به نوشتن داده در لایهٔ داخلی Container
+    </li>
+</ul>
+
+<div class="info-box">
+    <strong data-fa="کاربرد رایج" data-en="Common Use Case">کاربرد رایج</strong>
+    <p data-fa="دیتابیس‌هایی مانند SQL Server، PostgreSQL و MySQL باید اطلاعات خود را داخل Volume ذخیره کنند تا با حذف Container، داده‌هایشان از بین نرود."
+        data-en="Databases such as SQL Server, PostgreSQL, and MySQL should store their data in a Volume so it survives Container removal.">
+        دیتابیس‌هایی مانند SQL Server، PostgreSQL و MySQL باید اطلاعات خود را داخل Volume ذخیره کنند.
+    </p>
+</div>
+
+<!-- ===================== VOLUME TYPES ===================== -->
+<h1 data-fa="Named Volume و Anonymous Volume" data-en="Named and Anonymous Volumes">
+    Named Volume و Anonymous Volume
+</h1>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="نوع" data-en="Type">نوع</th>
+            <th data-fa="نمونه" data-en="Example">نمونه</th>
+            <th data-fa="ویژگی" data-en="Description">ویژگی</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Named Volume</td>
+            <td><code>db-data:/var/lib/data</code></td>
+            <td data-fa="نام مشخص دارد و مدیریت، استفادهٔ مجدد و Backup آن ساده‌تر است."
+                data-en="Has an explicit name and is easier to manage, reuse, and back up.">
+                نام مشخص دارد و مدیریت و استفادهٔ مجدد از آن ساده‌تر است.
+            </td>
+        </tr>
+        <tr>
+            <td>Anonymous Volume</td>
+            <td><code>/var/lib/data</code></td>
+            <td data-fa="Docker یک نام تصادفی برای آن می‌سازد و پیدا کردن و مدیریت آن دشوارتر است."
+                data-en="Docker generates a random name, making it harder to identify and manage.">
+                Docker یک نام تصادفی برای آن می‌سازد و مدیریت آن دشوارتر است.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="info-box">
+    <strong>Best Practice</strong>
+    <p data-fa="برای داده‌های مهم و قابل‌مدیریت، از Named Volume استفاده کنید."
+        data-en="Use Named Volumes for important data that must be easy to manage.">
+        برای داده‌های مهم و قابل‌مدیریت، از Named Volume استفاده کنید.
+    </p>
+</div>
+
+<!-- ===================== CREATE AND LIST ===================== -->
+<h1 data-fa="ساخت و مشاهدهٔ Volumeها" data-en="Creating and Listing Volumes">
+    ساخت و مشاهدهٔ Volumeها
+</h1>
+
+<h3 data-fa="ساخت Volume" data-en="Create a Volume">ساخت Volume</h3>
+
+<pre><code>docker volume create app-data</code></pre>
+
+<h3 data-fa="مشاهدهٔ Volumeها" data-en="List Volumes">مشاهدهٔ Volumeها</h3>
+
+<pre><code>docker volume ls</code></pre>
+
+<h3 data-fa="مشاهدهٔ جزئیات Volume" data-en="Inspect a Volume">مشاهدهٔ جزئیات Volume</h3>
+
+<pre><code>docker volume inspect app-data</code></pre>
+
+<p data-fa="خروجی inspect شامل نام Volume، Driver، محل نگهداری و Labelهای آن است. مسیر فیزیکی Volume را Docker مدیریت می‌کند و معمولاً نباید فایل‌های آن را مستقیماً از سیستم میزبان تغییر دهید."
+    data-en="The inspect output includes the Volume name, driver, storage location, and labels. Docker manages the physical location, and its files should not normally be modified directly from the host.">
+    خروجی <code>inspect</code> شامل نام Volume، Driver، محل نگهداری و Labelهای آن است.
+    مسیر فیزیکی Volume را Docker مدیریت می‌کند.
+</p>
+
+<!-- ===================== MOUNT VOLUME ===================== -->
+<h1 data-fa="اتصال Volume به Container" data-en="Mounting a Volume into a Container">
+    اتصال Volume به Container
+</h1>
+
+<p data-fa="برای اتصال Volume می‌توان از گزینهٔ کوتاه ‎-v یا گزینهٔ خواناتر --mount استفاده کرد."
+    data-en="A Volume can be attached using the short -v option or the more explicit --mount option.">
+    برای اتصال Volume می‌توان از گزینهٔ کوتاه <code>-v</code> یا گزینهٔ خواناتر <code>--mount</code> استفاده کرد.
+</p>
+
+<h3 data-fa="روش کوتاه با ‎-v" data-en="Short Syntax with -v">روش کوتاه با <code>-v</code></h3>
+
+<pre><code>docker run -d \
+  --name web \
+  -v app-data:/usr/share/nginx/html \
+  nginx</code></pre>
+
+<p data-fa="بخش سمت چپ نام Volume و بخش سمت راست مسیر داخل Container است."
+    data-en="The left side is the Volume name, and the right side is the path inside the Container.">
+    بخش سمت چپ نام Volume و بخش سمت راست مسیر داخل Container است.
+</p>
+
+<h3 data-fa="روش خواناتر با ‎--mount" data-en="Explicit Syntax with --mount">
+    روش خواناتر با <code>--mount</code>
+</h3>
+
+<pre><code>docker run -d \
+  --name web \
+  --mount type=volume,source=app-data,target=/usr/share/nginx/html \
+  nginx</code></pre>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th><code>-v</code></th>
+            <th><code>--mount</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="کوتاه و مناسب استفادهٔ روزمره" data-en="Short and convenient for daily use">
+                کوتاه و مناسب استفادهٔ روزمره
+            </td>
+            <td data-fa="خواناتر، صریح‌تر و مناسب اسکریپت‌ها و محیط Production"
+                data-en="More explicit and suitable for scripts and production">
+                خواناتر، صریح‌تر و مناسب اسکریپت‌ها و محیط Production
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== PERSISTENCE DEMO ===================== -->
+<h1 data-fa="آزمایش ماندگاری داده" data-en="Testing Data Persistence">
+    آزمایش ماندگاری داده
+</h1>
+
+<h3 data-fa="۱. ساخت Volume" data-en="1. Create the Volume">۱. ساخت Volume</h3>
+
+<pre><code>docker volume create demo-data</code></pre>
+
+<h3 data-fa="۲. نوشتن اطلاعات داخل Volume" data-en="2. Write Data into the Volume">
+    ۲. نوشتن اطلاعات داخل Volume
+</h3>
+
+<pre><code>docker run --rm \
+  -v demo-data:/data \
+  alpine \
+  sh -c "echo 'Hello from Docker Volume' > /data/message.txt"</code></pre>
+
+<h3 data-fa="۳. خواندن اطلاعات با یک Container جدید" data-en="3. Read the Data with a New Container">
+    ۳. خواندن اطلاعات با یک Container جدید
+</h3>
+
+<pre><code>docker run --rm \
+  -v demo-data:/data \
+  alpine \
+  cat /data/message.txt</code></pre>
+
+<div class="info-box">
+    <strong data-fa="نتیجه" data-en="Result">نتیجه</strong>
+    <p data-fa="Container اول پس از پایان حذف می‌شود، اما Container دوم همچنان فایل ذخیره‌شده در Volume را می‌خواند. این رفتار نشان می‌دهد داده به Container وابسته نیست."
+        data-en="The first Container is removed after it exits, but the second Container can still read the file stored in the Volume. The data is independent of the Container.">
+        Container اول حذف می‌شود، اما Container دوم همچنان فایل ذخیره‌شده در Volume را می‌خواند.
+    </p>
+</div>
+
+<!-- ===================== SQL SERVER ===================== -->
+<h1 data-fa="استفاده از Volume برای SQL Server" data-en="Using a Volume with SQL Server">
+    استفاده از Volume برای SQL Server
+</h1>
+
+<pre><code>docker volume create sql-data
+
+docker run -d \
+  --name sql-server \
+  -e "ACCEPT_EULA=Y" \
+  -e "MSSQL_SA_PASSWORD=Your_Strong_Password123!" \
+  -p 1433:1433 \
+  -v sql-data:/var/opt/mssql \
+  mcr.microsoft.com/mssql/server:2022-latest</code></pre>
+
+<p data-fa="SQL Server داده‌های خود را در مسیر ‎/var/opt/mssql نگه می‌دارد. با اتصال sql-data به این مسیر، حذف و ساخت مجدد Container باعث حذف دیتابیس‌ها نمی‌شود."
+    data-en="SQL Server stores its data under /var/opt/mssql. Mounting sql-data at this path allows databases to survive Container removal and recreation.">
+    SQL Server داده‌های خود را در مسیر <code>/var/opt/mssql</code> نگه می‌دارد.
+    با اتصال <code>sql-data</code> به این مسیر، حذف و ساخت مجدد Container باعث حذف دیتابیس‌ها نمی‌شود.
+</p>
+
+<div class="info-box">
+    <strong data-fa="نکتهٔ امنیتی" data-en="Security Note">نکتهٔ امنیتی</strong>
+    <p data-fa="رمز عبور واقعی را مستقیماً داخل Dockerfile یا Git ذخیره نکنید. در محیط واقعی از Secret Manager یا متغیرهای محیطی امن استفاده کنید."
+        data-en="Do not store real passwords directly in a Dockerfile or Git. Use a secret manager or secure environment variables in real environments.">
+        رمز عبور واقعی را مستقیماً داخل Dockerfile یا Git ذخیره نکنید.
+    </p>
+</div>
+
+<!-- ===================== REMOVE VOLUMES ===================== -->
+<h1 data-fa="حذف و پاک‌سازی Volumeها" data-en="Removing and Cleaning Up Volumes">
+    حذف و پاک‌سازی Volumeها
+</h1>
+
+<h3 data-fa="حذف یک Volume" data-en="Remove One Volume">حذف یک Volume</h3>
+
+<pre><code>docker volume rm app-data</code></pre>
+
+<h3 data-fa="حذف Volumeهای بدون استفاده" data-en="Remove Unused Volumes">
+    حذف Volumeهای بدون استفاده
+</h3>
+
+<pre><code>docker volume prune</code></pre>
+
+<div class="info-box">
+    <strong data-fa="هشدار" data-en="Warning">هشدار</strong>
+    <p data-fa="حذف Volume معمولاً به معنی حذف دائمی داده‌های آن است. پیش از اجرای docker volume rm یا docker volume prune از داده‌های مهم Backup تهیه کنید."
+        data-en="Removing a Volume normally deletes its data permanently. Back up important data before running docker volume rm or docker volume prune.">
+        حذف Volume معمولاً به معنی حذف دائمی داده‌های آن است. پیش از پاک‌سازی از داده‌های مهم Backup تهیه کنید.
+    </p>
+</div>
+
+<!-- ===================== BEST PRACTICES ===================== -->
+<h1 data-fa="بهترین روش‌های استفاده از Volume" data-en="Docker Volume Best Practices">
+    بهترین روش‌های استفاده از Volume
+</h1>
+
+<ul>
+    <li data-fa="برای داده‌های مهم از Named Volume با نام واضح استفاده کنید."
+        data-en="Use clearly named Volumes for important data.">
+        برای داده‌های مهم از Named Volume با نام واضح استفاده کنید.
+    </li>
+    <li data-fa="قبل از حذف Volume از اطلاعات مهم Backup بگیرید."
+        data-en="Back up important data before removing a Volume.">
+        قبل از حذف Volume از اطلاعات مهم Backup بگیرید.
+    </li>
+    <li data-fa="رمز عبور و اطلاعات حساس را داخل Volume عمومی یا Image قرار ندهید."
+        data-en="Do not place passwords or sensitive information in a public Volume or Image.">
+        رمز عبور و اطلاعات حساس را داخل Volume عمومی یا Image قرار ندهید.
+    </li>
+    <li data-fa="Permission مسیر مقصد را با کاربر داخل Container هماهنگ کنید."
+        data-en="Match destination permissions with the user running inside the Container.">
+        Permission مسیر مقصد را با کاربر داخل Container هماهنگ کنید.
+    </li>
+    <li data-fa="Volumeهای بدون مالک و بدون استفاده را دوره‌ای بررسی کنید."
+        data-en="Periodically review unused and orphaned Volumes.">
+        Volumeهای بدون مالک و بدون استفاده را دوره‌ای بررسی کنید.
+    </li>
+</ul>
+
+<!-- ===================== LAB ===================== -->
+<h1 data-fa="تمرین عملی: ماندگاری داده با Volume" data-en="Lab: Persisting Data with a Volume">
+    تمرین عملی: ماندگاری داده با Volume
+</h1>
+
+<section class="lab-section">
+    <h3 data-fa="گام ۱: ساخت Volume" data-en="Step 1: Create a Volume">گام ۱: ساخت Volume</h3>
+    <pre><code>docker volume create nginx-data</code></pre>
+
+    <h3 data-fa="گام ۲: ایجاد فایل HTML" data-en="Step 2: Create an HTML File">
+        گام ۲: ایجاد فایل HTML
+    </h3>
+    <pre><code>docker run --rm \
+  -v nginx-data:/data \
+  alpine \
+  sh -c "echo '&lt;h1&gt;Docker Volume Works&lt;/h1&gt;' > /data/index.html"</code></pre>
+
+    <h3 data-fa="گام ۳: اجرای Nginx" data-en="Step 3: Run Nginx">گام ۳: اجرای Nginx</h3>
+    <pre><code>docker run -d \
+  --name volume-web \
+  -p 8080:80 \
+  -v nginx-data:/usr/share/nginx/html:ro \
+  nginx</code></pre>
+
+    <h3 data-fa="گام ۴: مشاهده در مرورگر" data-en="Step 4: Open in the Browser">
+        گام ۴: مشاهده در مرورگر
+    </h3>
+    <pre><code>http://localhost:8080</code></pre>
+
+    <h3 data-fa="گام ۵: ساخت مجدد Container" data-en="Step 5: Recreate the Container">
+        گام ۵: ساخت مجدد Container
+    </h3>
+    <pre><code>docker rm -f volume-web
+
+docker run -d \
+  --name volume-web-new \
+  -p 8080:80 \
+  -v nginx-data:/usr/share/nginx/html:ro \
+  nginx</code></pre>
+
+    <div class="lab-result">
+        <strong data-fa="نتیجهٔ تمرین" data-en="Lab Result">نتیجهٔ تمرین</strong>
+        <p data-fa="Container اول حذف شد، اما صفحهٔ HTML به دلیل ذخیره‌شدن در nginx-data باقی ماند و Container جدید همان داده را نمایش داد."
+            data-en="The first Container was removed, but the HTML page remained in nginx-data, and the new Container displayed the same data.">
+            Container اول حذف شد، اما صفحهٔ HTML داخل <code>nginx-data</code> باقی ماند و Container جدید همان داده را نمایش داد.
+        </p>
+    </div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی Docker Volume" data-en="Docker Volume Quiz">
+        سؤالات تستی Docker Volume
+    </h2>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="هدف اصلی Docker Volume چیست؟" data-en="What is the main purpose of a Docker Volume?">
+                هدف اصلی Docker Volume چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="افزایش سرعت اینترنت" data-en="Increasing internet speed">افزایش سرعت اینترنت</li>
+                <li data-fa="نگهداری داده مستقل از عمر Container" data-en="Keeping data independent of the Container lifecycle">نگهداری داده مستقل از عمر Container</li>
+                <li data-fa="ساخت Dockerfile" data-en="Creating a Dockerfile">ساخت Dockerfile</li>
+                <li data-fa="تغییر Base Image" data-en="Changing the Base Image">تغییر Base Image</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Volume داده را خارج از لایهٔ قابل‌نوشتن Container نگه می‌دارد."
+                data-en="Correct answer: Option 2 — A Volume stores data outside the Container's writable layer.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — Volume داده را خارج از لایهٔ قابل‌نوشتن Container نگه می‌دارد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام دستور یک Named Volume می‌سازد؟" data-en="Which command creates a Named Volume?">
+                کدام دستور یک Named Volume می‌سازد؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker volume create app-data</code></li>
+                <li><code>docker create volume app-data</code></li>
+                <li><code>docker run volume app-data</code></li>
+                <li><code>docker image create app-data</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — docker volume create برای ساخت Volume استفاده می‌شود."
+                data-en="Correct answer: Option 1 — docker volume create creates a Volume.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>docker volume create</code> برای ساخت Volume استفاده می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="در ‎-v db-data:/var/lib/data بخش سمت چپ چیست؟"
+                data-en="In -v db-data:/var/lib/data, what is the left side?">
+                در <code>-v db-data:/var/lib/data</code> بخش سمت چپ چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="مسیر داخل Container" data-en="The path inside the Container">مسیر داخل Container</li>
+                <li data-fa="نام Volume" data-en="The Volume name">نام Volume</li>
+                <li data-fa="نام Image" data-en="The Image name">نام Image</li>
+                <li data-fa="شمارهٔ پورت" data-en="The port number">شمارهٔ پورت</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — db-data نام Volume و /var/lib/data مسیر داخل Container است."
+                data-en="Correct answer: Option 2 — db-data is the Volume name and /var/lib/data is the Container path.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — <code>db-data</code> نام Volume و مسیر بعدی محل اتصال داخل Container است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="پس از حذف Container متصل به Named Volume چه اتفاقی برای داده می‌افتد؟"
+                data-en="What happens to data after removing a Container attached to a Named Volume?">
+                پس از حذف Container متصل به Named Volume چه اتفاقی برای داده می‌افتد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="داده همیشه همراه Container حذف می‌شود" data-en="The data is always removed with the Container">داده همیشه همراه Container حذف می‌شود</li>
+                <li data-fa="Volume و داده مستقل باقی می‌مانند" data-en="The Volume and its data remain independently">Volume و داده مستقل باقی می‌مانند</li>
+                <li data-fa="داده به Dockerfile منتقل می‌شود" data-en="The data moves into the Dockerfile">داده به Dockerfile منتقل می‌شود</li>
+                <li data-fa="Image به‌صورت خودکار حذف می‌شود" data-en="The Image is automatically removed">Image به‌صورت خودکار حذف می‌شود</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Named Volume چرخهٔ عمر مستقلی از Container دارد."
+                data-en="Correct answer: Option 2 — A Named Volume has a lifecycle independent of its Container.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — Named Volume چرخهٔ عمر مستقلی از Container دارد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام دستور Volumeهای بدون استفاده را پاک می‌کند؟"
+                data-en="Which command removes unused Volumes?">
+                کدام دستور Volumeهای بدون استفاده را پاک می‌کند؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker volume prune</code></li>
+                <li><code>docker image prune</code></li>
+                <li><code>docker container prune</code></li>
+                <li><code>docker volume stop</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — این دستور Volumeهای بدون استفاده را حذف می‌کند و باید با احتیاط اجرا شود."
+                data-en="Correct answer: Option 1 — This command removes unused Volumes and should be used carefully.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>docker volume prune</code> Volumeهای بدون استفاده را حذف می‌کند.
+            </p>
+        </li>
+    </ol>
+</section>
