@@ -542,3 +542,118 @@ http://localhost:8080
     </div>
 
 </section>
+
+<!-- ===================== COPY AND ADD QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی COPY و ADD" data-en="COPY and ADD Quiz">
+        سؤالات تستی COPY و ADD
+    </h2>
+    <p data-fa="با این سؤالات، کاربرد و تفاوت دستورهای COPY و ADD را مرور کنید."
+        data-en="Review the usage and differences between COPY and ADD.">
+        با این سؤالات، کاربرد و تفاوت دستورهای <code>COPY</code> و <code>ADD</code> را مرور کنید.
+    </p>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="دستور COPY در Dockerfile چه کاری انجام می‌دهد؟"
+                data-en="What does COPY do in a Dockerfile?">
+                دستور <code>COPY</code> در Dockerfile چه کاری انجام می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="فایل‌ها و پوشه‌ها را از Build Context به Image کپی می‌کند" data-en="Copies files and directories from the build context into the Image">فایل‌ها و پوشه‌ها را از Build Context به Image کپی می‌کند</li>
+                <li data-fa="Container را اجرا می‌کند" data-en="Runs the Container">Container را اجرا می‌کند</li>
+                <li data-fa="Image را در Registry منتشر می‌کند" data-en="Pushes the Image to a Registry">Image را در Registry منتشر می‌کند</li>
+                <li data-fa="Volume ایجاد می‌کند" data-en="Creates a Volume">Volume ایجاد می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — COPY فایل‌ها و پوشه‌ها را از Build Context به فایل‌سیستم Image منتقل می‌کند."
+                data-en="Correct answer: Option 1 — COPY transfers files and directories from the build context into the Image filesystem.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>COPY</code> فایل‌ها و پوشه‌ها را از Build Context به فایل‌سیستم Image منتقل می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="در COPY index.html /app/ کدام مسیر مبدأ است؟"
+                data-en="In COPY index.html /app/, which path is the source?">
+                در <code>COPY index.html /app/</code> کدام مسیر مبدأ است؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>/app/</code></li>
+                <li><code>index.html</code></li>
+                <li><code>Dockerfile</code></li>
+                <li data-fa="هر دو مسیر مقصد هستند" data-en="Both paths are destinations">هر دو مسیر مقصد هستند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — آرگومان اول مبدأ داخل Build Context و آرگومان دوم مقصد داخل Image است."
+                data-en="Correct answer: Option 2 — The first argument is the source in the build context and the second is the destination in the Image.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — آرگومان اول مبدأ داخل Build Context و آرگومان دوم مقصد داخل Image است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای کپی معمولی فایل‌ها، کدام دستور پیشنهاد می‌شود؟"
+                data-en="Which instruction is recommended for ordinary file copying?">
+                برای کپی معمولی فایل‌ها، کدام دستور پیشنهاد می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>ADD</code></li>
+                <li><code>RUN</code></li>
+                <li><code>COPY</code></li>
+                <li><code>CMD</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — COPY رفتار ساده‌تر و شفاف‌تری دارد و انتخاب پیش‌فرض برای کپی فایل است."
+                data-en="Correct answer: Option 3 — COPY has simpler, clearer behavior and is the default choice for copying files.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — <code>COPY</code> رفتار ساده‌تر و شفاف‌تری دارد و انتخاب پیش‌فرض برای کپی فایل است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="ویژگی خاص ADD هنگام کپی یک آرشیو tar محلی چیست؟"
+                data-en="What special behavior does ADD have for a local tar archive?">
+                ویژگی خاص <code>ADD</code> هنگام کپی یک آرشیو tar محلی چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="آرشیو را حذف می‌کند" data-en="Deletes the archive">آرشیو را حذف می‌کند</li>
+                <li data-fa="آرشیو را به‌صورت خودکار Extract می‌کند" data-en="Automatically extracts the archive">آرشیو را به‌صورت خودکار Extract می‌کند</li>
+                <li data-fa="آرشیو را به Registry می‌فرستد" data-en="Pushes the archive to a Registry">آرشیو را به Registry می‌فرستد</li>
+                <li data-fa="هیچ تفاوتی با COPY ندارد" data-en="Has no difference from COPY">هیچ تفاوتی با COPY ندارد</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — ADD می‌تواند آرشیو tar محلی را هنگام انتقال به Image به‌صورت خودکار استخراج کند."
+                data-en="Correct answer: Option 2 — ADD can automatically extract a local tar archive while adding it to the Image.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — <code>ADD</code> می‌تواند آرشیو tar محلی را هنگام انتقال به Image به‌صورت خودکار استخراج کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="فایل مبدأ دستور COPY باید در کجا قرار داشته باشد؟"
+                data-en="Where must the COPY source be located?">
+                فایل مبدأ دستور <code>COPY</code> باید در کجا قرار داشته باشد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="در Build Context" data-en="Inside the build context">در Build Context</li>
+                <li data-fa="در هر مسیر دلخواه سیستم میزبان" data-en="Anywhere on the host filesystem">در هر مسیر دلخواه سیستم میزبان</li>
+                <li data-fa="فقط داخل Container در حال اجرا" data-en="Only inside a running Container">فقط داخل Container در حال اجرا</li>
+                <li data-fa="فقط داخل Docker Hub" data-en="Only inside Docker Hub">فقط داخل Docker Hub</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — Docker فقط به فایل‌های داخل Build Context دسترسی دارد."
+                data-en="Correct answer: Option 1 — Docker can only access source files inside the build context.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — Docker فقط به فایل‌های داخل Build Context دسترسی دارد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="فایل .dockerignore چه کمکی به COPY می‌کند؟"
+                data-en="How does .dockerignore help COPY?">
+                فایل <code>.dockerignore</code> چه کمکی به <code>COPY</code> می‌کند؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="Container را متوقف می‌کند" data-en="Stops the Container">Container را متوقف می‌کند</li>
+                <li data-fa="فایل‌های غیرضروری را از Build Context کنار می‌گذارد" data-en="Excludes unnecessary files from the build context">فایل‌های غیرضروری را از Build Context کنار می‌گذارد</li>
+                <li data-fa="تمام فایل‌ها را رمزگذاری می‌کند" data-en="Encrypts all files">تمام فایل‌ها را رمزگذاری می‌کند</li>
+                <li data-fa="دستور COPY را به ADD تبدیل می‌کند" data-en="Converts COPY into ADD">دستور COPY را به ADD تبدیل می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — .dockerignore از ارسال و کپی فایل‌های غیرضروری جلوگیری می‌کند و Build را سبک‌تر می‌سازد."
+                data-en="Correct answer: Option 2 — .dockerignore prevents unnecessary files from being sent and copied, making builds smaller and faster.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — <code>.dockerignore</code> از ارسال و کپی فایل‌های غیرضروری جلوگیری می‌کند و Build را سبک‌تر می‌سازد.
+            </p>
+        </li>
+    </ol>
+</section>
