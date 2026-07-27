@@ -427,6 +427,7 @@ html[dir="rtl"] .toc-part.open .part-title::after {
 .chapter-content {
     display: none;
     animation: fadeIn 0.3s ease;
+    scroll-margin-top: calc(var(--header-height) + 28px);
 }
 
 .chapter-content.active {
