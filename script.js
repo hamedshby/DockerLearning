@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initLangButtons();
     initChapterLinks();
+    initHistoryNavigation();
     restoreLastChapter();
 });
 
@@ -124,7 +125,7 @@ function initChapterLinks() {
     });
 }
 
-async function showChapter(targetId, event) {
+async function showChapter(targetId, event, updateUrl = true) {
     if (event && typeof event.preventDefault === 'function') {
         event.preventDefault();
     }
@@ -177,10 +178,39 @@ async function showChapter(targetId, event) {
 
     localStorage.setItem(STORAGE_KEY_LAST_CHAPTER, targetId);
 
+    if (updateUrl) {
+        setChapterUrl(targetId);
+    }
+
     // بستن سایدبار در موبایل
     if (window.innerWidth <= 768) {
         document.getElementById('sidebar')?.classList.remove('open');
     }
+}
+
+function setChapterUrl(targetId) {
+    const chapterHash = `#${targetId}`;
+    if (window.location.hash === chapterHash) return;
+
+    history.pushState(
+        { chapter: targetId },
+        '',
+        `${window.location.pathname}${window.location.search}${chapterHash}`
+    );
+}
+
+function getChapterIdFromUrl() {
+    return decodeURIComponent(window.location.hash.slice(1));
+}
+
+function initHistoryNavigation() {
+    window.addEventListener('popstate', () => {
+        const chapterId = getChapterIdFromUrl();
+        if (!chapterId) return;
+
+        const link = document.querySelector(`.chapter-list a[data-target="${chapterId}"]`);
+        showChapter(chapterId, link, false);
+    });
 }
 
 
@@ -228,9 +258,10 @@ function filterTOC(query) {
 
 // ============ Utility: Restore last chapter on reload ============
 async function restoreLastChapter() {
-    const lastId = localStorage.getItem(STORAGE_KEY_LAST_CHAPTER);
+    const chapterIdFromUrl = getChapterIdFromUrl();
+    const lastId = chapterIdFromUrl || localStorage.getItem(STORAGE_KEY_LAST_CHAPTER);
     if (!lastId) return;
 
     const link = document.querySelector(`.chapter-list a[data-target="${lastId}"]`);
-    await showChapter(lastId, link);
+    await showChapter(lastId, link, !chapterIdFromUrl);
 }
