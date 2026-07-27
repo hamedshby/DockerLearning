@@ -1267,3 +1267,130 @@ Container
     </div>
 
 </section>
+
+<!-- ===================== CHAPTER 2 QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی فصل دوم" data-en="Chapter 2 Quiz">سؤالات تستی فصل دوم</h2>
+    <p data-fa="با این سؤالات، مفاهیم اصلی Docker Image را مرور کنید."
+        data-en="Review the key Docker Image concepts with these questions.">
+        با این سؤالات، مفاهیم اصلی Docker Image را مرور کنید.
+    </p>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="Docker Image کدام است؟" data-en="What is a Docker Image?">Docker Image کدام است؟</h3>
+            <ol class="quiz-options">
+                <li data-fa="یک نمونهٔ در حال اجرای برنامه" data-en="A running instance of an application">یک نمونهٔ در حال اجرای برنامه</li>
+                <li data-fa="یک الگوی فقط‌خواندنی برای ساخت Container" data-en="A read-only template used to create Containers">یک الگوی فقط‌خواندنی برای ساخت Container</li>
+                <li data-fa="یک شبکهٔ مجازی" data-en="A virtual network">یک شبکهٔ مجازی</li>
+                <li data-fa="یک فضای ذخیره‌سازی دائمی" data-en="Persistent storage">یک فضای ذخیره‌سازی دائمی</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Image یک الگوی فقط‌خواندنی شامل برنامه، Runtime و وابستگی‌هاست."
+                data-en="Correct answer: Option 2 — An Image is a read-only template containing the application, runtime, and dependencies.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — Image یک الگوی فقط‌خواندنی شامل برنامه، Runtime و وابستگی‌هاست.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای دریافت یک Image از Registry از کدام دستور استفاده می‌شود؟"
+                data-en="Which command downloads an Image from a Registry?">
+                برای دریافت یک Image از Registry از کدام دستور استفاده می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker push</code></li>
+                <li><code>docker pull</code></li>
+                <li><code>docker save</code></li>
+                <li><code>docker inspect</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — دستور docker pull ایمیج را از Registry دریافت می‌کند."
+                data-en="Correct answer: Option 2 — docker pull downloads the Image from a Registry.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — دستور <code>docker pull</code> ایمیج را از Registry دریافت می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="مزیت اصلی معماری لایه‌ای Docker Image چیست؟"
+                data-en="What is the main benefit of Docker Image layers?">
+                مزیت اصلی معماری لایه‌ای Docker Image چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="افزایش حجم Image" data-en="Increasing Image size">افزایش حجم Image</li>
+                <li data-fa="حذف نیاز به Registry" data-en="Removing the need for a Registry">حذف نیاز به Registry</li>
+                <li data-fa="استفادهٔ مجدد از لایه‌ها و سریع‌تر شدن Build و انتقال" data-en="Reusing layers for faster builds and transfers">استفادهٔ مجدد از لایه‌ها و سریع‌تر شدن Build و انتقال</li>
+                <li data-fa="اجرای هم‌زمان چند سیستم‌عامل" data-en="Running multiple operating systems simultaneously">اجرای هم‌زمان چند سیستم‌عامل</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — لایه‌های مشترک Cache و دوباره استفاده می‌شوند."
+                data-en="Correct answer: Option 3 — Shared layers can be cached and reused.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — لایه‌های مشترک Cache و دوباره استفاده می‌شوند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="در نام my-api:2.1 بخش 2.1 چه نام دارد؟"
+                data-en="In my-api:2.1, what is 2.1 called?">
+                در نام <code>my-api:2.1</code> بخش <code>2.1</code> چه نام دارد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="Repository" data-en="Repository">Repository</li>
+                <li data-fa="Layer" data-en="Layer">Layer</li>
+                <li data-fa="Tag" data-en="Tag">Tag</li>
+                <li data-fa="Image ID" data-en="Image ID">Image ID</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — بخش بعد از علامت دونقطه Tag ایمیج است."
+                data-en="Correct answer: Option 3 — The value after the colon is the Image tag.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — بخش بعد از علامت دونقطه، Tag ایمیج است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام دستور جزئیات کامل یک Docker Image را نمایش می‌دهد؟"
+                data-en="Which command displays detailed information about a Docker Image?">
+                کدام دستور جزئیات کامل یک Docker Image را نمایش می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker image inspect</code></li>
+                <li><code>docker image rm</code></li>
+                <li><code>docker image prune</code></li>
+                <li><code>docker run</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — docker image inspect اطلاعاتی مانند ID، لایه‌ها و تنظیمات Image را نمایش می‌دهد."
+                data-en="Correct answer: Option 1 — docker image inspect displays details such as the ID, layers, and configuration.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>docker image inspect</code> اطلاعاتی مانند ID، لایه‌ها و تنظیمات Image را نمایش می‌دهد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای انتقال آفلاین یک Image ابتدا از کدام دستور استفاده می‌کنیم؟"
+                data-en="Which command is used first to transfer an Image offline?">
+                برای انتقال آفلاین یک Image ابتدا از کدام دستور استفاده می‌کنیم؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker export</code></li>
+                <li><code>docker commit</code></li>
+                <li><code>docker save</code></li>
+                <li><code>docker logs</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — docker save ایمیج را در فایل tar ذخیره می‌کند و docker load آن را بازیابی می‌کند."
+                data-en="Correct answer: Option 3 — docker save stores the Image in a tar file, and docker load restores it.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — <code>docker save</code> ایمیج را در فایل tar ذخیره و <code>docker load</code> آن را بازیابی می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="Dangling Image به چه ایمیجی گفته می‌شود؟"
+                data-en="What is a dangling Image?">
+                Dangling Image به چه ایمیجی گفته می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="ایمیجی که در حال دانلود است" data-en="An Image being downloaded">ایمیجی که در حال دانلود است</li>
+                <li data-fa="ایمیجی که Tag ندارد و معمولاً دیگر استفاده نمی‌شود" data-en="An untagged Image that is usually no longer used">ایمیجی که Tag ندارد و معمولاً دیگر استفاده نمی‌شود</li>
+                <li data-fa="ایمیجی که داخل Container اجرا شده است" data-en="An Image running inside a Container">ایمیجی که داخل Container اجرا شده است</li>
+                <li data-fa="ایمیجی که در Registry خصوصی قرار دارد" data-en="An Image stored in a private Registry">ایمیجی که در Registry خصوصی قرار دارد</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Dangling Image معمولاً Tag ندارد و با docker image prune قابل پاک‌سازی است."
+                data-en="Correct answer: Option 2 — A dangling Image is usually untagged and can be cleaned with docker image prune.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — Dangling Image معمولاً Tag ندارد و با <code>docker image prune</code> قابل پاک‌سازی است.
+            </p>
+        </li>
+    </ol>
+</section>

@@ -608,6 +608,63 @@ html[dir="rtl"] .toc-part.open .part-title::after {
     background: #fbfdff;
 }
 
+.chapter-quiz .review-questions {
+    display: grid;
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.quiz-question {
+    padding: 22px 24px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(35, 72, 106, 0.05);
+}
+
+.quiz-question h3 {
+    display: inline;
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.quiz-options {
+    margin: 16px 0;
+    padding-inline-start: 30px;
+    list-style-type: upper-alpha;
+}
+
+.quiz-options li {
+    padding: 7px 10px;
+    border-radius: 8px;
+}
+
+.quiz-options li:hover {
+    background: #f0f7fd;
+}
+
+.quiz-answer {
+    margin: 16px 0 0 !important;
+    padding: 13px 16px;
+    border-inline-start: 4px solid #16a36a;
+    border-radius: 10px;
+    background: #ecfdf5;
+    color: #136044 !important;
+}
+
+html[data-theme="dark"] .quiz-question {
+    background: #111827;
+}
+
+html[data-theme="dark"] .quiz-options li:hover {
+    background: #1d324c;
+}
+
+html[data-theme="dark"] .quiz-answer {
+    background: #102a22;
+    color: #9de5c4 !important;
+}
+
 /* Tables */
 .chapter-content table {
     width: 100%;
