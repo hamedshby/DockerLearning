@@ -496,3 +496,118 @@ docker images
     </div>
 
 </section>
+
+<!-- ===================== FROM AND WORKDIR QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی FROM و WORKDIR" data-en="FROM and WORKDIR Quiz">
+        سؤالات تستی FROM و WORKDIR
+    </h2>
+    <p data-fa="با این سؤالات، کاربرد دو دستور پایه‌ای FROM و WORKDIR را مرور کنید."
+        data-en="Review the usage of the FROM and WORKDIR instructions.">
+        با این سؤالات، کاربرد دو دستور پایه‌ای <code>FROM</code> و <code>WORKDIR</code> را مرور کنید.
+    </p>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="دستور FROM در Dockerfile چه کاری انجام می‌دهد؟"
+                data-en="What does FROM do in a Dockerfile?">
+                دستور <code>FROM</code> در Dockerfile چه کاری انجام می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="پورت Container را مشخص می‌کند" data-en="Specifies the Container port">پورت Container را مشخص می‌کند</li>
+                <li data-fa="Base Image را تعیین می‌کند" data-en="Specifies the Base Image">Base Image را تعیین می‌کند</li>
+                <li data-fa="فایل‌ها را کپی می‌کند" data-en="Copies files">فایل‌ها را کپی می‌کند</li>
+                <li data-fa="Container را اجرا می‌کند" data-en="Runs the Container">Container را اجرا می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — FROM تصویر پایه‌ای را مشخص می‌کند که Image جدید روی آن ساخته می‌شود."
+                data-en="Correct answer: Option 2 — FROM specifies the base image used to build the new Image.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — <code>FROM</code> تصویر پایه‌ای را مشخص می‌کند که Image جدید روی آن ساخته می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="دستور FROM معمولاً در کدام قسمت Dockerfile قرار می‌گیرد؟"
+                data-en="Where is FROM normally placed in a Dockerfile?">
+                دستور <code>FROM</code> معمولاً در کدام قسمت Dockerfile قرار می‌گیرد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="در ابتدای هر مرحلهٔ Build" data-en="At the beginning of each build stage">در ابتدای هر مرحلهٔ Build</li>
+                <li data-fa="فقط در انتهای فایل" data-en="Only at the end of the file">فقط در انتهای فایل</li>
+                <li data-fa="بعد از CMD" data-en="After CMD">بعد از CMD</li>
+                <li data-fa="محل آن اهمیتی ندارد" data-en="Its location does not matter">محل آن اهمیتی ندارد</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — هر Build Stage با یک دستور FROM آغاز می‌شود."
+                data-en="Correct answer: Option 1 — Each build stage starts with a FROM instruction.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — هر Build Stage با یک دستور <code>FROM</code> آغاز می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="در FROM mcr.microsoft.com/dotnet/sdk:9.0 مقدار 9.0 چیست؟"
+                data-en="In FROM mcr.microsoft.com/dotnet/sdk:9.0, what is 9.0?">
+                در <code>FROM mcr.microsoft.com/dotnet/sdk:9.0</code> مقدار <code>9.0</code> چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="نام Container" data-en="The Container name">نام Container</li>
+                <li data-fa="شمارهٔ پورت" data-en="A port number">شمارهٔ پورت</li>
+                <li data-fa="Tag مربوط به Base Image" data-en="The Base Image tag">Tag مربوط به Base Image</li>
+                <li data-fa="شناسهٔ Build" data-en="The build ID">شناسهٔ Build</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — مقدار بعد از دونقطه Tag ایمیج پایه است."
+                data-en="Correct answer: Option 3 — The value after the colon is the Base Image tag.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — مقدار بعد از دونقطه، Tag ایمیج پایه است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="دستور WORKDIR چه کاری انجام می‌دهد؟"
+                data-en="What does WORKDIR do?">
+                دستور <code>WORKDIR</code> چه کاری انجام می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="دایرکتوری کاری دستورهای بعدی را مشخص می‌کند" data-en="Sets the working directory for following instructions">دایرکتوری کاری دستورهای بعدی را مشخص می‌کند</li>
+                <li data-fa="Image را حذف می‌کند" data-en="Removes the Image">Image را حذف می‌کند</li>
+                <li data-fa="متغیر محیطی ایجاد می‌کند" data-en="Creates an environment variable">متغیر محیطی ایجاد می‌کند</li>
+                <li data-fa="پورت را منتشر می‌کند" data-en="Publishes a port">پورت را منتشر می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — WORKDIR مسیر کاری دستورهایی مانند RUN، COPY و CMD را تعیین می‌کند."
+                data-en="Correct answer: Option 1 — WORKDIR sets the working directory for instructions such as RUN, COPY, and CMD.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>WORKDIR</code> مسیر کاری دستورهایی مانند RUN، COPY و CMD را تعیین می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="اگر مسیر تعیین‌شده با WORKDIR وجود نداشته باشد چه اتفاقی می‌افتد؟"
+                data-en="What happens if the directory specified by WORKDIR does not exist?">
+                اگر مسیر تعیین‌شده با <code>WORKDIR</code> وجود نداشته باشد چه اتفاقی می‌افتد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="Build همیشه متوقف می‌شود" data-en="The build always fails">Build همیشه متوقف می‌شود</li>
+                <li data-fa="Docker مسیر را به‌صورت خودکار ایجاد می‌کند" data-en="Docker creates the directory automatically">Docker مسیر را به‌صورت خودکار ایجاد می‌کند</li>
+                <li data-fa="دستور نادیده گرفته می‌شود" data-en="The instruction is ignored">دستور نادیده گرفته می‌شود</li>
+                <li data-fa="Container فوراً اجرا می‌شود" data-en="The Container starts immediately">Container فوراً اجرا می‌شود</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Docker مسیر WORKDIR را در صورت نبودن ایجاد می‌کند."
+                data-en="Correct answer: Option 2 — Docker creates the WORKDIR path if it does not exist.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — Docker مسیر <code>WORKDIR</code> را در صورت نبودن ایجاد می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="چرا WORKDIR نسبت به RUN cd /app انتخاب بهتری است؟"
+                data-en="Why is WORKDIR preferred over RUN cd /app?">
+                چرا <code>WORKDIR</code> نسبت به <code>RUN cd /app</code> انتخاب بهتری است؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="چون WORKDIR فقط در Windows کار می‌کند" data-en="Because WORKDIR only works on Windows">چون WORKDIR فقط در Windows کار می‌کند</li>
+                <li data-fa="چون RUN cd همیشه Image را حذف می‌کند" data-en="Because RUN cd always removes the Image">چون RUN cd همیشه Image را حذف می‌کند</li>
+                <li data-fa="چون WORKDIR برای دستورهای بعدی باقی می‌ماند، اما اثر cd در RUN بعدی حفظ نمی‌شود" data-en="Because WORKDIR persists for following instructions, while cd does not persist into the next RUN">چون WORKDIR برای دستورهای بعدی باقی می‌ماند، اما اثر cd در RUN بعدی حفظ نمی‌شود</li>
+                <li data-fa="هیچ تفاوتی ندارند" data-en="There is no difference">هیچ تفاوتی ندارند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — هر RUN لایه و Shell جداگانه‌ای دارد؛ WORKDIR مسیر را برای دستورهای بعدی حفظ می‌کند."
+                data-en="Correct answer: Option 3 — Each RUN uses a separate layer and shell, while WORKDIR persists for following instructions.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — هر RUN لایه و Shell جداگانه‌ای دارد؛ <code>WORKDIR</code> مسیر را برای دستورهای بعدی حفظ می‌کند.
+            </p>
+        </li>
+    </ol>
+</section>
