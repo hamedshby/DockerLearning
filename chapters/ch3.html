@@ -363,3 +363,134 @@ Deleted
     </div>
 
 </section>
+
+<!-- ===================== DOCKER CONTAINER QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی Docker Container" data-en="Docker Container Quiz">
+        سؤالات تستی Docker Container
+    </h2>
+    <p data-fa="با این سؤالات، مفاهیم اصلی ساخت و مدیریت Containerها را مرور کنید."
+        data-en="Review the key concepts of creating and managing Containers.">
+        با این سؤالات، مفاهیم اصلی ساخت و مدیریت Containerها را مرور کنید.
+    </p>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="Docker Container چیست؟" data-en="What is a Docker Container?">
+                Docker Container چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="یک Registry خصوصی" data-en="A private Registry">یک Registry خصوصی</li>
+                <li data-fa="یک نمونهٔ اجرایی از Docker Image" data-en="A running instance of a Docker Image">یک نمونهٔ اجرایی از Docker Image</li>
+                <li data-fa="یک فایل Dockerfile" data-en="A Dockerfile">یک فایل Dockerfile</li>
+                <li data-fa="یک سیستم‌عامل کامل" data-en="A complete operating system">یک سیستم‌عامل کامل</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Container نمونه‌ای ساخته‌شده یا در حال اجرا از یک Image است."
+                data-en="Correct answer: Option 2 — A Container is a created or running instance of an Image.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — Container نمونه‌ای ساخته‌شده یا در حال اجرا از یک Image است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام دستور یک Container جدید را ایجاد و اجرا می‌کند؟"
+                data-en="Which command creates and starts a new Container?">
+                کدام دستور یک Container جدید را ایجاد و اجرا می‌کند؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker start</code></li>
+                <li><code>docker build</code></li>
+                <li><code>docker run</code></li>
+                <li><code>docker pull</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — docker run یک Container را از روی Image ایجاد و سپس اجرا می‌کند."
+                data-en="Correct answer: Option 3 — docker run creates a Container from an Image and starts it.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — <code>docker run</code> یک Container را از روی Image ایجاد و سپس اجرا می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="گزینهٔ ‎-d در دستور docker run چه کاری انجام می‌دهد؟"
+                data-en="What does the -d option do in docker run?">
+                گزینهٔ <code>-d</code> در دستور <code>docker run</code> چه کاری انجام می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="Container را در پس‌زمینه اجرا می‌کند" data-en="Runs the Container in the background">Container را در پس‌زمینه اجرا می‌کند</li>
+                <li data-fa="Container را حذف می‌کند" data-en="Removes the Container">Container را حذف می‌کند</li>
+                <li data-fa="Image را دانلود می‌کند" data-en="Downloads the Image">Image را دانلود می‌کند</li>
+                <li data-fa="Volume ایجاد می‌کند" data-en="Creates a Volume">Volume ایجاد می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — ‎-d مخفف detached است و Container را در پس‌زمینه اجرا می‌کند."
+                data-en="Correct answer: Option 1 — -d means detached and runs the Container in the background.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>-d</code> مخفف detached است و Container را در پس‌زمینه اجرا می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام دستور تمام Containerها، حتی موارد متوقف‌شده را نمایش می‌دهد؟"
+                data-en="Which command lists all Containers, including stopped ones?">
+                کدام دستور تمام Containerها، حتی موارد متوقف‌شده را نمایش می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker ps</code></li>
+                <li><code>docker ps -a</code></li>
+                <li><code>docker images</code></li>
+                <li><code>docker inspect -a</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — docker ps -a هم Containerهای فعال و هم متوقف‌شده را نشان می‌دهد."
+                data-en="Correct answer: Option 2 — docker ps -a displays both running and stopped Containers.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — <code>docker ps -a</code> هم Containerهای فعال و هم متوقف‌شده را نشان می‌دهد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="در ‎-p 8080:80 عدد 8080 نشان‌دهندهٔ چیست؟"
+                data-en="In -p 8080:80, what does 8080 represent?">
+                در <code>-p 8080:80</code> عدد <code>8080</code> نشان‌دهندهٔ چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="پورت داخل Container" data-en="The port inside the Container">پورت داخل Container</li>
+                <li data-fa="پورت سیستم میزبان" data-en="The host port">پورت سیستم میزبان</li>
+                <li data-fa="شناسهٔ Container" data-en="The Container ID">شناسهٔ Container</li>
+                <li data-fa="پورت Docker Registry" data-en="The Docker Registry port">پورت Docker Registry</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — پورت 8080 میزبان به پورت 80 داخل Container نگاشت می‌شود."
+                data-en="Correct answer: Option 2 — Host port 8080 is mapped to port 80 inside the Container.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — پورت 8080 میزبان به پورت 80 داخل Container نگاشت می‌شود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="تفاوت اصلی docker stop و docker kill چیست؟"
+                data-en="What is the main difference between docker stop and docker kill?">
+                تفاوت اصلی <code>docker stop</code> و <code>docker kill</code> چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="هیچ تفاوتی ندارند" data-en="There is no difference">هیچ تفاوتی ندارند</li>
+                <li data-fa="stop برای Image و kill برای Container است" data-en="stop is for Images and kill is for Containers">stop برای Image و kill برای Container است</li>
+                <li data-fa="stop ابتدا فرصت خاتمهٔ امن می‌دهد، اما kill فرایند را فوراً متوقف می‌کند" data-en="stop allows graceful shutdown first, while kill stops the process immediately">stop ابتدا فرصت خاتمهٔ امن می‌دهد، اما kill فرایند را فوراً متوقف می‌کند</li>
+                <li data-fa="kill فقط Container متوقف‌شده را اجرا می‌کند" data-en="kill only starts a stopped Container">kill فقط Container متوقف‌شده را اجرا می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — stop ابتدا SIGTERM می‌فرستد، ولی kill به‌صورت پیش‌فرض توقف فوری انجام می‌دهد."
+                data-en="Correct answer: Option 3 — stop sends SIGTERM first, while kill stops the process immediately by default.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — <code>stop</code> ابتدا SIGTERM می‌فرستد، ولی <code>kill</code> به‌صورت پیش‌فرض توقف فوری انجام می‌دهد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای حذف تمام Containerهای متوقف‌شده از کدام دستور استفاده می‌شود؟"
+                data-en="Which command removes all stopped Containers?">
+                برای حذف تمام Containerهای متوقف‌شده از کدام دستور استفاده می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>docker container prune</code></li>
+                <li><code>docker image prune</code></li>
+                <li><code>docker system stop</code></li>
+                <li><code>docker rm</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — docker container prune همهٔ Containerهای متوقف‌شده را پاک می‌کند."
+                data-en="Correct answer: Option 1 — docker container prune removes all stopped Containers.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>docker container prune</code> همهٔ Containerهای متوقف‌شده را پاک می‌کند.
+            </p>
+        </li>
+    </ol>
+</section>
