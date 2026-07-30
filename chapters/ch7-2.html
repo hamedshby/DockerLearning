@@ -1,0 +1,537 @@
+<!-- ===================== TMPFS MOUNT ===================== -->
+<h1 data-fa="tmpfs Mount چیست؟" data-en="What is a tmpfs Mount?">
+    tmpfs Mount چیست؟
+</h1>
+
+<p data-fa="tmpfs Mount فضای ذخیره‌سازی موقتی است که خارج از لایهٔ قابل‌نوشتن Container و در حافظهٔ سیستم میزبان قرار می‌گیرد. دادهٔ آن با توقف یا حذف Container باقی نمی‌ماند و برای اطلاعات موقت یا حساس مناسب است."
+    data-en="A tmpfs Mount is temporary storage kept outside the Container's writable layer and in the host system's memory. Its data does not persist after the Container stops or is removed, making it suitable for temporary or sensitive information.">
+    tmpfs Mount فضای ذخیره‌سازی موقتی است که خارج از لایهٔ قابل‌نوشتن Container و در حافظهٔ میزبان قرار می‌گیرد.
+    دادهٔ آن پس از پایان عمر Container باقی نمی‌ماند.
+</p>
+
+<div class="info-box">
+    <strong data-fa="اصل مهم" data-en="Key Principle">اصل مهم</strong>
+    <p data-fa="tmpfs برای ماندگاری طراحی نشده است. اگر Container متوقف شود، دادهٔ داخل tmpfs از بین می‌رود و در اجرای بعدی مسیر خالی خواهد بود."
+        data-en="tmpfs is not designed for persistence. When the Container stops, data in tmpfs is lost, and the path is empty on the next run.">
+        tmpfs برای ماندگاری طراحی نشده است؛ با توقف Container دادهٔ آن از بین می‌رود.
+    </p>
+</div>
+
+<div class="diagram-box">
+    <pre>
+Host Memory
+└── tmpfs
+      │
+      │  Mount
+      ▼
+Container
+└── /run/app
+
+Container stops ──► Data disappears
+    </pre>
+</div>
+
+<!-- ===================== USE CASES ===================== -->
+<h1 data-fa="tmpfs Mount چه زمانی کاربرد دارد؟" data-en="When Should You Use a tmpfs Mount?">
+    tmpfs Mount چه زمانی کاربرد دارد؟
+</h1>
+
+<ul>
+    <li data-fa="نگهداری فایل‌های موقت برنامه که نباید روی دیسک Container باقی بمانند"
+        data-en="Storing temporary application files that should not remain in the Container layer">
+        نگهداری فایل‌های موقت برنامه که نباید روی دیسک Container باقی بمانند
+    </li>
+    <li data-fa="ذخیرهٔ کوتاه‌مدت Secretها، Tokenها یا اطلاعات حساس زمان اجرا"
+        data-en="Temporarily storing runtime secrets, tokens, or sensitive information">
+        ذخیرهٔ کوتاه‌مدت Secretها، Tokenها یا اطلاعات حساس زمان اجرا
+    </li>
+    <li data-fa="Cacheهای موقتی که بازسازی آن‌ها ساده است و به ماندگاری نیاز ندارند"
+        data-en="Temporary caches that are easy to rebuild and do not require persistence">
+        Cacheهای موقتی که بازسازی آن‌ها ساده است
+    </li>
+    <li data-fa="فایل‌های Session، PID یا Socket موقت برنامه"
+        data-en="Temporary application session, PID, or socket files">
+        فایل‌های Session، PID یا Socket موقت برنامه
+    </li>
+    <li data-fa="کاهش نوشتن فایل‌های موقت در لایهٔ قابل‌نوشتن Container"
+        data-en="Reducing temporary writes to the Container's writable layer">
+        کاهش نوشتن فایل‌های موقت در لایهٔ قابل‌نوشتن Container
+    </li>
+</ul>
+
+<div class="info-box">
+    <strong data-fa="کاربرد نامناسب" data-en="Unsuitable Use">کاربرد نامناسب</strong>
+    <p data-fa="دیتابیس، فایل آپلودشده، Log موردنیاز برای Audit و هر داده‌ای که باید بعد از Restart باقی بماند نباید فقط داخل tmpfs ذخیره شود."
+        data-en="Databases, uploaded files, audit logs, and any data that must survive a restart must not be stored only in tmpfs.">
+        دیتابیس، فایل آپلودشده و هر داده‌ای که باید پس از Restart باقی بماند نباید فقط داخل tmpfs ذخیره شود.
+    </p>
+</div>
+
+<!-- ===================== CHARACTERISTICS ===================== -->
+<h1 data-fa="ویژگی‌های tmpfs Mount" data-en="tmpfs Mount Characteristics">
+    ویژگی‌های tmpfs Mount
+</h1>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="ویژگی" data-en="Characteristic">ویژگی</th>
+            <th data-fa="رفتار" data-en="Behavior">رفتار</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="محل نگهداری" data-en="Storage Location">محل نگهداری</td>
+            <td data-fa="حافظهٔ میزبان؛ سیستم‌عامل ممکن است بخشی از صفحات حافظه را به Swap منتقل کند."
+                data-en="Host memory; the operating system may move some memory pages to swap.">
+                حافظهٔ میزبان؛ ممکن است سیستم‌عامل بخشی از آن را به Swap منتقل کند.
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="ماندگاری" data-en="Persistence">ماندگاری</td>
+            <td data-fa="پس از توقف Container باقی نمی‌ماند." data-en="Does not survive a Container stop.">
+                پس از توقف Container باقی نمی‌ماند.
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="اشتراک‌گذاری" data-en="Sharing">اشتراک‌گذاری</td>
+            <td data-fa="یک tmpfs Mount به همان Container وابسته است و مانند Named Volume برای اشتراک‌گذاری عمومی مدیریت نمی‌شود."
+                data-en="A tmpfs Mount belongs to that Container and is not managed for general sharing like a Named Volume.">
+                به همان Container وابسته است و مانند Named Volume برای اشتراک عمومی مدیریت نمی‌شود.
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="سیستم‌عامل" data-en="Operating System">سیستم‌عامل</td>
+            <td data-fa="در Docker Engine روی Linux پشتیبانی می‌شود؛ در Docker Desktop داخل ماشین مجازی Linux قرار می‌گیرد."
+                data-en="Supported by Docker Engine on Linux; in Docker Desktop it resides inside the Linux virtual machine.">
+                در Docker Engine روی Linux پشتیبانی می‌شود؛ در Docker Desktop داخل ماشین مجازی Linux قرار می‌گیرد.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== TMPFS SYNTAX ===================== -->
+<h1 data-fa="اتصال tmpfs به Container" data-en="Mounting tmpfs into a Container">
+    اتصال tmpfs به Container
+</h1>
+
+<p data-fa="برای ساخت tmpfs Mount می‌توان از گزینهٔ کوتاه --tmpfs یا گزینهٔ صریح‌تر --mount type=tmpfs استفاده کرد."
+    data-en="You can create a tmpfs Mount with the short --tmpfs option or the more explicit --mount type=tmpfs syntax.">
+    برای ساخت tmpfs Mount می‌توان از <code>--tmpfs</code> یا <code>--mount type=tmpfs</code> استفاده کرد.
+</p>
+
+<h3 data-fa="روش کوتاه با ‎--tmpfs" data-en="Short Syntax with --tmpfs">
+    روش کوتاه با <code>--tmpfs</code>
+</h3>
+
+<pre><code>docker run --rm \
+  --tmpfs /run/app \
+  alpine \
+  sh -c "echo temporary-data > /run/app/message.txt && cat /run/app/message.txt"</code></pre>
+
+<h3 data-fa="روش صریح با ‎--mount" data-en="Explicit Syntax with --mount">
+    روش صریح با <code>--mount</code>
+</h3>
+
+<pre><code>docker run --rm \
+  --mount type=tmpfs,destination=/run/app \
+  alpine \
+  sh -c "echo temporary-data > /run/app/message.txt && cat /run/app/message.txt"</code></pre>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th><code>--tmpfs</code></th>
+            <th><code>--mount</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="کوتاه و مناسب اجرای تعاملی" data-en="Short and convenient for interactive use">
+                کوتاه و مناسب اجرای تعاملی
+            </td>
+            <td data-fa="ساختار صریح با type، destination و گزینه‌های نام‌گذاری‌شده"
+                data-en="Explicit structure with type, destination, and named options">
+                ساختار صریح با <code>type</code>، <code>destination</code> و گزینه‌های نام‌گذاری‌شده
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="برخی Flagهای Mount مانند noexec و nosuid را می‌پذیرد."
+                data-en="Accepts mount flags such as noexec and nosuid.">
+                برخی Flagهای Mount مانند <code>noexec</code> و <code>nosuid</code> را می‌پذیرد.
+            </td>
+            <td data-fa="برای تعریف خواناتر اندازه و Permission مناسب است."
+                data-en="Provides a clearer way to define size and permissions.">
+                برای تعریف خواناتر اندازه و Permission مناسب است.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== SIZE AND MODE ===================== -->
+<h1 data-fa="محدودکردن اندازه و Permission" data-en="Limiting Size and Permissions">
+    محدودکردن اندازه و Permission
+</h1>
+
+<p data-fa="برای جلوگیری از مصرف کنترل‌نشدهٔ حافظه، حداکثر اندازهٔ tmpfs را مشخص کنید. همچنین می‌توان Permission اولیهٔ مسیر را با tmpfs-mode تعیین کرد."
+    data-en="Set a maximum tmpfs size to prevent uncontrolled memory use. You can also define the path's initial permissions with tmpfs-mode.">
+    برای جلوگیری از مصرف کنترل‌نشدهٔ حافظه، حداکثر اندازه و Permission اولیهٔ tmpfs را مشخص کنید.
+</p>
+
+<h3 data-fa="اندازه و Permission با ‎--mount" data-en="Size and Permissions with --mount">
+    اندازه و Permission با <code>--mount</code>
+</h3>
+
+<pre><code>docker run --rm \
+  --mount type=tmpfs,destination=/run/app,tmpfs-size=67108864,tmpfs-mode=1770 \
+  alpine \
+  df -h /run/app</code></pre>
+
+<p data-fa="در این مثال حداکثر اندازه ۶۴ MiB و Permission اولیه 1770 است. مقدار tmpfs-size در این نحو بر حسب Byte نوشته شده است."
+    data-en="This example sets a 64 MiB maximum and an initial permission mode of 1770. In this syntax, tmpfs-size is expressed in bytes.">
+    در این مثال حداکثر اندازه ۶۴ MiB و Permission اولیه <code>1770</code> است.
+</p>
+
+<h3 data-fa="اندازه و Flagهای امنیتی با ‎--tmpfs" data-en="Size and Security Flags with --tmpfs">
+    اندازه و Flagهای امنیتی با <code>--tmpfs</code>
+</h3>
+
+<pre><code>docker run --rm \
+  --tmpfs /run/app:rw,noexec,nosuid,size=64m,mode=1770 \
+  alpine \
+  mount | grep /run/app</code></pre>
+
+<div class="info-box">
+    <strong data-fa="کنترل منابع" data-en="Resource Control">کنترل منابع</strong>
+    <p data-fa="tmpfs-size ظرفیت فایل‌سیستم موقت را محدود می‌کند، اما جایگزین محدودیت کلی حافظهٔ Container نیست. برای کنترل کامل، محدودیت Memory خود Container را نیز تنظیم کنید."
+        data-en="tmpfs-size limits the temporary filesystem capacity, but it does not replace the Container's overall memory limit. Configure the Container memory limit as well for complete control.">
+        <code>tmpfs-size</code> جایگزین محدودیت کلی حافظهٔ Container نیست؛ محدودیت Memory خود Container را نیز تنظیم کنید.
+    </p>
+</div>
+
+<!-- ===================== LIFECYCLE DEMO ===================== -->
+<h1 data-fa="آزمایش ناپایداری داده" data-en="Testing Data Ephemerality">
+    آزمایش ناپایداری داده
+</h1>
+
+<h3 data-fa="۱. نوشتن فایل داخل tmpfs" data-en="1. Write a File into tmpfs">
+    ۱. نوشتن فایل داخل tmpfs
+</h3>
+
+<pre><code>docker run --name tmpfs-demo \
+  --tmpfs /cache \
+  alpine \
+  sh -c "echo hello > /cache/message.txt && cat /cache/message.txt"</code></pre>
+
+<h3 data-fa="۲. شروع دوبارهٔ همان Container" data-en="2. Start the Same Container Again">
+    ۲. شروع دوبارهٔ همان Container
+</h3>
+
+<pre><code>docker start -a tmpfs-demo</code></pre>
+
+<h3 data-fa="۳. بررسی مسیر با اجرای موقت جدید" data-en="3. Check the Path in a New Temporary Run">
+    ۳. بررسی مسیر با اجرای موقت جدید
+</h3>
+
+<pre><code>docker run --rm \
+  --tmpfs /cache \
+  alpine \
+  ls -la /cache</code></pre>
+
+<div class="info-box">
+    <strong data-fa="نتیجه" data-en="Result">نتیجه</strong>
+    <p data-fa="هر بار که Container با tmpfs جدید اجرا می‌شود، مسیر از ابتدا خالی است. دادهٔ قبلی مانند Volume قابل بازیابی نیست."
+        data-en="Each time a Container starts with a new tmpfs, the path begins empty. Previous data cannot be recovered like data in a Volume.">
+        در اجرای جدید مسیر tmpfs خالی است و دادهٔ قبلی مانند Volume قابل بازیابی نیست.
+    </p>
+</div>
+
+<!-- ===================== STORAGE COMPARISON ===================== -->
+<h1 data-fa="مقایسهٔ tmpfs، Volume و Bind Mount" data-en="tmpfs vs Volume vs Bind Mount">
+    مقایسهٔ tmpfs، Volume و Bind Mount
+</h1>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="ویژگی" data-en="Feature">ویژگی</th>
+            <th>tmpfs Mount</th>
+            <th>Docker Volume</th>
+            <th>Bind Mount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="محل داده" data-en="Data Location">محل داده</td>
+            <td data-fa="حافظهٔ میزبان" data-en="Host memory">حافظهٔ میزبان</td>
+            <td data-fa="فضای مدیریت‌شده توسط Docker" data-en="Docker-managed storage">فضای مدیریت‌شده توسط Docker</td>
+            <td data-fa="مسیر مشخص روی میزبان" data-en="A specific host path">مسیر مشخص روی میزبان</td>
+        </tr>
+        <tr>
+            <td data-fa="ماندگاری پس از توقف" data-en="Persistence after Stop">ماندگاری پس از توقف</td>
+            <td data-fa="خیر" data-en="No">خیر</td>
+            <td data-fa="بله" data-en="Yes">بله</td>
+            <td data-fa="بله، چون فایل روی میزبان است" data-en="Yes, because the file is on the host">
+                بله، چون فایل روی میزبان است
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="مدیریت توسط Docker" data-en="Managed by Docker">مدیریت توسط Docker</td>
+            <td data-fa="همراه تنظیمات Container" data-en="As part of Container configuration">
+                همراه تنظیمات Container
+            </td>
+            <td data-fa="بله، با docker volume" data-en="Yes, with docker volume">
+                بله، با <code>docker volume</code>
+            </td>
+            <td data-fa="خیر، مسیر را کاربر مدیریت می‌کند" data-en="No, the user manages the path">
+                خیر، مسیر را کاربر مدیریت می‌کند
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="کاربرد اصلی" data-en="Primary Use">کاربرد اصلی</td>
+            <td data-fa="دادهٔ موقت و حساس زمان اجرا" data-en="Temporary and sensitive runtime data">
+                دادهٔ موقت و حساس زمان اجرا
+            </td>
+            <td data-fa="دادهٔ ماندگار برنامه" data-en="Persistent application data">
+                دادهٔ ماندگار برنامه
+            </td>
+            <td data-fa="کد، پیکربندی و فایل میزبان" data-en="Code, configuration, and host files">
+                کد، پیکربندی و فایل میزبان
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== COMPOSE ===================== -->
+<h1 data-fa="tmpfs در Docker Compose" data-en="tmpfs in Docker Compose">
+    tmpfs در Docker Compose
+</h1>
+
+<h3 data-fa="تعریف ساده" data-en="Simple Definition">تعریف ساده</h3>
+
+<pre><code>services:
+  app:
+    image: alpine
+    command: sh -c "echo ready > /run/app/status && sleep infinity"
+    tmpfs:
+      - /run/app</code></pre>
+
+<h3 data-fa="تعریف با اندازه و Permission" data-en="Definition with Size and Permissions">
+    تعریف با اندازه و Permission
+</h3>
+
+<pre><code>services:
+  app:
+    image: alpine
+    command: sleep infinity
+    tmpfs:
+      - /run/app:size=64m,mode=1770</code></pre>
+
+<p data-fa="در Compose نیز tmpfs بخشی از تنظیمات همان Service است و نیازی به تعریف آن در بخش top-level volumes نیست."
+    data-en="In Compose, tmpfs is part of the Service configuration and does not need a declaration in the top-level volumes section.">
+    در Compose، tmpfs بخشی از تنظیمات همان Service است و در بخش top-level <code>volumes</code> تعریف نمی‌شود.
+</p>
+
+<!-- ===================== INSPECT ===================== -->
+<h1 data-fa="مشاهدهٔ تنظیمات tmpfs" data-en="Inspecting tmpfs Configuration">
+    مشاهدهٔ تنظیمات tmpfs
+</h1>
+
+<p data-fa="tmpfs نام مستقل ندارد و با docker volume ls نمایش داده نمی‌شود. برای مشاهدهٔ تنظیمات Mount از docker inspect استفاده کنید."
+    data-en="tmpfs has no independent name and does not appear in docker volume ls. Use docker inspect to view its mount configuration.">
+    tmpfs نام مستقل ندارد و با <code>docker volume ls</code> نمایش داده نمی‌شود؛ تنظیمات آن را با <code>docker inspect</code> ببینید.
+</p>
+
+<pre><code>docker inspect tmpfs-demo \
+  --format '{{json .HostConfig.Tmpfs}}'</code></pre>
+
+<p data-fa="برای مشاهدهٔ مصرف و ظرفیت مسیر از ابزارهای داخل Container مانند df و mount استفاده کنید."
+    data-en="Use tools inside the Container, such as df and mount, to inspect path usage and capacity.">
+    برای مشاهدهٔ مصرف و ظرفیت مسیر از ابزارهای داخل Container مانند <code>df</code> و <code>mount</code> استفاده کنید.
+</p>
+
+<pre><code>docker exec tmpfs-demo df -h /cache
+docker exec tmpfs-demo mount | grep /cache</code></pre>
+
+<!-- ===================== SECURITY ===================== -->
+<h1 data-fa="امنیت و بهترین روش‌ها" data-en="Security and Best Practices">
+    امنیت و بهترین روش‌ها
+</h1>
+
+<ul>
+    <li data-fa="همیشه برای tmpfs اندازهٔ مشخص تعیین کنید تا یک Process نتواند تمام حافظهٔ میزبان را مصرف کند."
+        data-en="Always set an explicit tmpfs size so one process cannot consume all host memory.">
+        همیشه برای tmpfs اندازهٔ مشخص تعیین کنید.
+    </li>
+    <li data-fa="برای مسیرهایی که نباید فایل اجرایی داشته باشند گزینهٔ noexec را فعال کنید."
+        data-en="Enable noexec for paths that should not contain executable files.">
+        برای مسیرهایی که نباید فایل اجرایی داشته باشند گزینهٔ <code>noexec</code> را فعال کنید.
+    </li>
+    <li data-fa="برای جلوگیری از اثرگذاری بیت‌های setuid و setgid از nosuid استفاده کنید."
+        data-en="Use nosuid to prevent setuid and setgid bits from taking effect.">
+        برای جلوگیری از اثرگذاری بیت‌های <code>setuid</code> و <code>setgid</code> از <code>nosuid</code> استفاده کنید.
+    </li>
+    <li data-fa="Permission و مالکیت مسیر را با کاربر غیر root داخل Container هماهنگ کنید."
+        data-en="Align path permissions and ownership with the non-root user inside the Container.">
+        Permission و مالکیت مسیر را با کاربر غیر <code>root</code> داخل Container هماهنگ کنید.
+    </li>
+    <li data-fa="برای Secretهای بسیار حساس، تنظیمات Swap و رمزنگاری میزبان را نیز در مدل تهدید در نظر بگیرید."
+        data-en="For highly sensitive secrets, include host swap and encryption settings in the threat model.">
+        برای Secretهای بسیار حساس، تنظیمات Swap و رمزنگاری میزبان را نیز بررسی کنید.
+    </li>
+    <li data-fa="اطلاعاتی را که باید Audit یا بازیابی شوند فقط در tmpfs نگه ندارید."
+        data-en="Do not keep information that requires auditing or recovery only in tmpfs.">
+        اطلاعاتی را که باید Audit یا بازیابی شوند فقط در tmpfs نگه ندارید.
+    </li>
+</ul>
+
+<div class="info-box">
+    <strong data-fa="نکتهٔ امنیتی" data-en="Security Note">نکتهٔ امنیتی</strong>
+    <p data-fa="tmpfs از نوشته‌شدن عادی داده در لایهٔ Container جلوگیری می‌کند، اما به‌تنهایی تضمین نمی‌کند که هیچ نسخه‌ای از داده روی دیسک میزبان قرار نگیرد؛ Swap و Dumpهای حافظه را نیز باید مدیریت کرد."
+        data-en="tmpfs prevents normal writes to the Container layer, but it alone does not guarantee that no copy reaches host storage; swap and memory dumps must also be managed.">
+        tmpfs از نوشتن عادی داده در لایهٔ Container جلوگیری می‌کند، اما Swap و Dumpهای حافظه نیز باید مدیریت شوند.
+    </p>
+</div>
+
+<!-- ===================== LAB ===================== -->
+<h1 data-fa="تمرین عملی: دادهٔ موقت و محدودشده" data-en="Lab: Size-Limited Temporary Data">
+    تمرین عملی: دادهٔ موقت و محدودشده
+</h1>
+
+<section class="lab-section">
+    <h3 data-fa="گام ۱: اجرای Container با tmpfs" data-en="Step 1: Run a Container with tmpfs">
+        گام ۱: اجرای Container با tmpfs
+    </h3>
+    <pre><code>docker run -d \
+  --name tmpfs-lab \
+  --tmpfs /run/lab:rw,noexec,nosuid,size=16m,mode=1770 \
+  alpine \
+  sleep infinity</code></pre>
+
+    <h3 data-fa="گام ۲: بررسی نوع و اندازهٔ Mount" data-en="Step 2: Inspect the Mount Type and Size">
+        گام ۲: بررسی نوع و اندازهٔ Mount
+    </h3>
+    <pre><code>docker exec tmpfs-lab df -h /run/lab
+docker exec tmpfs-lab mount | grep /run/lab</code></pre>
+
+    <h3 data-fa="گام ۳: نوشتن و خواندن فایل موقت" data-en="Step 3: Write and Read a Temporary File">
+        گام ۳: نوشتن و خواندن فایل موقت
+    </h3>
+    <pre><code>docker exec tmpfs-lab \
+  sh -c "echo 'temporary secret' > /run/lab/message.txt"
+
+docker exec tmpfs-lab cat /run/lab/message.txt</code></pre>
+
+    <h3 data-fa="گام ۴: Restart کردن Container" data-en="Step 4: Restart the Container">
+        گام ۴: Restart کردن Container
+    </h3>
+    <pre><code>docker restart tmpfs-lab
+docker exec tmpfs-lab ls -la /run/lab</code></pre>
+
+    <h3 data-fa="گام ۵: پاک‌سازی" data-en="Step 5: Clean Up">
+        گام ۵: پاک‌سازی
+    </h3>
+    <pre><code>docker rm -f tmpfs-lab</code></pre>
+
+    <div class="lab-result">
+        <strong data-fa="نتیجهٔ تمرین" data-en="Lab Result">نتیجهٔ تمرین</strong>
+        <p data-fa="فایل پیش از Restart قابل خواندن است، اما پس از Restart مسیر tmpfs دوباره خالی می‌شود. اندازهٔ فایل‌سیستم نیز به ۱۶ MiB محدود شده است."
+            data-en="The file is readable before the restart, but the tmpfs path is empty again afterward. The filesystem is also limited to 16 MiB.">
+            فایل پیش از Restart قابل خواندن است، اما پس از Restart مسیر خالی می‌شود و ظرفیت آن به ۱۶ MiB محدود است.
+        </p>
+    </div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی tmpfs Mount" data-en="tmpfs Mount Quiz">
+        سؤالات تستی tmpfs Mount
+    </h2>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="دادهٔ tmpfs پس از توقف Container چه می‌شود؟"
+                data-en="What happens to tmpfs data after the Container stops?">
+                دادهٔ tmpfs پس از توقف Container چه می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="در Named Volume منتقل می‌شود" data-en="It moves to a Named Volume">در Named Volume منتقل می‌شود</li>
+                <li data-fa="از بین می‌رود" data-en="It is lost">از بین می‌رود</li>
+                <li data-fa="داخل Image ذخیره می‌شود" data-en="It is stored in the Image">داخل Image ذخیره می‌شود</li>
+                <li data-fa="در Dockerfile نوشته می‌شود" data-en="It is written into the Dockerfile">در Dockerfile نوشته می‌شود</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — tmpfs موقت است و دادهٔ آن پس از توقف Container باقی نمی‌ماند."
+                data-en="Correct answer: Option 2 — tmpfs is temporary and its data does not survive a Container stop.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — دادهٔ tmpfs پس از توقف Container از بین می‌رود.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام دستور یک tmpfs Mount صریح می‌سازد؟"
+                data-en="Which command creates an explicit tmpfs Mount?">
+                کدام دستور یک tmpfs Mount صریح می‌سازد؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>--mount type=tmpfs,destination=/run/app</code></li>
+                <li><code>--mount type=volume,source=tmpfs</code></li>
+                <li><code>-v tmpfs:/run/app</code></li>
+                <li><code>docker volume create tmpfs</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — type=tmpfs نوع Mount و destination مسیر داخل Container را مشخص می‌کند."
+                data-en="Correct answer: Option 1 — type=tmpfs selects the mount type and destination sets the Container path.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>type=tmpfs</code> نوع Mount را مشخص می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="چرا باید برای tmpfs محدودیت اندازه تعیین کرد؟"
+                data-en="Why should you set a tmpfs size limit?">
+                چرا باید برای tmpfs محدودیت اندازه تعیین کرد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="برای افزایش حجم Image" data-en="To increase the Image size">برای افزایش حجم Image</li>
+                <li data-fa="برای جلوگیری از مصرف کنترل‌نشدهٔ حافظه" data-en="To prevent uncontrolled memory consumption">برای جلوگیری از مصرف کنترل‌نشدهٔ حافظه</li>
+                <li data-fa="برای ساخت Dockerfile" data-en="To create a Dockerfile">برای ساخت Dockerfile</li>
+                <li data-fa="برای عمومی‌کردن پورت" data-en="To publish a port">برای عمومی‌کردن پورت</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — محدودیت اندازه از رشد بدون کنترل فایل‌های موقت در حافظه جلوگیری می‌کند."
+                data-en="Correct answer: Option 2 — A size limit prevents temporary files from growing without control in memory.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — محدودیت اندازه مصرف حافظه را کنترل می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام داده برای tmpfs مناسب نیست؟"
+                data-en="Which data is not suitable for tmpfs?">
+                کدام داده برای tmpfs مناسب نیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="فایل PID موقت" data-en="A temporary PID file">فایل PID موقت</li>
+                <li data-fa="Cache قابل‌بازسازی" data-en="A rebuildable cache">Cache قابل‌بازسازی</li>
+                <li data-fa="دادهٔ اصلی و ماندگار دیتابیس" data-en="Primary persistent database data">دادهٔ اصلی و ماندگار دیتابیس</li>
+                <li data-fa="Token کوتاه‌مدت زمان اجرا" data-en="A short-lived runtime token">Token کوتاه‌مدت زمان اجرا</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — دادهٔ اصلی دیتابیس باید در فضای ماندگار مانند Docker Volume ذخیره شود."
+                data-en="Correct answer: Option 3 — Primary database data needs persistent storage such as a Docker Volume.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۳ — دادهٔ اصلی دیتابیس به فضای ماندگار نیاز دارد.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="گزینهٔ noexec چه کاری انجام می‌دهد؟"
+                data-en="What does the noexec option do?">
+                گزینهٔ <code>noexec</code> چه کاری انجام می‌دهد؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="اجرای مستقیم فایل از مسیر tmpfs را محدود می‌کند" data-en="Restricts direct execution of files from the tmpfs path">اجرای مستقیم فایل از مسیر tmpfs را محدود می‌کند</li>
+                <li data-fa="داده را ماندگار می‌کند" data-en="Makes the data persistent">داده را ماندگار می‌کند</li>
+                <li data-fa="اندازه را نامحدود می‌کند" data-en="Makes the size unlimited">اندازه را نامحدود می‌کند</li>
+                <li data-fa="tmpfs را به Bind Mount تبدیل می‌کند" data-en="Converts tmpfs into a Bind Mount">tmpfs را به Bind Mount تبدیل می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — noexec اجرای مستقیم فایل‌های موجود در آن Mount را محدود می‌کند."
+                data-en="Correct answer: Option 1 — noexec restricts direct execution of files stored on that mount.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — <code>noexec</code> اجرای مستقیم فایل‌ها را محدود می‌کند.
+            </p>
+        </li>
+    </ol>
+</section>
