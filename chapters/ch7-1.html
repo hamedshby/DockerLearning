@@ -1,0 +1,524 @@
+<!-- ===================== BIND MOUNT ===================== -->
+<h1 data-fa="Bind Mount چیست؟" data-en="What is a Bind Mount?">
+    Bind Mount چیست؟
+</h1>
+
+<p data-fa="Bind Mount یک فایل یا پوشهٔ مشخص از سیستم میزبان را مستقیماً داخل Container در دسترس قرار می‌دهد. برخلاف Docker Volume، مسیر مبدأ را خودتان انتخاب می‌کنید و Docker مالک یا مدیر محتوای آن نیست."
+    data-en="A Bind Mount makes a specific file or directory from the host system directly available inside a Container. Unlike a Docker Volume, you choose the source path, and Docker does not own or manage its contents.">
+    Bind Mount یک فایل یا پوشهٔ مشخص از سیستم میزبان را مستقیماً داخل Container در دسترس قرار می‌دهد.
+    مسیر مبدأ را شما انتخاب می‌کنید و Docker محتوای آن را مدیریت نمی‌کند.
+</p>
+
+<div class="info-box">
+    <strong data-fa="اصل مهم" data-en="Key Principle">اصل مهم</strong>
+    <p data-fa="تغییر فایل از سمت میزبان یا Container روی همان دادهٔ مشترک اعمال می‌شود؛ بنابراین Bind Mount هم ابزار قدرتمندی است و هم باید با دقت استفاده شود."
+        data-en="Changes made from the host or the Container affect the same shared data, so a Bind Mount is powerful but must be used carefully.">
+        میزبان و Container به یک دادهٔ مشترک دسترسی دارند؛ تغییر از هر طرف برای طرف دیگر قابل مشاهده است.
+    </p>
+</div>
+
+<div class="diagram-box">
+    <pre>
+Host
+└── /home/user/project
+          │
+          │  Bind Mount
+          ▼
+Container
+└── /app
+    </pre>
+</div>
+
+<!-- ===================== USE CASES ===================== -->
+<h1 data-fa="Bind Mount چه زمانی کاربرد دارد؟" data-en="When Should You Use a Bind Mount?">
+    Bind Mount چه زمانی کاربرد دارد؟
+</h1>
+
+<ul>
+    <li data-fa="اشتراک‌گذاری کد منبع با Container در محیط Development"
+        data-en="Sharing source code with a Container during development">
+        اشتراک‌گذاری کد منبع با Container در محیط Development
+    </li>
+    <li data-fa="تزریق فایل‌های پیکربندی مانند nginx.conf بدون ساخت دوبارهٔ Image"
+        data-en="Injecting configuration files such as nginx.conf without rebuilding the Image">
+        تزریق فایل‌های پیکربندی بدون ساخت دوبارهٔ Image
+    </li>
+    <li data-fa="دسترسی Container به فایل‌های ورودی یا خروجی موجود روی میزبان"
+        data-en="Giving a Container access to existing input or output files on the host">
+        دسترسی Container به فایل‌های ورودی یا خروجی موجود روی میزبان
+    </li>
+    <li data-fa="مشاهدهٔ سریع تغییرات فایل‌های میزبان داخل Container"
+        data-en="Seeing host file changes immediately inside the Container">
+        مشاهدهٔ سریع تغییرات فایل‌های میزبان داخل Container
+    </li>
+</ul>
+
+<div class="info-box">
+    <strong data-fa="انتخاب مناسب" data-en="Choosing Correctly">انتخاب مناسب</strong>
+    <p data-fa="برای کد، فایل پیکربندی و داده‌ای که باید مستقیماً روی میزبان ویرایش شود Bind Mount مناسب است؛ برای دادهٔ ماندگار برنامه و دیتابیس معمولاً Docker Volume انتخاب بهتری است."
+        data-en="Use a Bind Mount for code, configuration, or data that must be edited directly on the host. A Docker Volume is usually better for persistent application and database data.">
+        Bind Mount برای فایل‌هایی مناسب است که باید مستقیماً روی میزبان دیده یا ویرایش شوند؛ دادهٔ ماندگار برنامه معمولاً بهتر است داخل Volume قرار گیرد.
+    </p>
+</div>
+
+<!-- ===================== PATH ANATOMY ===================== -->
+<h1 data-fa="ساختار مسیر در Bind Mount" data-en="Bind Mount Path Anatomy">
+    ساختار مسیر در Bind Mount
+</h1>
+
+<pre><code>host-path:container-path[:options]</code></pre>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="بخش" data-en="Part">بخش</th>
+            <th data-fa="معنا" data-en="Meaning">معنا</th>
+            <th data-fa="نمونه" data-en="Example">نمونه</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Host Path</td>
+            <td data-fa="فایل یا پوشهٔ واقعی روی میزبان" data-en="The actual file or directory on the host">
+                فایل یا پوشهٔ واقعی روی میزبان
+            </td>
+            <td><code>/home/user/site</code></td>
+        </tr>
+        <tr>
+            <td>Container Path</td>
+            <td data-fa="محل نمایش داده داخل Container" data-en="Where the data appears inside the Container">
+                محل نمایش داده داخل Container
+            </td>
+            <td><code>/usr/share/nginx/html</code></td>
+        </tr>
+        <tr>
+            <td>Options</td>
+            <td data-fa="گزینه‌هایی مانند ro برای دسترسی فقط‌خواندنی" data-en="Options such as ro for read-only access">
+                گزینه‌هایی مانند <code>ro</code> برای دسترسی فقط‌خواندنی
+            </td>
+            <td><code>ro</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== MOUNT SYNTAX ===================== -->
+<h1 data-fa="اتصال Bind Mount به Container" data-en="Mounting a Bind Mount into a Container">
+    اتصال Bind Mount به Container
+</h1>
+
+<p data-fa="برای ساخت Bind Mount می‌توان از گزینهٔ کوتاه ‎-v یا گزینهٔ صریح‌تر --mount استفاده کرد."
+    data-en="You can create a Bind Mount with the short -v option or the more explicit --mount option.">
+    برای ساخت Bind Mount می‌توان از گزینهٔ کوتاه <code>-v</code> یا گزینهٔ صریح‌تر <code>--mount</code> استفاده کرد.
+</p>
+
+<h3 data-fa="روش کوتاه با ‎-v" data-en="Short Syntax with -v">
+    روش کوتاه با <code>-v</code>
+</h3>
+
+<pre><code>docker run -d \
+  --name bind-web \
+  -p 8080:80 \
+  -v "$(pwd)/site:/usr/share/nginx/html" \
+  nginx</code></pre>
+
+<p data-fa="در این مثال، پوشهٔ site از مسیر جاری میزبان داخل مسیر /usr/share/nginx/html در Container نمایش داده می‌شود."
+    data-en="In this example, the site directory from the current host path appears at /usr/share/nginx/html inside the Container.">
+    پوشهٔ <code>site</code> از مسیر جاری میزبان داخل <code>/usr/share/nginx/html</code> در Container نمایش داده می‌شود.
+</p>
+
+<h3 data-fa="روش صریح با ‎--mount" data-en="Explicit Syntax with --mount">
+    روش صریح با <code>--mount</code>
+</h3>
+
+<pre><code>docker run -d \
+  --name bind-web \
+  -p 8080:80 \
+  --mount type=bind,source="$(pwd)/site",target=/usr/share/nginx/html \
+  nginx</code></pre>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th><code>-v</code></th>
+            <th><code>--mount</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="کوتاه و مناسب اجرای روزمره" data-en="Short and convenient for daily use">
+                کوتاه و مناسب اجرای روزمره
+            </td>
+            <td data-fa="خواناتر و صریح‌تر برای اسکریپت‌ها" data-en="Clearer and more explicit for scripts">
+                خواناتر و صریح‌تر برای اسکریپت‌ها
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="اگر مسیر مبدأ وجود نداشته باشد ممکن است آن را به‌صورت پوشه بسازد."
+                data-en="If the source path is missing, it may create it as a directory.">
+                ممکن است مسیر مبدأ ناموجود را به‌صورت پوشه بسازد.
+            </td>
+            <td data-fa="اگر مسیر مبدأ وجود نداشته باشد با خطای واضح متوقف می‌شود."
+                data-en="If the source path is missing, it stops with a clear error.">
+                برای مسیر مبدأ ناموجود با خطا متوقف می‌شود.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="info-box">
+    <strong>Best Practice</strong>
+    <p data-fa="در اسکریپت‌ها و محیط Production از --mount استفاده کنید تا نوع Mount، مبدأ و مقصد کاملاً مشخص باشند."
+        data-en="Prefer --mount in scripts and production so the mount type, source, and target remain explicit.">
+        در اسکریپت‌ها و محیط Production از <code>--mount</code> استفاده کنید.
+    </p>
+</div>
+
+<!-- ===================== READ ONLY ===================== -->
+<h1 data-fa="Bind Mount فقط‌خواندنی" data-en="Read-Only Bind Mounts">
+    Bind Mount فقط‌خواندنی
+</h1>
+
+<p data-fa="Bind Mount به‌صورت پیش‌فرض قابل‌نوشتن است. اگر Container فقط باید فایل را بخواند، دسترسی نوشتن را با ro یا readonly غیرفعال کنید."
+    data-en="A Bind Mount is writable by default. If the Container only needs to read the files, disable write access with ro or readonly.">
+    Bind Mount به‌صورت پیش‌فرض قابل‌نوشتن است. برای محدودکردن دسترسی از <code>ro</code> یا <code>readonly</code> استفاده کنید.
+</p>
+
+<h3 data-fa="فقط‌خواندنی با ‎-v" data-en="Read-Only with -v">
+    فقط‌خواندنی با <code>-v</code>
+</h3>
+
+<pre><code>docker run --rm \
+  -v "$(pwd)/config:/app/config:ro" \
+  alpine \
+  cat /app/config/app.conf</code></pre>
+
+<h3 data-fa="فقط‌خواندنی با ‎--mount" data-en="Read-Only with --mount">
+    فقط‌خواندنی با <code>--mount</code>
+</h3>
+
+<pre><code>docker run --rm \
+  --mount type=bind,source="$(pwd)/config",target=/app/config,readonly \
+  alpine \
+  cat /app/config/app.conf</code></pre>
+
+<!-- ===================== DEVELOPMENT ===================== -->
+<h1 data-fa="توسعهٔ زنده با Bind Mount" data-en="Live Development with Bind Mounts">
+    توسعهٔ زنده با Bind Mount
+</h1>
+
+<p data-fa="در محیط Development می‌توان کد پروژه را داخل Container Mount کرد. با ذخیرهٔ فایل روی میزبان، برنامهٔ داخل Container تغییر را فوراً می‌بیند و لازم نیست برای هر ویرایش Image دوباره Build شود."
+    data-en="During development, you can mount the project source into a Container. When a file is saved on the host, the application inside the Container sees the change immediately, avoiding an Image rebuild for every edit.">
+    در محیط Development می‌توان کد پروژه را داخل Container Mount کرد تا تغییر فایل‌های میزبان فوراً در دسترس برنامه باشد.
+</p>
+
+<pre><code>docker run --rm -it \
+  -p 3000:3000 \
+  -v "$(pwd):/app" \
+  -w /app \
+  node:22 \
+  npm run dev</code></pre>
+
+<div class="info-box">
+    <strong data-fa="نکتهٔ وابستگی‌ها" data-en="Dependency Note">نکتهٔ وابستگی‌ها</strong>
+    <p data-fa="Mount کردن کل پروژه ممکن است پوشه‌های ساخته‌شده داخل Image مانند node_modules را بپوشاند. وابستگی‌ها را در یک Volume جدا نگه دارید یا فقط پوشه‌های لازم را Mount کنید."
+        data-en="Mounting the entire project can hide directories created in the Image, such as node_modules. Keep dependencies in a separate Volume or mount only the directories you need.">
+        Mount کردن کل پروژه ممکن است مسیرهایی مانند <code>node_modules</code> را بپوشاند؛ وابستگی‌ها را جدا نگه دارید یا فقط مسیرهای لازم را Mount کنید.
+    </p>
+</div>
+
+<!-- ===================== VOLUME COMPARISON ===================== -->
+<h1 data-fa="مقایسهٔ Bind Mount و Docker Volume" data-en="Bind Mount vs Docker Volume">
+    مقایسهٔ Bind Mount و Docker Volume
+</h1>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="ویژگی" data-en="Feature">ویژگی</th>
+            <th>Bind Mount</th>
+            <th>Docker Volume</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="مدیریت مسیر" data-en="Path Management">مدیریت مسیر</td>
+            <td data-fa="مسیر دقیق را کاربر انتخاب می‌کند." data-en="The user chooses the exact path.">
+                مسیر دقیق را کاربر انتخاب می‌کند.
+            </td>
+            <td data-fa="Docker محل ذخیره‌سازی را مدیریت می‌کند." data-en="Docker manages the storage location.">
+                Docker محل ذخیره‌سازی را مدیریت می‌کند.
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="وابستگی به میزبان" data-en="Host Dependency">وابستگی به میزبان</td>
+            <td data-fa="به ساختار مسیر و سیستم‌عامل میزبان وابسته است." data-en="Depends on the host path layout and operating system.">
+                به مسیر و سیستم‌عامل میزبان وابسته است.
+            </td>
+            <td data-fa="قابل‌حمل‌تر و مستقل‌تر از مسیر میزبان است." data-en="More portable and independent of host paths.">
+                مستقل‌تر از مسیر میزبان است.
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="کاربرد پیشنهادی" data-en="Recommended Use">کاربرد پیشنهادی</td>
+            <td data-fa="کد منبع، پیکربندی و فایل‌های میزبان" data-en="Source code, configuration, and host files">
+                کد منبع، پیکربندی و فایل‌های میزبان
+            </td>
+            <td data-fa="دادهٔ ماندگار برنامه و دیتابیس" data-en="Persistent application and database data">
+                دادهٔ ماندگار برنامه و دیتابیس
+            </td>
+        </tr>
+        <tr>
+            <td data-fa="مدیریت با Docker CLI" data-en="Docker CLI Management">مدیریت با Docker CLI</td>
+            <td data-fa="فرمان مستقل create یا inspect ندارد." data-en="Has no dedicated create or inspect command.">
+                فرمان مستقل <code>create</code> یا <code>inspect</code> ندارد.
+            </td>
+            <td data-fa="با docker volume مدیریت می‌شود." data-en="Managed with docker volume commands.">
+                با <code>docker volume</code> مدیریت می‌شود.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== COMPOSE ===================== -->
+<h1 data-fa="Bind Mount در Docker Compose" data-en="Bind Mounts in Docker Compose">
+    Bind Mount در Docker Compose
+</h1>
+
+<h3 data-fa="نحو کوتاه" data-en="Short Syntax">نحو کوتاه</h3>
+
+<pre><code>services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./site:/usr/share/nginx/html:ro</code></pre>
+
+<h3 data-fa="نحو بلند و صریح" data-en="Long and Explicit Syntax">
+    نحو بلند و صریح
+</h3>
+
+<pre><code>services:
+  web:
+    image: nginx
+    volumes:
+      - type: bind
+        source: ./site
+        target: /usr/share/nginx/html
+        read_only: true</code></pre>
+
+<p data-fa="مسیر نسبی در Compose نسبت به پوشهٔ فایل Compose محاسبه می‌شود. برای اجرای قابل‌پیش‌بینی، فایل Compose و مسیرهای پروژه را با هم جابه‌جا کنید."
+    data-en="A relative Compose path is resolved from the directory containing the Compose file. Move the Compose file and project paths together for predictable execution.">
+    مسیر نسبی در Compose نسبت به پوشهٔ فایل Compose محاسبه می‌شود.
+</p>
+
+<!-- ===================== HOST PATHS ===================== -->
+<h1 data-fa="مسیر میزبان و تفاوت سیستم‌عامل‌ها" data-en="Host Paths and Operating-System Differences">
+    مسیر میزبان و تفاوت سیستم‌عامل‌ها
+</h1>
+
+<ul>
+    <li data-fa="در Linux و macOS می‌توان از $(pwd) برای مسیر جاری استفاده کرد."
+        data-en="On Linux and macOS, use $(pwd) for the current directory.">
+        در Linux و macOS می‌توان از <code>$(pwd)</code> برای مسیر جاری استفاده کرد.
+    </li>
+    <li data-fa="در PowerShell از ${PWD} یا مسیر کامل مانند C:\project استفاده کنید."
+        data-en="In PowerShell, use ${PWD} or an absolute path such as C:\project.">
+        در PowerShell از <code>${PWD}</code> یا مسیر کامل مانند <code>C:\project</code> استفاده کنید.
+    </li>
+    <li data-fa="مسیرهایی که فاصله دارند باید داخل علامت نقل‌قول قرار گیرند."
+        data-en="Paths containing spaces must be wrapped in quotes.">
+        مسیرهایی که فاصله دارند باید داخل علامت نقل‌قول قرار گیرند.
+    </li>
+    <li data-fa="Permission و مالکیت فایل روی Linux می‌تواند دسترسی Process داخل Container را محدود کند."
+        data-en="Linux file permissions and ownership can restrict the process inside the Container.">
+        Permission و مالکیت فایل روی Linux می‌تواند دسترسی Process داخل Container را محدود کند.
+    </li>
+</ul>
+
+<div class="info-box">
+    <strong data-fa="رفتار مهم مقصد" data-en="Important Target Behavior">رفتار مهم مقصد</strong>
+    <p data-fa="اگر مسیر مقصد داخل Image از قبل فایل داشته باشد، Bind Mount آن فایل‌ها را حذف نمی‌کند اما تا زمانی که Mount فعال است آن‌ها را می‌پوشاند."
+        data-en="If the target path already contains files in the Image, a Bind Mount does not delete them, but it hides them while the mount is active.">
+        Bind Mount فایل‌های قبلی مسیر مقصد را حذف نمی‌کند، اما تا زمانی که Mount فعال است آن‌ها را می‌پوشاند.
+    </p>
+</div>
+
+<!-- ===================== SECURITY ===================== -->
+<h1 data-fa="امنیت و بهترین روش‌ها" data-en="Security and Best Practices">
+    امنیت و بهترین روش‌ها
+</h1>
+
+<ul>
+    <li data-fa="فقط فایل‌ها و پوشه‌های ضروری را Mount کنید؛ هرگز ریشهٔ سیستم میزبان را در اختیار Container قرار ندهید."
+        data-en="Mount only required files and directories; never expose the host filesystem root to a Container.">
+        فقط فایل‌ها و پوشه‌های ضروری را Mount کنید؛ ریشهٔ سیستم میزبان را در اختیار Container قرار ندهید.
+    </li>
+    <li data-fa="برای فایل‌های پیکربندی و محتوای ثابت از حالت فقط‌خواندنی استفاده کنید."
+        data-en="Use read-only mode for configuration files and static content.">
+        برای فایل‌های پیکربندی و محتوای ثابت از حالت فقط‌خواندنی استفاده کنید.
+    </li>
+    <li data-fa="فایل‌های حساس مانند کلید خصوصی، فایل env و Docker socket را بدون نیاز قطعی Mount نکنید."
+        data-en="Do not mount sensitive files such as private keys, env files, or the Docker socket unless strictly required.">
+        فایل‌های حساس مانند کلید خصوصی، فایل <code>env</code> و Docker socket را بدون نیاز قطعی Mount نکنید.
+    </li>
+    <li data-fa="Container را با کاربر غیر root اجرا کنید و Permission مسیر میزبان را با همان کاربر هماهنگ کنید."
+        data-en="Run the Container as a non-root user and align host-path permissions with that user.">
+        Container را با کاربر غیر <code>root</code> اجرا کنید و Permission مسیر میزبان را هماهنگ کنید.
+    </li>
+    <li data-fa="در Production مسیرهای مطلق، مشخص و پایدار به کار ببرید."
+        data-en="Use explicit, stable absolute paths in production.">
+        در Production مسیرهای مطلق، مشخص و پایدار به کار ببرید.
+    </li>
+</ul>
+
+<div class="info-box">
+    <strong data-fa="هشدار امنیتی" data-en="Security Warning">هشدار امنیتی</strong>
+    <p data-fa="Mount کردن /var/run/docker.sock به Container عملاً امکان کنترل Docker میزبان را می‌دهد و می‌تواند معادل دسترسی سطح بالا به سیستم باشد."
+        data-en="Mounting /var/run/docker.sock into a Container effectively grants control of the host Docker daemon and can be equivalent to privileged host access.">
+        Mount کردن <code>/var/run/docker.sock</code> می‌تواند دسترسی بسیار قدرتمندی به میزبان بدهد و نباید بدون بررسی امنیتی انجام شود.
+    </p>
+</div>
+
+<!-- ===================== LAB ===================== -->
+<h1 data-fa="تمرین عملی: اجرای Nginx با Bind Mount" data-en="Lab: Running Nginx with a Bind Mount">
+    تمرین عملی: اجرای Nginx با Bind Mount
+</h1>
+
+<section class="lab-section">
+    <h3 data-fa="گام ۱: ساخت پوشهٔ سایت" data-en="Step 1: Create the Site Directory">
+        گام ۱: ساخت پوشهٔ سایت
+    </h3>
+    <pre><code>mkdir site</code></pre>
+
+    <h3 data-fa="گام ۲: ساخت صفحهٔ HTML" data-en="Step 2: Create the HTML Page">
+        گام ۲: ساخت صفحهٔ HTML
+    </h3>
+    <pre><code>echo "&lt;h1&gt;Bind Mount Works&lt;/h1&gt;" > site/index.html</code></pre>
+
+    <h3 data-fa="گام ۳: اجرای Nginx" data-en="Step 3: Run Nginx">
+        گام ۳: اجرای Nginx
+    </h3>
+    <pre><code>docker run -d \
+  --name bind-web \
+  -p 8080:80 \
+  --mount type=bind,source="$(pwd)/site",target=/usr/share/nginx/html,readonly \
+  nginx</code></pre>
+
+    <h3 data-fa="گام ۴: مشاهده در مرورگر" data-en="Step 4: Open in the Browser">
+        گام ۴: مشاهده در مرورگر
+    </h3>
+    <pre><code>http://localhost:8080</code></pre>
+
+    <h3 data-fa="گام ۵: تغییر فایل روی میزبان" data-en="Step 5: Modify the Host File">
+        گام ۵: تغییر فایل روی میزبان
+    </h3>
+    <pre><code>echo "&lt;h1&gt;Updated without rebuilding&lt;/h1&gt;" > site/index.html</code></pre>
+
+    <h3 data-fa="گام ۶: پاک‌سازی Container" data-en="Step 6: Remove the Container">
+        گام ۶: پاک‌سازی Container
+    </h3>
+    <pre><code>docker rm -f bind-web</code></pre>
+
+    <div class="lab-result">
+        <strong data-fa="نتیجهٔ تمرین" data-en="Lab Result">نتیجهٔ تمرین</strong>
+        <p data-fa="با Refresh مرورگر، متن جدید بدون Build دوبارهٔ Image نمایش داده می‌شود. حذف Container نیز فایل site/index.html روی میزبان را حذف نمی‌کند."
+            data-en="After refreshing the browser, the updated text appears without rebuilding the Image. Removing the Container also leaves site/index.html intact on the host.">
+            تغییر فایل میزبان بدون Build دوباره نمایش داده می‌شود و حذف Container فایل میزبان را از بین نمی‌برد.
+        </p>
+    </div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h2 data-fa="سؤالات تستی Bind Mount" data-en="Bind Mount Quiz">
+        سؤالات تستی Bind Mount
+    </h2>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="در Bind Mount مسیر مبدأ را چه کسی تعیین می‌کند؟"
+                data-en="Who chooses the source path in a Bind Mount?">
+                در Bind Mount مسیر مبدأ را چه کسی تعیین می‌کند؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="Docker به‌صورت تصادفی" data-en="Docker randomly">Docker به‌صورت تصادفی</li>
+                <li data-fa="کاربر یا مدیر سیستم" data-en="The user or system administrator">کاربر یا مدیر سیستم</li>
+                <li data-fa="Container Registry" data-en="The Container Registry">Container Registry</li>
+                <li data-fa="Dockerfile همیشه" data-en="Always the Dockerfile">Dockerfile همیشه</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — در Bind Mount کاربر مسیر دقیق فایل یا پوشهٔ میزبان را مشخص می‌کند."
+                data-en="Correct answer: Option 2 — The user specifies the exact host file or directory path.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — کاربر مسیر دقیق میزبان را مشخص می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام گزینه Bind Mount فقط‌خواندنی می‌سازد؟"
+                data-en="Which option creates a read-only Bind Mount?">
+                کدام گزینه Bind Mount فقط‌خواندنی می‌سازد؟
+            </h3>
+            <ol class="quiz-options">
+                <li><code>-v ./config:/app/config:ro</code></li>
+                <li><code>-v ./config:/app/config:rw-only</code></li>
+                <li><code>--mount type=volume,delete</code></li>
+                <li><code>--read ./config</code></li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — پسوند ro دسترسی نوشتن Container را غیرفعال می‌کند."
+                data-en="Correct answer: Option 1 — The ro suffix disables write access from the Container.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — پسوند <code>ro</code> دسترسی نوشتن را غیرفعال می‌کند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای دادهٔ ماندگار دیتابیس معمولاً کدام انتخاب مناسب‌تر است؟"
+                data-en="Which choice is usually better for persistent database data?">
+                برای دادهٔ ماندگار دیتابیس معمولاً کدام انتخاب مناسب‌تر است؟
+            </h3>
+            <ol class="quiz-options">
+                <li>Docker Volume</li>
+                <li data-fa="فایل داخل لایهٔ Container" data-en="A file in the Container layer">فایل داخل لایهٔ Container</li>
+                <li data-fa="قرار دادن داده در Dockerfile" data-en="Putting the data in the Dockerfile">قرار دادن داده در Dockerfile</li>
+                <li data-fa="ذخیره در Image Tag" data-en="Storing it in an Image Tag">ذخیره در Image Tag</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — Docker Volume برای دادهٔ ماندگار برنامه مدیریت‌شده‌تر و قابل‌حمل‌تر است."
+                data-en="Correct answer: Option 1 — Docker Volume is more manageable and portable for persistent application data.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۱ — Docker Volume برای دادهٔ ماندگار انتخاب مناسب‌تری است.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="اگر Bind Mount روی مسیری دارای فایل در Image قرار گیرد چه می‌شود؟"
+                data-en="What happens when a Bind Mount targets a directory that already has files in the Image?">
+                اگر Bind Mount روی مسیری دارای فایل در Image قرار گیرد چه می‌شود؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="فایل‌های Image برای همیشه حذف می‌شوند" data-en="The Image files are permanently deleted">فایل‌های Image برای همیشه حذف می‌شوند</li>
+                <li data-fa="فایل‌ها هنگام فعال‌بودن Mount پوشانده می‌شوند" data-en="The files are hidden while the mount is active">فایل‌ها هنگام فعال‌بودن Mount پوشانده می‌شوند</li>
+                <li data-fa="Container اجرا نمی‌شود" data-en="The Container cannot start">Container اجرا نمی‌شود</li>
+                <li data-fa="Docker یک Volume تصادفی می‌سازد" data-en="Docker creates a random Volume">Docker یک Volume تصادفی می‌سازد</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — فایل‌ها حذف نمی‌شوند، اما دادهٔ Mount تا پایان اتصال روی آن مسیر دیده می‌شود."
+                data-en="Correct answer: Option 2 — The files are not deleted, but the mounted data hides them while attached.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — فایل‌ها حذف نمی‌شوند اما موقتاً پوشانده می‌شوند.
+            </p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="مزیت مهم --mount نسبت به ‎-v برای مسیر مبدأ ناموجود چیست؟"
+                data-en="What is an important --mount advantage when the source path does not exist?">
+                مزیت مهم <code>--mount</code> نسبت به <code>-v</code> برای مسیر مبدأ ناموجود چیست؟
+            </h3>
+            <ol class="quiz-options">
+                <li data-fa="مسیر را بدون اطلاع حذف می‌کند" data-en="It silently deletes the path">مسیر را بدون اطلاع حذف می‌کند</li>
+                <li data-fa="با خطای واضح متوقف می‌شود" data-en="It stops with a clear error">با خطای واضح متوقف می‌شود</li>
+                <li data-fa="Image را دوباره Build می‌کند" data-en="It rebuilds the Image">Image را دوباره Build می‌کند</li>
+                <li data-fa="Mount را به Volume تبدیل می‌کند" data-en="It converts the mount into a Volume">Mount را به Volume تبدیل می‌کند</li>
+            </ol>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — --mount مسیر مبدأ ناموجود را گزارش می‌کند و از ساخت ناخواستهٔ پوشه جلوگیری می‌کند."
+                data-en="Correct answer: Option 2 — --mount reports a missing source path and avoids accidentally creating a directory.">
+                <strong>پاسخ صحیح:</strong> گزینهٔ ۲ — <code>--mount</code> برای مسیر مبدأ ناموجود خطا می‌دهد.
+            </p>
+        </li>
+    </ol>
+</section>
