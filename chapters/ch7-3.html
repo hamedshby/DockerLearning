@@ -1,0 +1,388 @@
+<!-- ===================== DATA BACKUP AND RESTORE ===================== -->
+<h1 data-fa="پشتیبان‌گیری و بازیابی چیست؟" data-en="What Is Backup and Restore?">
+    پشتیبان‌گیری و بازیابی چیست؟
+</h1>
+
+<p data-fa="Backup یک نسخهٔ مستقل از داده است که برای بازگرداندن اطلاعات پس از حذف اشتباهی، خرابی دیسک، خطای برنامه یا حمله استفاده می‌شود. Restore فرایند برگرداندن همان نسخه به یک محل سالم و قابل استفاده است."
+    data-en="A backup is an independent copy of data used to recover from accidental deletion, disk failure, application errors, or attacks. Restore is the process of returning that copy to a healthy, usable location.">
+    Backup یک نسخهٔ مستقل از داده است و Restore آن نسخه را به یک محل سالم و قابل استفاده برمی‌گرداند.
+</p>
+
+<div class="info-box">
+    <strong data-fa="اصل ۳-۲-۱" data-en="The 3-2-1 Principle">اصل ۳-۲-۱</strong>
+    <p data-fa="سه نسخه از داده، روی دو نوع رسانهٔ متفاوت و دست‌کم یک نسخه خارج از میزبان اصلی نگه دارید. Volume متصل به همان سرور، به‌تنهایی Backup محسوب نمی‌شود."
+        data-en="Keep three copies of data on two different media types, with at least one copy away from the primary host. A Volume attached to the same server is not a backup by itself.">
+        سه نسخه از داده، روی دو نوع رسانه و دست‌کم یک نسخه خارج از میزبان اصلی نگه دارید.
+    </p>
+</div>
+
+<div class="diagram-box">
+    <pre>
+Application ──writes──▶ Docker Volume
+                           │
+                           │ backup
+                           ▼
+                    backup-2026-07-31.tar.gz
+                           │
+                           │ restore drill
+                           ▼
+                    New Docker Volume
+    </pre>
+</div>
+
+<!-- ===================== BACKUP SCOPE ===================== -->
+<h1 data-fa="چه چیزهایی باید پشتیبان‌گیری شوند؟" data-en="What Should Be Backed Up?">
+    چه چیزهایی باید پشتیبان‌گیری شوند؟
+</h1>
+
+<ul>
+    <li data-fa="دادهٔ ماندگار داخل Named Volumeها و مسیرهای Bind Mount"
+        data-en="Persistent data in named Volumes and Bind Mount paths">دادهٔ ماندگار داخل Volumeها و Bind Mountها</li>
+    <li data-fa="نسخهٔ منطقی دیتابیس که با ابزار خود دیتابیس ساخته شده است"
+        data-en="Logical database backups created with the database's own tools">نسخهٔ منطقی دیتابیس</li>
+    <li data-fa="فایل‌های Compose، تنظیمات و اطلاعات لازم برای ساخت دوبارهٔ سرویس"
+        data-en="Compose files, configuration, and information required to rebuild the service">فایل‌های Compose و تنظیمات</li>
+    <li data-fa="متادیتای لازم مانند نسخهٔ Image، نام Volumeها و زمان تهیهٔ Backup"
+        data-en="Required metadata such as Image versions, Volume names, and backup timestamps">متادیتای بازیابی</li>
+</ul>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="داده" data-en="Data">داده</th>
+            <th data-fa="روش پیشنهادی" data-en="Recommended Method">روش پیشنهادی</th>
+            <th data-fa="دلیل" data-en="Reason">دلیل</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="فایل‌های ثابت داخل Volume" data-en="Static files in a Volume">فایل‌های ثابت داخل Volume</td>
+            <td><code>tar</code></td>
+            <td data-fa="ساده، قابل حمل و مناسب Snapshot فایل‌ها" data-en="Simple, portable, and suitable for file snapshots">ساده و قابل حمل</td>
+        </tr>
+        <tr>
+            <td data-fa="دیتابیس در حال اجرا" data-en="A running database">دیتابیس در حال اجرا</td>
+            <td data-fa="ابزار Native دیتابیس" data-en="The database's native tool">ابزار Native دیتابیس</td>
+            <td data-fa="تراکنش‌ها و ساختار داخلی را می‌شناسد" data-en="It understands transactions and internal structures">از تراکنش‌ها آگاه است</td>
+        </tr>
+        <tr>
+            <td data-fa="مسیر Bind Mount" data-en="A Bind Mount path">مسیر Bind Mount</td>
+            <td data-fa="ابزار Backup میزبان یا tar" data-en="A host backup tool or tar">ابزار میزبان یا <code>tar</code></td>
+            <td data-fa="مبدأ یک مسیر واقعی روی میزبان است" data-en="The source is a real path on the host">مبدأ روی میزبان است</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== CONSISTENCY ===================== -->
+<h1 data-fa="تهیهٔ Backup سازگار" data-en="Creating Consistent Backups">تهیهٔ Backup سازگار</h1>
+
+<p data-fa="اگر برنامه هنگام کپی فایل‌ها در حال نوشتن باشد، ممکن است فایل‌های Backup به لحظه‌های متفاوت تعلق داشته باشند و نسخهٔ حاصل قابل بازیابی نباشد. برای Consistent Backup باید نوشتن را متوقف، برنامه را در حالت نگهداری قرار یا از ابزار آگاه از تراکنش دیتابیس استفاده کنید."
+    data-en="If the application writes while files are copied, backup files may represent different points in time and the result may not be recoverable. For a consistent backup, stop writes, enter maintenance mode, or use a transaction-aware database tool.">
+    اگر برنامه هنگام کپی در حال نوشتن باشد، فایل‌های Backup ممکن است سازگار نباشند.
+</p>
+
+<div class="info-box">
+    <strong data-fa="Backup فایل خام دیتابیس" data-en="Raw Database File Backup">Backup فایل خام دیتابیس</strong>
+    <p data-fa="کپی مستقیم فایل‌های SQL Server، PostgreSQL یا MySQL در زمان اجرا معمولاً روش مطمئنی نیست. ابتدا از دستور Backup رسمی دیتابیس استفاده کنید یا سرویس را طبق مستندات آن متوقف کنید."
+        data-en="Directly copying live SQL Server, PostgreSQL, or MySQL files is usually unsafe. Use the database's official backup command first, or stop the service according to its documentation.">
+        فایل‌های زندهٔ دیتابیس را بدون هماهنگی مستقیم کپی نکنید.
+    </p>
+</div>
+
+<!-- ===================== NAMED VOLUME BACKUP ===================== -->
+<h1 data-fa="پشتیبان‌گیری از Named Volume" data-en="Backing Up a Named Volume">
+    پشتیبان‌گیری از Named Volume
+</h1>
+
+<p data-fa="در این روش یک Container موقت Alpine، Volume مبدأ را فقط‌خواندنی و پوشهٔ مقصد روی میزبان را قابل‌نوشتن Mount می‌کند. سپس tar محتوای Volume را فشرده می‌کند."
+    data-en="This method uses a temporary Alpine Container. It mounts the source Volume read-only and a host destination directory as writable, then uses tar to compress the Volume contents.">
+    یک Container موقت <code>alpine</code> با دستور <code>tar</code> محتوای Volume را فشرده می‌کند.
+</p>
+
+<pre><code>docker run --rm \
+  --mount source=app-data,target=/source,readonly \
+  --mount type=bind,source="${PWD}/backups",target=/backup \
+  alpine \
+  tar -czf /backup/app-data-2026-07-31.tar.gz -C /source .</code></pre>
+
+<ul>
+    <li data-fa="گزینهٔ --rm پس از پایان کار Container موقت را حذف می‌کند."
+        data-en="The --rm option removes the temporary Container after completion."><code>--rm</code> کانتینر موقت را حذف می‌کند.</li>
+    <li data-fa="گزینهٔ readonly از تغییر تصادفی Volume مبدأ جلوگیری می‌کند."
+        data-en="The readonly option prevents accidental changes to the source Volume."><code>readonly</code> از تغییر مبدأ جلوگیری می‌کند.</li>
+    <li data-fa="گزینهٔ ‎-C /source باعث می‌شود Archive مسیرهای مطلق یا پوشهٔ اضافه نداشته باشد."
+        data-en="The -C /source option prevents absolute paths or an extra top-level directory in the archive."><code>-C /source</code> ساختار Archive را ساده نگه می‌دارد.</li>
+</ul>
+
+<h3 data-fa="مشاهدهٔ محتویات Backup" data-en="Listing Backup Contents">مشاهدهٔ محتویات Backup</h3>
+
+<pre><code>docker run --rm \
+  --mount type=bind,source="${PWD}/backups",target=/backup,readonly \
+  alpine \
+  tar -tzf /backup/app-data-2026-07-31.tar.gz</code></pre>
+
+<!-- ===================== NAMED VOLUME RESTORE ===================== -->
+<h1 data-fa="بازیابی Named Volume" data-en="Restoring a Named Volume">بازیابی Named Volume</h1>
+
+<p data-fa="برای کاهش ریسک، Backup را ابتدا داخل یک Volume جدید Restore کنید. پس از بررسی محتوا و اجرای آزمایشی برنامه، سرویس را به Volume بازیابی‌شده متصل کنید."
+    data-en="To reduce risk, restore into a new Volume first. After checking the contents and test-running the application, connect the service to the restored Volume.">
+    Backup را ابتدا داخل یک Volume جدید بازیابی و آزمایش کنید.
+</p>
+
+<pre><code>docker volume create app-data-restored
+
+docker run --rm \
+  --mount source=app-data-restored,target=/restore \
+  --mount type=bind,source="${PWD}/backups",target=/backup,readonly \
+  alpine \
+  tar -xzf /backup/app-data-2026-07-31.tar.gz -C /restore</code></pre>
+
+<div class="info-box">
+    <strong data-fa="هشدار بازنویسی" data-en="Overwrite Warning">هشدار بازنویسی</strong>
+    <p data-fa="Restore روی Volume دارای داده ممکن است فایل‌های جدید را با نسخه‌های قدیمی ترکیب یا بازنویسی کند. مقصد خالی و جدید، Rollback و مقایسه را ساده‌تر می‌کند."
+        data-en="Restoring onto a populated Volume may mix or overwrite new files with old versions. A new empty destination makes comparison and rollback easier.">
+        برای Restore از مقصد خالی و ترجیحاً جدید استفاده کنید.
+    </p>
+</div>
+
+<!-- ===================== BIND MOUNT BACKUP ===================== -->
+<h1 data-fa="پشتیبان‌گیری از Bind Mount" data-en="Backing Up a Bind Mount">پشتیبان‌گیری از Bind Mount</h1>
+
+<p data-fa="چون مبدأ Bind Mount یک مسیر واقعی روی میزبان است، می‌توان آن را با ابزار Backup سیستم‌عامل، Snapshot فایل‌سیستم یا tar پشتیبان‌گیری کرد. با این حال قانون سازگاری داده همچنان برقرار است."
+    data-en="Because a Bind Mount source is a real host path, it can be protected with an operating-system backup tool, a filesystem snapshot, or tar. The data-consistency rule still applies.">
+    مسیر Bind Mount را می‌توان با ابزار میزبان، Snapshot یا <code>tar</code> پشتیبان‌گیری کرد.
+</p>
+
+<pre><code>tar -czf ./backups/site-2026-07-31.tar.gz -C ./site .
+
+mkdir ./site-restored
+tar -xzf ./backups/site-2026-07-31.tar.gz -C ./site-restored</code></pre>
+
+<p data-fa="در Windows و macOS از ابزار مناسب همان سیستم‌عامل و مسیرهای معتبر استفاده کنید. Permission، مالکیت فایل و Symbolic Linkها را نیز پس از Restore بررسی کنید."
+    data-en="On Windows and macOS, use an appropriate host tool and valid paths. Also check permissions, ownership, and symbolic links after restoration.">
+    بعد از Restore، Permission، مالکیت و Symbolic Linkها را بررسی کنید.
+</p>
+
+<!-- ===================== SQL SERVER ===================== -->
+<h1 data-fa="Backup منطقی SQL Server" data-en="Logical SQL Server Backup">Backup منطقی SQL Server</h1>
+
+<p data-fa="برای SQL Server از دستور Native استفاده کنید تا موتور دیتابیس یک فایل سازگار ‎.bak بسازد. مسیر مقصد باید داخل Container قابل‌نوشتن و روی Volume یا Bind Mount ماندگار باشد."
+    data-en="Use SQL Server's native command so the database engine creates a consistent .bak file. The destination must be writable inside the Container and persisted through a Volume or Bind Mount.">
+    SQL Server باید فایل سازگار <code>.bak</code> را با دستور Native خود بسازد.
+</p>
+
+<pre><code>BACKUP DATABASE [ShopDb]
+TO DISK = N'/var/opt/mssql/backup/ShopDb-full.bak'
+WITH INIT, COMPRESSION, CHECKSUM;</code></pre>
+
+<h3 data-fa="بررسی فایل Backup در SQL Server" data-en="Verifying the SQL Server Backup">
+    بررسی فایل Backup در SQL Server
+</h3>
+
+<pre><code>RESTORE VERIFYONLY
+FROM DISK = N'/var/opt/mssql/backup/ShopDb-full.bak'
+WITH CHECKSUM;</code></pre>
+
+<p data-fa="RESTORE VERIFYONLY برخی خطاهای ساختاری را پیدا می‌کند، اما جای Restore آزمایشی کامل و اجرای بررسی سلامت برنامه را نمی‌گیرد."
+    data-en="RESTORE VERIFYONLY detects some structural errors, but it does not replace a full test restore followed by application health checks.">
+    <code>RESTORE VERIFYONLY</code> مفید است، اما جای Restore آزمایشی را نمی‌گیرد.
+</p>
+
+<!-- ===================== VERIFICATION ===================== -->
+<h1 data-fa="اعتبارسنجی Backup و آزمون Restore" data-en="Backup Validation and Restore Testing">
+    اعتبارسنجی Backup و آزمون Restore
+</h1>
+
+<ol>
+    <li data-fa="خروجی فرمان Backup و کد خروج را ثبت و خطاها را مانیتور کنید."
+        data-en="Record the backup command output and exit code, and monitor failures.">خروجی و کد خروج را ثبت کنید.</li>
+    <li data-fa="اندازهٔ فایل را با نسخه‌های قبلی مقایسه کنید؛ فایل صفر یا کاهش غیرعادی هشدار است."
+        data-en="Compare file size with earlier backups; a zero-sized file or unusual drop is a warning.">اندازهٔ فایل را بررسی کنید.</li>
+    <li data-fa="برای فایل Backup مقدار SHA256 checksum بسازید و جداگانه نگه دارید."
+        data-en="Create a SHA256 checksum for the backup file and store it separately.">مقدار <code>SHA256 checksum</code> بسازید.</li>
+    <li data-fa="به‌صورت دوره‌ای Restore را در محیط جدا اجرا و داده و برنامه را آزمایش کنید."
+        data-en="Periodically restore in an isolated environment and test both data and application behavior.">Restore دوره‌ای را در محیط جدا تمرین کنید.</li>
+</ol>
+
+<pre><code># PowerShell
+Get-FileHash .\backups\app-data-2026-07-31.tar.gz -Algorithm SHA256
+
+# Linux
+sha256sum ./backups/app-data-2026-07-31.tar.gz</code></pre>
+
+<div class="info-box">
+    <strong data-fa="معیار واقعی" data-en="The Real Test">معیار واقعی</strong>
+    <p data-fa="Backup زمانی قابل اعتماد است که Restore آن با موفقیت آزمایش شده باشد. وجود فایل Archive به‌تنهایی موفقیت Backup را ثابت نمی‌کند."
+        data-en="A backup is trustworthy only after its restore has been tested successfully. The mere presence of an archive file does not prove backup success.">
+        Backup آزمایش‌نشده، Backup قابل اعتماد نیست.
+    </p>
+</div>
+
+<!-- ===================== RETENTION AND SECURITY ===================== -->
+<h1 data-fa="نگهداری، امنیت و خودکارسازی" data-en="Retention, Security, and Automation">
+    نگهداری، امنیت و خودکارسازی
+</h1>
+
+<ul>
+    <li data-fa="Retention را بر اساس نیاز کسب‌وکار تعریف کنید؛ برای نمونه ۷ نسخهٔ روزانه، ۴ نسخهٔ هفتگی و ۱۲ نسخهٔ ماهانه."
+        data-en="Define retention from business needs; for example, 7 daily, 4 weekly, and 12 monthly copies.">سیاست Retention مشخص داشته باشید.</li>
+    <li data-fa="Backupها را هنگام انتقال و در محل ذخیره‌سازی رمزنگاری کنید و کلید را جدا نگه دارید."
+        data-en="Encrypt backups in transit and at rest, and keep encryption keys separate.">Backupها را رمزنگاری کنید.</li>
+    <li data-fa="دسترسی خواندن Backup را محدود کنید؛ Backup ممکن است شامل اطلاعات حساس و Secretهای ذخیره‌شده در داده باشد."
+        data-en="Restrict read access; backups may contain sensitive data and secrets stored in application data.">دسترسی خواندن را محدود کنید.</li>
+    <li data-fa="فرایند را با Scheduler یا CI خودکار کنید، اما شکست Job را با Alert گزارش دهید."
+        data-en="Automate the process with a scheduler or CI, but alert on job failures.">Backup را خودکار و شکست آن را Alert کنید.</li>
+    <li data-fa="حداقل یک نسخه را خارج از میزبان و ترجیحاً Immutable نگه دارید."
+        data-en="Keep at least one copy off-host and preferably immutable.">یک نسخهٔ خارج از میزبان و ترجیحاً Immutable داشته باشید.</li>
+</ul>
+
+<!-- ===================== OPERATIONAL CHECKLIST ===================== -->
+<h1 data-fa="چک‌لیست عملیاتی Backup" data-en="Operational Backup Checklist">چک‌لیست عملیاتی Backup</h1>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="پرسش" data-en="Question">پرسش</th>
+            <th data-fa="پاسخ مورد انتظار" data-en="Expected Answer">پاسخ مورد انتظار</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="RPO چقدر است؟" data-en="What is the RPO?">RPO چقدر است؟</td>
+            <td data-fa="حداکثر داده‌ای که می‌توان از دست داد، مثلاً ۲۴ ساعت" data-en="The maximum tolerable data loss, such as 24 hours">حداکثر دادهٔ قابل از دست رفتن</td>
+        </tr>
+        <tr>
+            <td data-fa="RTO چقدر است؟" data-en="What is the RTO?">RTO چقدر است؟</td>
+            <td data-fa="حداکثر زمان قابل قبول برای بازیابی سرویس" data-en="The maximum acceptable time to restore the service">حداکثر زمان بازیابی</td>
+        </tr>
+        <tr>
+            <td data-fa="آخرین Restore موفق چه زمانی بود؟" data-en="When was the last successful restore?">آخرین Restore موفق چه زمانی بود؟</td>
+            <td data-fa="تاریخ، مدت، نتیجه و مسئول آزمون ثبت شده باشد" data-en="The date, duration, result, and owner are recorded">نتیجهٔ مستند و قابل پیگیری</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== LAB ===================== -->
+<section class="lab-section">
+    <h1 data-fa="تمرین عملی: Backup و Restore یک Named Volume"
+        data-en="Lab: Back Up and Restore a Named Volume">
+        تمرین عملی: Backup و Restore یک Named Volume
+    </h1>
+
+    <h3 data-fa="گام ۱: ساخت Volume و دادهٔ آزمایشی" data-en="Step 1: Create a Volume and Sample Data">
+        گام ۱: ساخت Volume و دادهٔ آزمایشی
+    </h3>
+    <pre><code>docker volume create lab-data
+docker run --rm --mount source=lab-data,target=/data alpine \
+  sh -c "echo 'order-1001' > /data/orders.txt"</code></pre>
+
+    <h3 data-fa="گام ۲: ساخت پوشهٔ Backup" data-en="Step 2: Create the Backup Directory">
+        گام ۲: ساخت پوشهٔ Backup
+    </h3>
+    <pre><code>mkdir backups</code></pre>
+
+    <h3 data-fa="گام ۳: تهیهٔ Backup فقط‌خواندنی" data-en="Step 3: Create a Read-Only Backup">
+        گام ۳: تهیهٔ Backup فقط‌خواندنی
+    </h3>
+    <pre><code>docker run --rm \
+  --mount source=lab-data,target=/source,readonly \
+  --mount type=bind,source="${PWD}/backups",target=/backup \
+  alpine tar -czf /backup/lab-data.tar.gz -C /source .</code></pre>
+
+    <h3 data-fa="گام ۴: ساخت مقصد و Restore" data-en="Step 4: Create a Destination and Restore">
+        گام ۴: ساخت مقصد و Restore
+    </h3>
+    <pre><code>docker volume create lab-data-restored
+docker run --rm \
+  --mount source=lab-data-restored,target=/restore \
+  --mount type=bind,source="${PWD}/backups",target=/backup,readonly \
+  alpine tar -xzf /backup/lab-data.tar.gz -C /restore</code></pre>
+
+    <h3 data-fa="گام ۵: بررسی دادهٔ بازیابی‌شده" data-en="Step 5: Verify the Restored Data">
+        گام ۵: بررسی دادهٔ بازیابی‌شده
+    </h3>
+    <pre><code>docker run --rm --mount source=lab-data-restored,target=/data,readonly \
+  alpine cat /data/orders.txt</code></pre>
+
+    <div class="lab-result">
+        <strong data-fa="نتیجهٔ تمرین" data-en="Lab Result">نتیجهٔ تمرین</strong>
+        <p data-fa="اگر خروجی order-1001 را دیدید، Archive داخل یک Volume جدید با موفقیت Restore شده است. اکنون می‌توانید دو Volume را مستقل نگه دارید و بدون بازنویسی مبدأ، بازیابی را آزمایش کنید."
+            data-en="If you see order-1001, the archive was restored successfully into a new Volume. You can now keep both Volumes independently and test recovery without overwriting the source.">
+            نمایش <code>order-1001</code> یعنی داده داخل Volume جدید بازیابی شده است.
+        </p>
+    </div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h1 data-fa="سؤالات تستی پشتیبان‌گیری و بازیابی" data-en="Backup and Restore Quiz">
+        سؤالات تستی پشتیبان‌گیری و بازیابی
+    </h1>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="چرا یک Volume روی همان میزبان به‌تنهایی Backup محسوب نمی‌شود؟"
+                data-en="Why is a Volume on the same host not a backup by itself?">چرا Volume روی همان میزبان Backup نیست؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="چون Volume فقط‌خواندنی است" data-en="Because a Volume is read-only">چون فقط‌خواندنی است</li>
+                <li data-fa="چون خرابی یا حذف میزبان می‌تواند اصل و Volume را هم‌زمان از بین ببرد" data-en="Because host loss or failure can destroy both the original and the Volume">چون هر دو روی یک میزبان‌اند</li>
+                <li data-fa="چون Volume را نمی‌توان Mount کرد" data-en="Because a Volume cannot be mounted">چون Mount نمی‌شود</li>
+                <li data-fa="چون Docker همیشه Volume را حذف می‌کند" data-en="Because Docker always deletes Volumes">چون Docker آن را حذف می‌کند</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — Backup باید در برابر خرابی محل نگهداری نسخهٔ اصلی نیز مقاوم باشد."
+                data-en="Correct answer: Option 2 — A backup must also survive failure of the location holding the original.">پاسخ صحیح: گزینهٔ ۲</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="چرا Volume مبدأ هنگام Backup با readonly متصل می‌شود؟"
+                data-en="Why is the source Volume mounted readonly during backup?">چرا از <code>readonly</code> استفاده می‌کنیم؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="برای جلوگیری از تغییر تصادفی دادهٔ مبدأ" data-en="To prevent accidental changes to source data">برای جلوگیری از تغییر مبدأ</li>
+                <li data-fa="برای افزایش اندازهٔ Volume" data-en="To increase Volume size">برای افزایش اندازه</li>
+                <li data-fa="برای حذف Container اصلی" data-en="To remove the original Container">برای حذف Container</li>
+                <li data-fa="برای غیرفعال کردن tar" data-en="To disable tar">برای غیرفعال کردن tar</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — ابزار Backup فقط باید دادهٔ مبدأ را بخواند."
+                data-en="Correct answer: Option 1 — The backup tool should only read the source data.">پاسخ صحیح: گزینهٔ ۱</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای Backup یک دیتابیس در حال اجرا کدام روش مطمئن‌تر است؟"
+                data-en="Which method is safer for backing up a running database?">روش مطمئن‌تر برای دیتابیس در حال اجرا چیست؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="کپی فایل‌های خام بدون هماهنگی" data-en="Copy raw files without coordination">کپی فایل خام</li>
+                <li data-fa="استفاده از ابزار Native و آگاه از تراکنش دیتابیس" data-en="Use the database's native transaction-aware tool">ابزار Native دیتابیس</li>
+                <li data-fa="حذف Volume قبل از Backup" data-en="Delete the Volume before backup">حذف Volume</li>
+                <li data-fa="تبدیل Volume به tmpfs" data-en="Convert the Volume to tmpfs">تبدیل به tmpfs</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — ابزار Native ساختار و تراکنش‌های دیتابیس را می‌شناسد."
+                data-en="Correct answer: Option 2 — The native tool understands database structures and transactions.">پاسخ صحیح: گزینهٔ ۲</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="مطمئن‌ترین راه اثبات قابل استفاده بودن Backup چیست؟"
+                data-en="What is the most reliable way to prove a backup is usable?">چگونه قابل استفاده بودن Backup را ثابت می‌کنیم؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="فقط بررسی نام فایل" data-en="Only check the filename">بررسی نام فایل</li>
+                <li data-fa="فقط بررسی وجود Archive" data-en="Only check that the archive exists">بررسی وجود Archive</li>
+                <li data-fa="Restore آزمایشی و بررسی داده و برنامه" data-en="Perform a test restore and validate the data and application">Restore آزمایشی</li>
+                <li data-fa="تغییر نام Volume" data-en="Rename the Volume">تغییر نام Volume</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — فقط Restore موفق نشان می‌دهد نسخه واقعاً قابل بازیابی است."
+                data-en="Correct answer: Option 3 — Only a successful restore demonstrates that recovery is possible.">پاسخ صحیح: گزینهٔ ۳</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="RPO چه چیزی را مشخص می‌کند؟" data-en="What does RPO define?">RPO چه چیزی را مشخص می‌کند؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="حداکثر میزان داده‌ای که از دست رفتن آن قابل قبول است" data-en="The maximum acceptable amount of data loss">حداکثر دادهٔ قابل از دست رفتن</li>
+                <li data-fa="تعداد CPUهای Container" data-en="The number of Container CPUs">تعداد CPU</li>
+                <li data-fa="حجم Docker Image" data-en="The Docker Image size">حجم Image</li>
+                <li data-fa="نام فایل Compose" data-en="The Compose filename">نام فایل Compose</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — RPO تعیین می‌کند Backupها باید با چه فاصله‌ای ساخته شوند تا میزان از دست رفتن داده قابل قبول بماند."
+                data-en="Correct answer: Option 1 — RPO drives backup frequency so potential data loss remains acceptable.">پاسخ صحیح: گزینهٔ ۱</p>
+        </li>
+    </ol>
+</section>
+
