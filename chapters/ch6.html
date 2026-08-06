@@ -1,0 +1,457 @@
+<!-- ===================== DOCKER NETWORKING ===================== -->
+<h1 data-fa="شبکه‌بندی Docker چیست؟" data-en="What Is Docker Networking?">
+    شبکه‌بندی Docker چیست؟
+</h1>
+
+<p data-fa="Docker Networking مجموعه‌ای از قابلیت‌ها برای اتصال Containerها به یکدیگر، میزبان و شبکه‌های خارجی است. هر Container متصل به شبکه یک رابط شبکه و معمولاً یک IP دارد، اما برنامه‌ها بهتر است برای ارتباط داخلی از نام Container یا نام سرویس استفاده کنند."
+    data-en="Docker Networking is the set of capabilities that connects Containers to each other, the host, and external networks. Each connected Container has a network interface and usually an IP address, but applications should use Container or service names for internal communication.">
+    Docker Networking ارتباط میان Containerها، میزبان و شبکه‌های خارجی را فراهم می‌کند.
+</p>
+
+<div class="info-box">
+    <strong data-fa="اصل مهم" data-en="Key Principle">اصل مهم</strong>
+    <p data-fa="IP یک Container ممکن است پس از ساخت دوباره تغییر کند. برای ارتباط پایدار داخل شبکهٔ سفارشی Docker، به‌جای IP ثابت از DNS و نام سرویس استفاده کنید."
+        data-en="A Container IP may change after recreation. For stable communication on a custom Docker network, use DNS and service names instead of fixed IP addresses.">
+        برای ارتباط داخلی پایدار، از نام سرویس استفاده کنید نه IP ثابت.
+    </p>
+</div>
+
+<div class="diagram-box">
+    <pre>
+Internet / Host
+      │
+      │  published port 8080:80
+      ▼
+┌──────────── Docker Host ────────────┐
+│  user-defined bridge: app-net       │
+│                                     │
+│  web:80 ─────── DNS ─────── api:5000│
+│                         │           │
+│                         └── db:1433 │
+└─────────────────────────────────────┘
+    </pre>
+</div>
+
+<!-- ===================== TRAFFIC PATHS ===================== -->
+<h1 data-fa="مسیرهای اصلی ترافیک" data-en="Main Traffic Paths">مسیرهای اصلی ترافیک</h1>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="مسیر" data-en="Path">مسیر</th>
+            <th data-fa="روش دسترسی" data-en="Access Method">روش دسترسی</th>
+            <th data-fa="نمونه" data-en="Example">نمونه</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="Container به Container" data-en="Container to Container">Container به Container</td>
+            <td data-fa="نام سرویس و پورت داخلی روی شبکهٔ مشترک" data-en="Service name and internal port on a shared network">نام سرویس و پورت داخلی</td>
+            <td><code>http://api:5000</code></td>
+        </tr>
+        <tr>
+            <td data-fa="میزبان به Container" data-en="Host to Container">میزبان به Container</td>
+            <td data-fa="Port Publishing" data-en="Port publishing">Port Publishing</td>
+            <td><code>http://localhost:8080</code></td>
+        </tr>
+        <tr>
+            <td data-fa="Container به اینترنت" data-en="Container to Internet">Container به اینترنت</td>
+            <td data-fa="مسیریابی خروجی Docker از طریق میزبان" data-en="Docker outbound routing through the host">مسیریابی از طریق میزبان</td>
+            <td><code>https://example.com</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== DRIVERS ===================== -->
+<h1 data-fa="Driverهای شبکه در Docker" data-en="Docker Network Drivers">Driverهای شبکه در Docker</h1>
+
+<p data-fa="Network Driver تعیین می‌کند شبکه چگونه ساخته شود و ترافیک Containerها از چه مسیری عبور کند. انتخاب Driver به محل اجرا و نیاز ایزوله‌سازی بستگی دارد."
+    data-en="A network driver determines how a network is created and how Container traffic flows. Driver choice depends on the runtime environment and isolation needs.">
+    Network Driver نحوهٔ ساخت شبکه و عبور ترافیک را تعیین می‌کند.
+</p>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th>Driver</th>
+            <th data-fa="کاربرد" data-en="Use Case">کاربرد</th>
+            <th data-fa="نکته" data-en="Key Note">نکته</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>bridge</code></td>
+            <td data-fa="ارتباط Containerها روی یک Docker Host" data-en="Container communication on one Docker host">ارتباط روی یک میزبان</td>
+            <td data-fa="انتخاب معمول برای توسعه و برنامه‌های تک‌میزبان" data-en="The usual choice for development and single-host applications">انتخاب معمول تک‌میزبان</td>
+        </tr>
+        <tr>
+            <td><code>host</code></td>
+            <td data-fa="اشتراک مستقیم Network Namespace میزبان" data-en="Directly sharing the host network namespace">اشتراک شبکهٔ میزبان</td>
+            <td data-fa="ایزوله‌سازی شبکه و Port Publishing معمول را کنار می‌گذارد؛ رفتار و پشتیبانی به پلتفرم وابسته است" data-en="Bypasses normal network isolation and port publishing; behavior and support are platform-dependent">ایزوله‌سازی کمتر و وابسته به پلتفرم</td>
+        </tr>
+        <tr>
+            <td><code>none</code></td>
+            <td data-fa="Container بدون اتصال شبکهٔ خارجی" data-en="A Container without external network connectivity">بدون اتصال خارجی</td>
+            <td data-fa="برای پردازش‌های کاملاً ایزوله" data-en="Useful for fully isolated processing">ایزوله‌ترین حالت شبکه</td>
+        </tr>
+        <tr>
+            <td><code>overlay</code></td>
+            <td data-fa="ارتباط چند میزبان در Docker Swarm" data-en="Multi-host communication in Docker Swarm">شبکهٔ چندمیزبان Swarm</td>
+            <td data-fa="برای سرویس‌های توزیع‌شدهٔ Swarm طراحی شده است" data-en="Designed for distributed Swarm services">مناسب Swarm</td>
+        </tr>
+        <tr>
+            <td><code>macvlan</code></td>
+            <td data-fa="نمایش Container مانند یک دستگاه مستقل در شبکهٔ فیزیکی" data-en="Presenting a Container as a distinct device on the physical network">دستگاه مستقل در LAN</td>
+            <td data-fa="به طراحی شبکه و پشتیبانی زیرساخت نیاز دارد" data-en="Requires network design and infrastructure support">پیکربندی پیشرفته</td>
+        </tr>
+        <tr>
+            <td><code>ipvlan</code></td>
+            <td data-fa="اتصال مستقیم‌تر به شبکه با اشتراک MAC در برخی حالت‌ها" data-en="More direct network attachment with shared MAC behavior in some modes">اتصال مستقیم‌تر به شبکه</td>
+            <td data-fa="برای سناریوهای شبکهٔ کنترل‌شده و پیشرفته" data-en="For controlled, advanced networking scenarios">کاربرد پیشرفته</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="info-box">
+    <strong data-fa="انتخاب پیشنهادی" data-en="Recommended Choice">انتخاب پیشنهادی</strong>
+    <p data-fa="برای چند Container روی یک میزبان، ابتدا یک شبکهٔ bridge سفارشی بسازید. فقط وقتی نیاز مشخصی دارید سراغ host، overlay، macvlan یا ipvlan بروید."
+        data-en="For multiple Containers on one host, start with a custom bridge network. Use host, overlay, macvlan, or ipvlan only for a specific requirement.">
+        برای برنامهٔ تک‌میزبان از یک User-defined Bridge شروع کنید.
+    </p>
+</div>
+
+<!-- ===================== BRIDGE COMPARISON ===================== -->
+<h1 data-fa="Default Bridge و User-defined Bridge" data-en="Default Bridge vs User-Defined Bridge">
+    Default Bridge و User-defined Bridge
+</h1>
+
+<p data-fa="Docker هنگام نصب شبکه‌ای با نام bridge می‌سازد. این شبکه برای اجرای ساده مناسب است، اما شبکهٔ Bridge سفارشی DNS داخلی بهتر، ایزوله‌سازی روشن‌تر و مدیریت ساده‌تری برای برنامه‌های چند-Container فراهم می‌کند."
+    data-en="Docker creates a network named bridge during installation. It works for simple runs, but a custom Bridge network provides better embedded DNS, clearer isolation, and simpler management for multi-Container applications.">
+    برای برنامه‌های چند-Container، شبکهٔ Bridge سفارشی انتخاب بهتری است.
+</p>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="ویژگی" data-en="Feature">ویژگی</th>
+            <th>Default <code>bridge</code></th>
+            <th>User-defined <code>bridge</code></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-fa="DNS نام Container" data-en="Container-name DNS">DNS نام Container</td>
+            <td data-fa="به‌صورت پیش‌فرض کشف نام مدرن را ارائه نمی‌کند" data-en="Does not provide modern name-based discovery by default">محدود</td>
+            <td data-fa="Docker Embedded DNS نام Container و Alias را Resolve می‌کند" data-en="Docker Embedded DNS resolves Container names and aliases">داخلی و خودکار</td>
+        </tr>
+        <tr>
+            <td data-fa="ایزوله‌سازی" data-en="Isolation">ایزوله‌سازی</td>
+            <td data-fa="Containerهای متصل به Bridge عمومی را کنار هم قرار می‌دهد" data-en="Groups Containers attached to the shared default Bridge">شبکهٔ مشترک عمومی</td>
+            <td data-fa="برای هر برنامه شبکهٔ جدا ساخته می‌شود" data-en="A separate network can be created for each application">شبکهٔ مجزا برای هر برنامه</td>
+        </tr>
+        <tr>
+            <td data-fa="اتصال در زمان اجرا" data-en="Runtime attachment">اتصال در زمان اجرا</td>
+            <td data-fa="انعطاف کمتر" data-en="Less flexible">انعطاف کمتر</td>
+            <td data-fa="Connect و Disconnect بدون ساخت دوبارهٔ Container" data-en="Connect and disconnect without recreating the Container">انعطاف‌پذیر</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- ===================== LIFECYCLE ===================== -->
+<h1 data-fa="ساخت و مدیریت شبکه" data-en="Creating and Managing Networks">ساخت و مدیریت شبکه</h1>
+
+<h3 data-fa="مشاهدهٔ شبکه‌ها" data-en="List Networks">مشاهدهٔ شبکه‌ها</h3>
+<pre><code>docker network ls</code></pre>
+
+<h3 data-fa="ساخت User-defined Bridge" data-en="Create a User-Defined Bridge">ساخت User-defined Bridge</h3>
+<pre><code>docker network create --driver bridge app-net</code></pre>
+
+<h3 data-fa="مشاهدهٔ جزئیات شبکه" data-en="Inspect a Network">مشاهدهٔ جزئیات شبکه</h3>
+<pre><code>docker network inspect app-net</code></pre>
+
+<p data-fa="خروجی Inspect شامل Driver، Subnet، Gateway، گزینه‌های IPAM و Containerهای متصل است. برای اسکریپت‌ها می‌توانید خروجی را با --format محدود کنید."
+    data-en="Inspect output includes the driver, subnet, gateway, IPAM options, and attached Containers. Scripts can narrow the output with --format.">
+    Inspect اطلاعات Driver، Subnet، Gateway و Containerهای متصل را نشان می‌دهد.
+</p>
+
+<pre><code>docker network inspect app-net \
+  --format '{{json .Containers}}'</code></pre>
+
+<h3 data-fa="حذف شبکه" data-en="Remove a Network">حذف شبکه</h3>
+<pre><code>docker network rm app-net</code></pre>
+
+<div class="info-box">
+    <strong data-fa="شرط حذف" data-en="Removal Requirement">شرط حذف</strong>
+    <p data-fa="تا وقتی Container فعالی به شبکه متصل است Docker آن شبکه را حذف نمی‌کند. ابتدا Containerها را حذف یا Disconnect کنید."
+        data-en="Docker will not remove a network while a Container is attached. Remove or disconnect attached Containers first.">
+        پیش از حذف شبکه، Containerهای متصل را جدا کنید.
+    </p>
+</div>
+
+<!-- ===================== EMBEDDED DNS ===================== -->
+<h1 data-fa="DNS داخلی و کشف سرویس" data-en="Embedded DNS and Service Discovery">
+    DNS داخلی و کشف سرویس
+</h1>
+
+<p data-fa="روی شبکهٔ سفارشی، Docker Embedded DNS نام Container و Network Alias را به IP فعلی آن تبدیل می‌کند. در نتیجه web می‌تواند با آدرس http://api:5000 به Container دیگر متصل شود."
+    data-en="On a custom network, Docker Embedded DNS resolves Container names and network aliases to their current IP addresses. As a result, web can reach another Container at http://api:5000.">
+    Docker Embedded DNS نام Container را به IP فعلی آن Resolve می‌کند.
+</p>
+
+<pre><code>docker network create app-net
+
+docker run -d --name api --network app-net nginx
+
+docker run --rm --network app-net curlimages/curl \
+  http://api</code></pre>
+
+<p data-fa="نام api فقط برای Containerهایی قابل Resolve است که شبکه‌ای مشترک با آن دارند. DNS داخلی به معنی انتشار سرویس روی میزبان یا اینترنت نیست."
+    data-en="The name api is resolvable only by Containers sharing a network with it. Embedded DNS does not publish the service to the host or the internet.">
+    کشف نام فقط داخل شبکهٔ مشترک انجام می‌شود.
+</p>
+
+<!-- ===================== PORTS ===================== -->
+<h1 data-fa="پورت داخلی، EXPOSE و Port Publishing" data-en="Container Ports, EXPOSE, and Port Publishing">
+    پورت داخلی، EXPOSE و Port Publishing
+</h1>
+
+<p data-fa="Containerهای روی یک شبکهٔ مشترک مستقیماً از پورت داخلی سرویس استفاده می‌کنند. برای دسترسی از میزبان یا بیرون باید پورت را با ‎-p منتشر کنید. دستور EXPOSE در Dockerfile فقط پورت مورد انتظار را مستند می‌کند و به‌تنهایی آن را روی میزبان باز نمی‌کند."
+    data-en="Containers on a shared network use the service's internal port directly. Access from the host or outside requires publishing with -p. EXPOSE in a Dockerfile documents the expected port but does not publish it on the host by itself.">
+    برای دسترسی از میزبان باید پورت را با <code>-p</code> منتشر کنید.
+</p>
+
+<pre><code>docker run -d \
+  --name web \
+  --network app-net \
+  -p 8080:80 \
+  nginx</code></pre>
+
+<table class="comparison-table">
+    <thead>
+        <tr>
+            <th data-fa="مقدار" data-en="Value">مقدار</th>
+            <th data-fa="معنا" data-en="Meaning">معنا</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>8080</code></td>
+            <td data-fa="پورت روی میزبان" data-en="Port on the host">پورت میزبان</td>
+        </tr>
+        <tr>
+            <td><code>80</code></td>
+            <td data-fa="پورت برنامه داخل Container" data-en="Application port inside the Container">پورت داخل Container</td>
+        </tr>
+        <tr>
+            <td><code>127.0.0.1:8080:80</code></td>
+            <td data-fa="انتشار فقط روی Loopback میزبان برای کاهش دسترسی خارجی" data-en="Publish only on the host loopback interface to reduce external access">انتشار فقط روی localhost</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="info-box">
+    <strong data-fa="حداقل سطح دسترسی" data-en="Least Exposure">حداقل سطح دسترسی</strong>
+    <p data-fa="پورت دیتابیس و سرویس‌های داخلی را بی‌دلیل Publish نکنید. اگر فقط Containerهای همان شبکه مصرف‌کننده‌اند، پورت داخلی کافی است."
+        data-en="Do not publish database or internal-service ports without a reason. If only Containers on the same network consume the service, the internal port is enough.">
+        فقط پورت‌هایی را Publish کنید که واقعاً باید از میزبان قابل دسترسی باشند.
+    </p>
+</div>
+
+<!-- ===================== MULTIPLE NETWORKS ===================== -->
+<h1 data-fa="اتصال Container به چند شبکه" data-en="Connecting a Container to Multiple Networks">
+    اتصال Container به چند شبکه
+</h1>
+
+<p data-fa="یک Container می‌تواند هم‌زمان Endpoint جداگانه‌ای در چند شبکه داشته باشد. برای نمونه API به شبکهٔ frontend و backend متصل می‌شود، اما دیتابیس فقط روی backend باقی می‌ماند."
+    data-en="A Container can have a separate endpoint on multiple networks at the same time. For example, an API can join frontend and backend, while the database remains only on backend.">
+    اتصال چندشبکه‌ای امکان جداسازی لایه‌های برنامه را فراهم می‌کند.
+</p>
+
+<pre><code>docker network create frontend
+docker network create backend
+
+docker run -d --name api --network frontend nginx
+docker network connect backend api
+
+docker network disconnect frontend api</code></pre>
+
+<div class="diagram-box">
+    <pre>
+frontend network              backend network
+┌─────────┐                  ┌─────────┐
+│  proxy  │──────┐      ┌────│   db    │
+└─────────┘      │      │    └─────────┘
+                 ▼      ▼
+                ┌─────────┐
+                │   api   │
+                └─────────┘
+    </pre>
+</div>
+
+<!-- ===================== SECURITY ===================== -->
+<h1 data-fa="امنیت شبکهٔ Docker" data-en="Docker Network Security">امنیت شبکهٔ Docker</h1>
+
+<ul>
+    <li data-fa="برای هر برنامه یا Trust Zone شبکهٔ جدا بسازید."
+        data-en="Create a separate network for each application or trust zone.">برای هر Trust Zone شبکهٔ جدا بسازید.</li>
+    <li data-fa="فقط پورت‌های ورودی ضروری را Publish کنید و در صورت نیاز آن‌ها را به IP مشخص Bind کنید."
+        data-en="Publish only required inbound ports and bind them to a specific IP when appropriate.">فقط پورت‌های ضروری را Publish کنید.</li>
+    <li data-fa="دیتابیس را روی شبکهٔ داخلی نگه دارید و دسترسی مستقیم عمومی ایجاد نکنید."
+        data-en="Keep databases on an internal network and avoid direct public access.">دیتابیس را عمومی نکنید.</li>
+    <li data-fa="شبکه رمزنگاری دادهٔ برنامه نیست؛ برای دادهٔ حساس همچنان از TLS و احراز هویت استفاده کنید."
+        data-en="A network does not encrypt application data; continue to use TLS and authentication for sensitive traffic.">برای ترافیک حساس از TLS و احراز هویت استفاده کنید.</li>
+    <li data-fa="قواعد Firewall میزبان و رفتار Docker را با سیاست امنیتی زیرساخت هماهنگ کنید."
+        data-en="Align host firewall rules and Docker behavior with infrastructure security policy.">Firewall میزبان را نیز بررسی کنید.</li>
+</ul>
+
+<!-- ===================== TROUBLESHOOTING ===================== -->
+<h1 data-fa="عیب‌یابی شبکه‌های Docker" data-en="Troubleshooting Docker Networks">
+    عیب‌یابی شبکه‌های Docker
+</h1>
+
+<ol>
+    <li data-fa="با docker ps وضعیت Container و Port Mapping را بررسی کنید."
+        data-en="Use docker ps to check Container state and port mappings.">وضعیت Container و Port Mapping را ببینید.</li>
+    <li data-fa="با docker network inspect مطمئن شوید دو Container واقعاً شبکهٔ مشترک دارند."
+        data-en="Use docker network inspect to confirm both Containers actually share a network.">عضویت در شبکه را بررسی کنید.</li>
+    <li data-fa="نام سرویس را داخل یک Container هم‌شبکه Resolve کنید."
+        data-en="Resolve the service name from a Container on the same network.">DNS داخلی را آزمایش کنید.</li>
+    <li data-fa="بررسی کنید برنامه داخل Container روی آدرس مناسب مانند 0.0.0.0 گوش می‌دهد، نه فقط 127.0.0.1."
+        data-en="Check that the application listens on an appropriate address such as 0.0.0.0, not only 127.0.0.1.">آدرس Listen برنامه را بررسی کنید.</li>
+    <li data-fa="پورت داخلی برنامه را با سمت راست ‎-p و پورت میزبان را با سمت چپ مقایسه کنید."
+        data-en="Compare the internal application port with the right side of -p and the host port with the left side.">ترتیب پورت‌ها را بررسی کنید.</li>
+</ol>
+
+<pre><code>docker ps
+docker port web
+docker network inspect app-net
+docker inspect web --format '{{json .NetworkSettings.Networks}}'
+
+docker run --rm --network app-net busybox nslookup web
+docker run --rm --network app-net busybox wget -qO- http://web</code></pre>
+
+<div class="info-box">
+    <strong data-fa="خطای رایج" data-en="Common Failure">خطای رایج</strong>
+    <p data-fa="localhost داخل یک Container به همان Container اشاره می‌کند، نه به میزبان و نه به Container دیگر. برای سرویس دیگر از نام آن روی شبکهٔ مشترک استفاده کنید."
+        data-en="localhost inside a Container refers to that same Container, not the host or another Container. Use the other service's name on a shared network.">
+        داخل Container، <code>localhost</code> همان Container جاری است.
+    </p>
+</div>
+
+<!-- ===================== LAB ===================== -->
+<section class="lab-section">
+    <h1 data-fa="تمرین عملی: ارتباط دو Container روی شبکهٔ سفارشی"
+        data-en="Lab: Connect Two Containers on a Custom Network">
+        تمرین عملی: ارتباط دو Container روی شبکهٔ سفارشی
+    </h1>
+
+    <h3 data-fa="گام ۱: ساخت شبکه" data-en="Step 1: Create the Network">گام ۱: ساخت شبکه</h3>
+    <pre><code>docker network create lab-net</code></pre>
+
+    <h3 data-fa="گام ۲: اجرای Web Server" data-en="Step 2: Run the Web Server">گام ۲: اجرای Web Server</h3>
+    <pre><code>docker run -d \
+  --name lab-web \
+  --network lab-net \
+  -p 8080:80 \
+  nginx</code></pre>
+
+    <h3 data-fa="گام ۳: دسترسی با نام Container" data-en="Step 3: Connect by Container Name">
+        گام ۳: دسترسی با نام Container
+    </h3>
+    <pre><code>docker run --rm \
+  --network lab-net \
+  curlimages/curl \
+  http://lab-web</code></pre>
+
+    <h3 data-fa="گام ۴: بررسی DNS داخلی" data-en="Step 4: Check Embedded DNS">گام ۴: بررسی DNS داخلی</h3>
+    <pre><code>docker run --rm --network lab-net busybox nslookup lab-web</code></pre>
+
+    <h3 data-fa="گام ۵: دسترسی از میزبان" data-en="Step 5: Connect from the Host">گام ۵: دسترسی از میزبان</h3>
+    <pre><code>curl http://localhost:8080</code></pre>
+
+    <h3 data-fa="گام ۶: پاک‌سازی" data-en="Step 6: Clean Up">گام ۶: پاک‌سازی</h3>
+    <pre><code>docker rm -f lab-web
+docker network rm lab-net</code></pre>
+
+    <div class="lab-result">
+        <strong data-fa="نتیجهٔ تمرین" data-en="Lab Result">نتیجهٔ تمرین</strong>
+        <p data-fa="Container موقت بدون Publish کردن پورت و فقط با نام lab-web به Nginx متصل شد، درحالی‌که میزبان از پورت منتشرشدهٔ 8080 استفاده کرد. این تفاوت ارتباط داخلی و خارجی را نشان می‌دهد."
+            data-en="The temporary Container reached Nginx by the name lab-web without publishing a port, while the host used published port 8080. This demonstrates the difference between internal and external access.">
+            ارتباط داخلی با نام Container و ارتباط میزبان با پورت 8080 انجام شد.
+        </p>
+    </div>
+</section>
+
+<!-- ===================== QUIZ ===================== -->
+<section class="review-section chapter-quiz">
+    <h1 data-fa="سؤالات تستی Docker Networking" data-en="Docker Networking Quiz">
+        سؤالات تستی Docker Networking
+    </h1>
+
+    <ol class="review-questions">
+        <li class="quiz-question">
+            <h3 data-fa="برای ارتباط پایدار بین Containerهای یک شبکهٔ سفارشی از چه چیزی استفاده می‌کنیم؟"
+                data-en="What should be used for stable communication between Containers on a custom network?">روش پایدار ارتباط داخلی چیست؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="IP ثابت و دستی" data-en="A manually fixed IP">IP دستی</li>
+                <li data-fa="نام Container یا سرویس از طریق DNS داخلی" data-en="A Container or service name through embedded DNS">نام سرویس</li>
+                <li data-fa="پورت تصادفی میزبان" data-en="A random host port">پورت تصادفی</li>
+                <li data-fa="شناسهٔ Image" data-en="The Image ID">شناسهٔ Image</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — DNS داخلی نام را به IP فعلی Container تبدیل می‌کند."
+                data-en="Correct answer: Option 2 — Embedded DNS resolves the name to the Container's current IP.">پاسخ صحیح: گزینهٔ ۲</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="در ‎-p 8080:80 عدد 8080 چیست؟" data-en="In -p 8080:80, what does 8080 represent?">عدد 8080 چیست؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="پورت میزبان" data-en="The host port">پورت میزبان</li>
+                <li data-fa="پورت داخل Container" data-en="The Container port">پورت Container</li>
+                <li data-fa="Subnet" data-en="The subnet">Subnet</li>
+                <li data-fa="شناسهٔ شبکه" data-en="The network ID">شناسهٔ شبکه</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — سمت چپ پورت میزبان و سمت راست پورت Container است."
+                data-en="Correct answer: Option 1 — The left side is the host port and the right side is the Container port.">پاسخ صحیح: گزینهٔ ۱</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="برای چند Container روی یک Docker Host معمولاً کدام Driver مناسب است؟"
+                data-en="Which driver is usually appropriate for multiple Containers on one Docker host?">Driver معمول تک‌میزبان چیست؟</h3>
+            <ul class="quiz-options">
+                <li><code>overlay</code></li>
+                <li><code>bridge</code></li>
+                <li><code>none</code></li>
+                <li><code>macvlan</code></li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۲ — User-defined Bridge انتخاب معمول برای ارتباط تک‌میزبان است."
+                data-en="Correct answer: Option 2 — A user-defined Bridge is the usual single-host choice.">پاسخ صحیح: گزینهٔ ۲</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="localhost داخل Container به کجا اشاره می‌کند؟"
+                data-en="What does localhost refer to inside a Container?">localhost داخل Container چیست؟</h3>
+            <ul class="quiz-options">
+                <li data-fa="همیشه میزبان Docker" data-en="Always the Docker host">میزبان Docker</li>
+                <li data-fa="Container دیگری با نام localhost" data-en="Another Container named localhost">Container دیگر</li>
+                <li data-fa="همان Container جاری" data-en="The current Container itself">همان Container جاری</li>
+                <li data-fa="Docker Hub" data-en="Docker Hub">Docker Hub</li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۳ — هر Container Loopback مخصوص خودش را دارد."
+                data-en="Correct answer: Option 3 — Each Container has its own loopback interface.">پاسخ صحیح: گزینهٔ ۳</p>
+        </li>
+
+        <li class="quiz-question">
+            <h3 data-fa="کدام دستور یک Container موجود را به شبکهٔ دیگری متصل می‌کند؟"
+                data-en="Which command attaches an existing Container to another network?">دستور اتصال به شبکه چیست؟</h3>
+            <ul class="quiz-options">
+                <li><code>docker network connect backend api</code></li>
+                <li><code>docker network rm backend</code></li>
+                <li><code>docker image connect api</code></li>
+                <li><code>docker port disconnect api</code></li>
+            </ul>
+            <p class="quiz-answer" data-fa="پاسخ صحیح: گزینهٔ ۱ — docker network connect یک Endpoint جدید برای Container روی شبکه می‌سازد."
+                data-en="Correct answer: Option 1 — docker network connect creates a new network endpoint for the Container.">پاسخ صحیح: گزینهٔ ۱</p>
+        </li>
+    </ol>
+</section>
+
